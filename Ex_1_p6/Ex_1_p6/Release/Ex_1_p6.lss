@@ -3,9 +3,9 @@ Ex_1_p6.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000a2  00000000  00000000  00000054  2**1
+  0 .text         000000a8  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .comment      00000030  00000000  00000000  000000f6  2**0
+  1 .comment      00000030  00000000  00000000  000000fc  2**0
                   CONTENTS, READONLY
 
 Disassembly of section .text:
@@ -76,7 +76,7 @@ Disassembly of section .text:
   78:	de bf       	out	0x3e, r29	; 62
   7a:	cd bf       	out	0x3d, r28	; 61
   7c:	02 d0       	rcall	.+4      	; 0x82 <main>
-  7e:	0f c0       	rjmp	.+30     	; 0x9e <_exit>
+  7e:	12 c0       	rjmp	.+36     	; 0xa4 <_exit>
 
 00000080 <__bad_interrupt>:
   80:	bf cf       	rjmp	.-130    	; 0x0 <__vectors>
@@ -89,16 +89,19 @@ Disassembly of section .text:
   8a:	c0 98       	cbi	0x18, 0	; 24
   8c:	01 c0       	rjmp	.+2      	; 0x90 <main+0xe>
   8e:	c0 9a       	sbi	0x18, 0	; 24
-  90:	83 ec       	ldi	r24, 0xC3	; 195
-  92:	99 e0       	ldi	r25, 0x09	; 9
-  94:	01 97       	sbiw	r24, 0x01	; 1
-  96:	f1 f7       	brne	.-4      	; 0x94 <main+0x12>
-  98:	00 c0       	rjmp	.+0      	; 0x9a <main+0x18>
-  9a:	00 00       	nop
-  9c:	f4 cf       	rjmp	.-24     	; 0x86 <main+0x4>
+  90:	2f e3       	ldi	r18, 0x3F	; 63
+  92:	8d e0       	ldi	r24, 0x0D	; 13
+  94:	93 e0       	ldi	r25, 0x03	; 3
+  96:	21 50       	subi	r18, 0x01	; 1
+  98:	80 40       	sbci	r24, 0x00	; 0
+  9a:	90 40       	sbci	r25, 0x00	; 0
+  9c:	e1 f7       	brne	.-8      	; 0x96 <main+0x14>
+  9e:	00 c0       	rjmp	.+0      	; 0xa0 <main+0x1e>
+  a0:	00 00       	nop
+  a2:	f1 cf       	rjmp	.-30     	; 0x86 <main+0x4>
 
-0000009e <_exit>:
-  9e:	f8 94       	cli
+000000a4 <_exit>:
+  a4:	f8 94       	cli
 
-000000a0 <__stop_program>:
-  a0:	ff cf       	rjmp	.-2      	; 0xa0 <__stop_program>
+000000a6 <__stop_program>:
+  a6:	ff cf       	rjmp	.-2      	; 0xa6 <__stop_program>

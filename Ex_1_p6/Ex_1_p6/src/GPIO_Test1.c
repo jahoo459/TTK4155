@@ -31,6 +31,6 @@ void main(void)
 			set_bit(PORTB, PB0);
 		}
 		
-		_delay_ms(10);
+		_delay_ms(1000);
 	}
 }
