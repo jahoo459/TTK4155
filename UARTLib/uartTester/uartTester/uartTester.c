@@ -27,25 +27,8 @@ volatile unsigned int bufferIndex;
 #define clear_bit( reg, bit ) (reg &= ~(1 << bit))
 #define test_bit( reg, bit ) (reg & (1 << bit))
 
-//void fdevopen(sendData(), receiveData());
 
-void initUart(unsigned int baud, unsigned int fosc)
-{
-	uint32_t ubrr = UBRR;
-	
-	/*Set BAUD rate*/
-	UBRR0H = (unsigned char) (ubrr>>8);
-	UBRR0L = (unsigned char) ubrr;
-	
-	/* Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
-	
-	//Enable UART0 interrupts
-	set_bit(UCSR0B, RXCIE0);
-	
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
-}
+
 
 void sendData(unsigned char byte2Send)
 {
@@ -66,6 +49,26 @@ unsigned char receiveData()
 	return receivedByte;
 }
 
+
+void initUart(unsigned int baud, unsigned int fosc)
+{
+	uint32_t ubrr = UBRR;
+	
+	/*Set BAUD rate*/
+	UBRR0H = (unsigned char) (ubrr>>8);
+	UBRR0L = (unsigned char) ubrr;
+	
+	/* Enable receiver and transmitter */
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	
+	//Enable UART0 interrupts
+	set_bit(UCSR0B, RXCIE0);
+	
+	/* Set frame format: 8data, 2stop bit */
+	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
+	fdevopen(sendData, receiveData);
+}
+
 ISR(USART0_RXC_vect)
 {
 	//interrupt generated after receiving a byte
@@ -75,8 +78,9 @@ ISR(USART0_RXC_vect)
 
 
 
+
 int main(void)
-{	
+{		
 	set_bit(DDRB, PB0);
 	clear_bit(PORTB, PB0);
 	
@@ -84,6 +88,8 @@ int main(void)
 	
 	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 	sei();
+	
+	printf("Welcome to Trondheim");
 
     while(1)
     {		
@@ -95,3 +101,5 @@ int main(void)
 
     }
 }
+
+	
