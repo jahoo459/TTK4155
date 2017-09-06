@@ -35,7 +35,8 @@
 volatile char receivedByte;
 volatile unsigned char receivedFlag = 0;
 
-ISR(USART0_RXC_vect)
+
+ISR(USART0_RXC_vect)		
 {
 	//interrupt generated after receiving a byte
 	receivedByte = UDR0;		//received byte
@@ -46,21 +47,19 @@ ISR(USART0_RXC_vect)
 
 int main(void)
 {	
-	set_bit(DDRB, PB0);
-	clear_bit(PORTB, PB0);
-	
 	uartInit(BAUDRATE, FOSC, UBRR);
 	
-	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 	sei();
 
     while(1)
-    {		
+    {	
+		//printf('a');
+			
 		if(receivedFlag == 1)
 		{
 			receivedFlag = 0;
-			uartSend(receivedByte, NULL);
-			printf(receivedByte);
+			uartSend(receivedByte);
+			//printf(receivedByte);
 		}
 
     }

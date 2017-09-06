@@ -12,17 +12,15 @@
 
 #include "UARTlib.h"
 
-int uartSend(const char byte2Send, FILE* file)
+void uartSend(const char byte2Send)
 {
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR0A & (1<<UDRE0)) );
 	/* Put data into buffer, sends the data */
 	UDR0 = byte2Send;
-	
-	return 1;
 }
 
-unsigned char uartReceive(FILE* file)
+unsigned char uartReceive()
 {
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC0)) );

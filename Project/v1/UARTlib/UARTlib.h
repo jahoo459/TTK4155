@@ -14,8 +14,8 @@
 #define test_bit( reg, bit ) (reg & (1 << bit))
 
 
-int uartSend(const char byte2Send, FILE* file);
-unsigned char uartReceive(FILE* file);
+void uartSend(const char byte2Send);
+unsigned char uartReceive();
 void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr);
 
 
