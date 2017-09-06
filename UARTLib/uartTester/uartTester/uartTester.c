@@ -29,24 +29,6 @@ volatile unsigned int bufferIndex;
 
 //void fdevopen(sendData(), receiveData());
 
-void initUart(unsigned int baud, unsigned int fosc)
-{
-	uint32_t ubrr = UBRR;
-	
-	/*Set BAUD rate*/
-	UBRR0H = (unsigned char) (ubrr>>8);
-	UBRR0L = (unsigned char) ubrr;
-	
-	/* Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
-	
-	//Enable UART0 interrupts
-	set_bit(UCSR0B, RXCIE0);
-	
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
-}
-
 void sendData(unsigned char byte2Send)
 {
 	
@@ -65,6 +47,28 @@ unsigned char receiveData()
 	
 	return receivedByte;
 }
+
+void initUart(unsigned int baud, unsigned int fosc)
+{
+	uint32_t ubrr = UBRR;
+	
+	/*Set BAUD rate*/
+	UBRR0H = (unsigned char) (ubrr>>8);
+	UBRR0L = (unsigned char) ubrr;
+	
+	/* Enable receiver and transmitter */
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	
+	//Enable UART0 interrupts
+	set_bit(UCSR0B, RXCIE0);
+	
+	/* Set frame format: 8data, 2stop bit */
+	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
+	
+	fdevopen(sendData, receiveData);
+}
+
+
 
 ISR(USART0_RXC_vect)
 {
