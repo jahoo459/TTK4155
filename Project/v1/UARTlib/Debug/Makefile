@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../UARTLib.c
+../UARTlib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,20 +47,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-UARTLib.o
+UARTlib.o
 
 OBJS_AS_ARGS +=  \
-UARTLib.o
+UARTlib.o
 
 C_DEPS +=  \
-UARTLib.d
+UARTlib.d
 
 C_DEPS_AS_ARGS +=  \
-UARTLib.d
+UARTlib.d
 
-OUTPUT_FILE_PATH +=libUARTLib.a
+OUTPUT_FILE_PATH +=libUARTlib.a
 
-OUTPUT_FILE_PATH_AS_ARGS +=libUARTLib.a
+OUTPUT_FILE_PATH_AS_ARGS +=libUARTlib.a
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -78,7 +78,7 @@ LINKER_SCRIPT_DEP+=
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -120,5 +120,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "libUARTLib.elf" "libUARTLib.a" "libUARTLib.hex" "libUARTLib.lss" "libUARTLib.eep" "libUARTLib.map" "libUARTLib.srec" "libUARTLib.usersignatures"
+	rm -rf "libUARTlib.elf" "libUARTlib.a" "libUARTlib.hex" "libUARTlib.lss" "libUARTlib.eep" "libUARTlib.map" "libUARTlib.srec" "libUARTlib.usersignatures"
 	
