@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{d87f64fc-b489-42bb-bebd-68ae0e9efe91}</ProjectGuid>
+    <ProjectGuid>{9853b26c-08a0-4743-925d-6be3a949355d}</ProjectGuid>
     <avrdevice>ATmega162</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>StaticLibrary</OutputType>
@@ -14,9 +14,9 @@
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <AvrGccProjectExtensions>
     </AvrGccProjectExtensions>
-    <AssemblyName>UARTLib</AssemblyName>
-    <Name>UARTLib</Name>
-    <RootNamespace>UARTLib</RootNamespace>
+    <AssemblyName>UARTlib</AssemblyName>
+    <Name>UARTlib</Name>
+    <RootNamespace>UARTlib</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -98,7 +98,10 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="UARTLib.c">
+    <Compile Include="UARTlib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UARTlib.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
