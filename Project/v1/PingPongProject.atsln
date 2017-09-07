@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ProjectMain", "ProjectMain\ProjectMain.cproj", "{9C21E849-0F58-4FCF-9117-36B40E7E59BD}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "UARTlib", "UARTlib\UARTlib.cproj", "{9853B26C-08A0-4743-925D-6BE3A949355D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C21E849-0F58-4FCF-9117-36B40E7E59BD}.Debug|AVR.ActiveCfg = Debug|AVR
+		{9C21E849-0F58-4FCF-9117-36B40E7E59BD}.Debug|AVR.Build.0 = Debug|AVR
+		{9C21E849-0F58-4FCF-9117-36B40E7E59BD}.Release|AVR.ActiveCfg = Release|AVR
+		{9C21E849-0F58-4FCF-9117-36B40E7E59BD}.Release|AVR.Build.0 = Release|AVR
+		{9853B26C-08A0-4743-925D-6BE3A949355D}.Debug|AVR.ActiveCfg = Debug|AVR
+		{9853B26C-08A0-4743-925D-6BE3A949355D}.Debug|AVR.Build.0 = Debug|AVR
+		{9853B26C-08A0-4743-925D-6BE3A949355D}.Release|AVR.ActiveCfg = Release|AVR
+		{9853B26C-08A0-4743-925D-6BE3A949355D}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
