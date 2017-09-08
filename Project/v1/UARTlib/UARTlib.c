@@ -45,5 +45,5 @@ void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr)
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
 	
-	fdevopen(uartSend, uartReceive);
+	fdevopen(uartSend, uartReceive); //if there are any problems with this try &uartSend &uartReceive
 }

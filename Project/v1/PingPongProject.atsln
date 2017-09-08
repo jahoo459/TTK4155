@@ -5,6 +5,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ProjectMain", "ProjectMain\
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "UARTlib", "UARTlib\UARTlib.cproj", "{9853B26C-08A0-4743-925D-6BE3A949355D}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ExtSramLib", "ExtSramLib\ExtSramLib.cproj", "{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -19,6 +21,10 @@ Global
 		{9853B26C-08A0-4743-925D-6BE3A949355D}.Debug|AVR.Build.0 = Debug|AVR
 		{9853B26C-08A0-4743-925D-6BE3A949355D}.Release|AVR.ActiveCfg = Release|AVR
 		{9853B26C-08A0-4743-925D-6BE3A949355D}.Release|AVR.Build.0 = Release|AVR
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Debug|AVR.ActiveCfg = Debug|AVR
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Debug|AVR.Build.0 = Debug|AVR
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Release|AVR.ActiveCfg = Release|AVR
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
