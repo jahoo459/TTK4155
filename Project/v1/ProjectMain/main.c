@@ -11,7 +11,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include <avr/sleep.h>
+//#include <avr/sleep.h>
 
 
 #define set_bit( reg, bit ) (reg |= (1 << bit))
@@ -120,34 +120,33 @@ void SRAM_test(void)
 =======================MAIN FUNCTION=========================
 */
 
+#define ADDRESS 0x1000
+
 int main(void)
 {	
 	uartInit(BAUDRATE, FOSC, UBRR);
 	enableXMEM(1);
 	
 	sei();
+	
+	volatile unsigned char* pointer = (volatile unsigned char*)ADDRESS;
 
     while(1)
-    {				
+    {			
+		//SRAM_test();
+		
+		*pointer = 1;
+				
 		if(receivedFlag == 1)
 		{
 			receivedFlag = 0;
-			//uartSend(receivedByte);
-			printf("Received: %c \n", receivedByte);
-			SRAM_test();
+			//SRAM_test();
+
+			//*pointer = 1;
 			
-			printf("Our own SRAM library test");
-			saveToAddress(0x1800, 10);
-			uint8_t test = readFromAddress(0x1800);
+			//saveToAddress(pointer, (unsigned char)'b');
+			//char test = readFromAddress(address);
 			
-			if(test == 10)
-			{
-				printf("Test passed");
-			}
-			else
-			{
-				printf("Test failed, val: %d", test);
-			}
 		}
 
     }

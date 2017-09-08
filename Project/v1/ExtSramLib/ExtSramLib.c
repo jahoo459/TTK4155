@@ -6,6 +6,8 @@
  */ 
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdio.h>
 
 #define set_bit( reg, bit ) (reg |= (1 << bit))
 #define clear_bit( reg, bit ) (reg &= ~(1 << bit))
@@ -27,20 +29,15 @@ void enableXMEM(char releaseJtagPins)
 	}
 }
 
-uint8_t readFromAddress(uint16_t address)
+unsigned char readFromAddress(volatile char* ptr)
 {
-	uint16_t* memPointer;
-	memPointer = address;
-	uint8_t val = *memPointer;
-	
+	unsigned char val = *ptr;
 	return val;
 }
 
-void saveToAddress(uint16_t address, uint8_t data)
+void saveToAddress(volatile char* ptr, unsigned char data)
 {
-	uint16_t* memPointer;
-	memPointer = address;
-	*memPointer = data;
+	*ptr = data;
 }
 
 

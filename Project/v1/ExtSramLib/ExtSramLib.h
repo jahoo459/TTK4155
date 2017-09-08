@@ -10,8 +10,8 @@
 #define EXTSRAMLIB_H_
 
 void enableXMEM(char releaseJtagPins);
-uint8_t readFromAddress(unsigned int address);
-void saveToAddress(unsigned int address, uint8_t data);
+unsigned char readFromAddress(char* address);
+void saveToAddress(char* address, unsigned char data);
 void disableXMEM();
 
 
