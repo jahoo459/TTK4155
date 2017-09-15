@@ -2,10 +2,25 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ProjectMain", "ProjectMain\ProjectMain.cproj", "{9C21E849-0F58-4FCF-9117-36B40E7E59BD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770} = {6D83BE5A-9D59-4A17-A83C-C6E2EB982770}
+		{5CA97E6C-6A36-4AF7-833F-814F8342886F} = {5CA97E6C-6A36-4AF7-833F-814F8342886F}
+		{451B9DF4-52C1-458B-938B-6731ABCC07C1} = {451B9DF4-52C1-458B-938B-6731ABCC07C1}
+	EndProjectSection
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "UARTlib", "UARTlib\UARTlib.cproj", "{9853B26C-08A0-4743-925D-6BE3A949355D}"
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ExtSramLib", "ExtSramLib\ExtSramLib.cproj", "{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ADCLib", "ADCLib\ADCLib.cproj", "{5CA97E6C-6A36-4AF7-833F-814F8342886F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770} = {6D83BE5A-9D59-4A17-A83C-C6E2EB982770}
+	EndProjectSection
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "JoystickLib", "JoystickLib\JoystickLib.cproj", "{451B9DF4-52C1-458B-938B-6731ABCC07C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770} = {6D83BE5A-9D59-4A17-A83C-C6E2EB982770}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +40,14 @@ Global
 		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Debug|AVR.Build.0 = Debug|AVR
 		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Release|AVR.ActiveCfg = Release|AVR
 		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770}.Release|AVR.Build.0 = Release|AVR
+		{5CA97E6C-6A36-4AF7-833F-814F8342886F}.Debug|AVR.ActiveCfg = Debug|AVR
+		{5CA97E6C-6A36-4AF7-833F-814F8342886F}.Debug|AVR.Build.0 = Debug|AVR
+		{5CA97E6C-6A36-4AF7-833F-814F8342886F}.Release|AVR.ActiveCfg = Release|AVR
+		{5CA97E6C-6A36-4AF7-833F-814F8342886F}.Release|AVR.Build.0 = Release|AVR
+		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Debug|AVR.Build.0 = Debug|AVR
+		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Release|AVR.ActiveCfg = Release|AVR
+		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

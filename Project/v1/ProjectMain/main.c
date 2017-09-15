@@ -8,27 +8,15 @@
 /*
 =======================INCLUDES=========================
 */
-#include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
-//#include <avr/sleep.h>
-
-
-#define set_bit( reg, bit ) (reg |= (1 << bit))
-#define clear_bit( reg, bit ) (reg &= ~(1 << bit))
-#define test_bit( reg, bit ) (reg & (1 << bit))
-
-
-#define BAUDRATE 9600
-#define FOSC  4915200
-#define  F_CPU FOSC
-#define UBRR FOSC/16/BAUDRATE-1
-
-#define uint16_t unsigned int
+//#include "definitions.h"
+#include "..\JoystickLib\JoystickLib.h"
+#include "..\ExtSramLib\ExtSramLib.h"
 
 #include <util/delay.h>
 #include <UARTlib.h>
-#include <ExtSramLib.h>
+
+
 
 
 /*
@@ -39,16 +27,20 @@
 
 //UART COMMUNICATION
 volatile char receivedByte;
-volatile unsigned char receivedFlag = 0;
+volatile unsigned char USARTreceivedFlag = 0;
+volatile unsigned char ADCconversionCompletedFlag = 0;
 
-//XMEM addresses 
-uint16_t ext_ram_size = 0x800;
+//ADC CONVERTER
+unsigned char currentChannel = 1;
 
-volatile char *oled_cmd_ext_ram = (char*) 0x1000;
-volatile char *oled_data_ext_ram = (char*) 0x1200;
-volatile char *adc_ext_ram = (char*) 0x1400;
-volatile char *sram_ext = (char*) 0x1800;
 
+//INITIALIZATION
+uint16_t ext_ram_size = (uint16_t)EXT_RAM_SIZE;
+
+volatile char *oled_cmd_ext_ram = (char*) OLED_CMD_EXT_RAM;
+volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
+//volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
+volatile char *sram_ext = (char*) SRAM_EXT;
 
 
 /*
@@ -59,7 +51,13 @@ ISR(USART0_RXC_vect)
 {
 	//interrupt generated after receiving a byte over UART 
 	receivedByte = UDR0;		//received byte
-	receivedFlag = 1;		//set the flag to 1
+	USARTreceivedFlag = 1;		//set the flag to 1
+}
+
+ISR(INT0_vect)
+{
+	//interrupt generated on pin PD2 after the conversion in the ADC is completed
+	ADCconversionCompletedFlag = 1;
 }
 
 /*
@@ -120,34 +118,94 @@ void SRAM_test(void)
 =======================MAIN FUNCTION=========================
 */
 
-#define ADDRESS 0x1000
+//#define ADDRESS 0x1400
 
 int main(void)
 {	
 	uartInit(BAUDRATE, FOSC, UBRR);
 	enableXMEM(1);
 	
+	//init external interrupt INT0 on falling edge
+	set_bit(GICR, INT0);
+	set_bit(MCUCR, ISC01);
+	clear_bit(MCUCR, ISC00);
+	
+	
 	sei();
 	
-	volatile unsigned char* pointer = (volatile unsigned char*)ADDRESS;
+	//volatile unsigned char* pointer = (volatile unsigned char*)ADDRESS;
+	//unsigned char convertedValue;
+	
+	printf("I am alive!");
+	
+	JOY_requestCurrentPosition('x');
 
     while(1)
-    {			
+    {	
+		if(ADCconversionCompletedFlag)
+		{
+			switch(currentChannel){
+				case 1:	//X axis
+					JOY_updatePosition('x');
+					
+					printf("\nCurrent X: %d", JOY_getPositionX());
+					
+					JOY_requestCurrentPosition('y');
+					currentChannel++;
+				break;	
+				
+				case 2:	//Y_axis
+					JOY_updatePosition('y');
+					
+					printf(" Current Y: %d", JOY_getPositionY());
+					
+					JOY_requestCurrentPosition('x');
+					
+					currentChannel = 1;
+				break;
+				
+				case 3: //slider_left
+				
+				break;
+				
+				case 4:	//slider_right
+				
+				break;
+			}
+		}		
 		//SRAM_test();
 		
-		*pointer = 1;
+		//*pointer = 1;
+		
+		//test the ADC
+		//first the CS is being activated by writing to the address 0x1400
+		//to access ch1 (bin 0100 / hex 0x04) has to be transmitted 
+		//to access ch2 (bin 0101 / hex 0x0A)
+		//to access ch3 (bin 0110
+		//to access ch4 (bin 0111
+		//saveToAddress(ADDRESS, 0b0101);
+		
+		//_delay_ms(20);
+		
+		//convertedValue = readFromAddress(ADDRESS);
+		//printf("convertedValue: %d\n", convertedValue);
+		
+		//_delay_ms(40);
+		
+		//set WR low
+		
 				
-		if(receivedFlag == 1)
-		{
-			receivedFlag = 0;
+		//if(receivedFlag == 1)
+		//{
+			//receivedFlag = 0;
 			//SRAM_test();
-
-			//*pointer = 1;
-			
-			//saveToAddress(pointer, (unsigned char)'b');
-			//char test = readFromAddress(address);
-			
-		}
+//
+			////*pointer = 1;
+			//
+			////saveToAddress(pointer, (unsigned char)'b');
+			////char test = readFromAddress(address);
+			//
+		//}
 
     }
 }

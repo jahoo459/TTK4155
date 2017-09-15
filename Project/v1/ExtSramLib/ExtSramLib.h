@@ -9,9 +9,11 @@
 #ifndef EXTSRAMLIB_H_
 #define EXTSRAMLIB_H_
 
+#include "..\ProjectMain\definitions.h"
+
 void enableXMEM(char releaseJtagPins);
-unsigned char readFromAddress(char* address);
-void saveToAddress(char* address, unsigned char data);
+unsigned char readFromAddress(volatile char* ptr);
+void saveToAddress(volatile char* ptr, unsigned char data);
 void disableXMEM();
 
 
