@@ -31,29 +31,33 @@ void ADC_init()
 	//TBD
 }
 
-char ADC_request(unsigned char channel, volatile char *ADC_ADDRESS){
+void ADC_request(uint8_t channel, volatile char *ADC_ADDRESS){
 	
 	switch(channel){
 		case 1:
-			saveToAddress(ADC_ADDRESS, (unsigned char)ch1);
+			saveToAddress(ADC_ADDRESS, (uint8_t)ch1);
 			break;
 			
 		case 2:
-			saveToAddress(ADC_ADDRESS, (unsigned char)ch2);
+			saveToAddress(ADC_ADDRESS, (uint8_t)ch2);
 			break;
 			
 		case 3:
-			saveToAddress(ADC_ADDRESS, (unsigned char)ch3);
+			saveToAddress(ADC_ADDRESS, (uint8_t)ch3);
 			break;
 			
 		case 4:
-			saveToAddress(ADC_ADDRESS, (unsigned char)ch4);
+			saveToAddress(ADC_ADDRESS, (uint8_t)ch4);
+			break;
+			
+		default:
+			printf("Problems with ADC...");
 			break;
 			
 	}
 }
 
-unsigned char ADC_read(volatile char *ADC_ADDRESS)
+uint8_t ADC_read(volatile char *ADC_ADDRESS)
 {
-	return (unsigned char)readFromAddress(ADC_ADDRESS);
+	return (uint8_t)readFromAddress(ADC_ADDRESS);
 }

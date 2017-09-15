@@ -12,8 +12,8 @@
 #include "..\ProjectMain\definitions.h"
 
 void enableXMEM(char releaseJtagPins);
-unsigned char readFromAddress(volatile char* ptr);
-void saveToAddress(volatile char* ptr, unsigned char data);
+uint8_t readFromAddress(volatile char* ptr);
+void saveToAddress(volatile char* ptr, uint8_t data);
 void disableXMEM();
 
 

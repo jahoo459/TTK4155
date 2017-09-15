@@ -20,12 +20,12 @@ void uartSend(const char byte2Send)
 	UDR0 = byte2Send;
 }
 
-unsigned char uartReceive()
+uint8_t uartReceive()
 {
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC0)) );
 	/* Get and return received data from buffer */
-	unsigned char receivedByte = UDR0;
+	uint8_t receivedByte = UDR0;
 	
 	return receivedByte;
 }
@@ -33,8 +33,8 @@ unsigned char uartReceive()
 void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr)
 {	
 	/*Set BAUD rate*/
-	UBRR0H = (unsigned char) (ubrr>>8);
-	UBRR0L = (unsigned char) ubrr;
+	UBRR0H = (uint8_t) (ubrr>>8);
+	UBRR0L = (uint8_t) ubrr;
 	
 	/* Enable receiver and transmitter */
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);

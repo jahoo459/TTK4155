@@ -32,13 +32,13 @@ void enableXMEM(char releaseJtagPins)
 	}
 }
 
-unsigned char readFromAddress(volatile char* ptr)
+uint8_t readFromAddress(volatile char* ptr)
 {
-	unsigned char val = *ptr;
+	uint8_t val = *ptr;
 	return val;
 }
 
-void saveToAddress(volatile char* ptr, unsigned char data)
+void saveToAddress(volatile char* ptr, uint8_t data)
 {
 	*ptr = data;
 }

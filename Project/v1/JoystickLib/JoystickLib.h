@@ -12,21 +12,18 @@
 #include "..\ADCLib\ADCLib.h"
 
 
-typedef struct  {
-	int X;
-	int Y;
-} JOY_position_t;
-
-typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
-
 void JOY_init();
 void JOY_calibrate();
 char JOY_button(int button);
 JOY_position_t JOY_getPosition();
-JOY_direction_t JOY_getDirection();
+void JOY_calculateDirection();
 void JOY_updatePosition(char axis);
 void JOY_updateDirection();
 void JOY_requestCurrentPosition(char axis);
-unsigned char JOY_getPositionX();
-unsigned char JOY_getPositionY();
+uint8_t JOY_getPositionX();
+uint8_t JOY_getPositionY();
+
+void JOY_calibrate();
+
+void JOY_printPosAndDir();
 #endif /* JOYSTICKLIB_H_ */

@@ -27,11 +27,12 @@
 
 //UART COMMUNICATION
 volatile char receivedByte;
-volatile unsigned char USARTreceivedFlag = 0;
-volatile unsigned char ADCconversionCompletedFlag = 0;
+volatile uint8_t USARTreceivedFlag = 0;
+volatile uint8_t ADCconversionCompletedFlag = 0;
+volatile uint8_t JOYcalibFlag = 0;
 
 //ADC CONVERTER
-unsigned char currentChannel = 1;
+uint8_t currentChannel = 1;
 
 
 //INITIALIZATION
@@ -39,7 +40,6 @@ uint16_t ext_ram_size = (uint16_t)EXT_RAM_SIZE;
 
 volatile char *oled_cmd_ext_ram = (char*) OLED_CMD_EXT_RAM;
 volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
-//volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
 
 
@@ -58,6 +58,12 @@ ISR(INT0_vect)
 {
 	//interrupt generated on pin PD2 after the conversion in the ADC is completed
 	ADCconversionCompletedFlag = 1;
+}
+
+ISR(INT1_vect)
+{
+	//interrupt generated on pin PD3 to start the joystick calibration
+	JOYcalibFlag = 1;
 }
 
 /*
@@ -130,25 +136,37 @@ int main(void)
 	set_bit(MCUCR, ISC01);
 	clear_bit(MCUCR, ISC00);
 	
+	//Pull-up on PD3
+	clear_bit(DDRD, PD3);
+	set_bit(PORTD, PD3);
+	
+	//init external interrupt INT1 on falling edge
+	set_bit(GICR, INT1);
+	set_bit(MCUCR, ISC11);
+	clear_bit(MCUCR, ISC10);
 	
 	sei();
-	
-	//volatile unsigned char* pointer = (volatile unsigned char*)ADDRESS;
-	//unsigned char convertedValue;
-	
-	printf("I am alive!");
-	
+
 	JOY_requestCurrentPosition('x');
 
     while(1)
     {	
+		_delay_ms(200);
+		if(JOYcalibFlag)
+		{
+			//run joystick calibration
+			JOY_calibrate();
+			JOYcalibFlag = 0;
+		}
+		
+		//JOY_printPosAndDir();
+		
 		if(ADCconversionCompletedFlag)
 		{
 			switch(currentChannel){
 				case 1:	//X axis
 					JOY_updatePosition('x');
-					
-					printf("\nCurrent X: %d", JOY_getPositionX());
+					//printf("Current X: %d\n", JOY_getPositionX());
 					
 					JOY_requestCurrentPosition('y');
 					currentChannel++;
@@ -156,8 +174,7 @@ int main(void)
 				
 				case 2:	//Y_axis
 					JOY_updatePosition('y');
-					
-					printf(" Current Y: %d", JOY_getPositionY());
+					//printf(" Current Y: %d\n", JOY_getPositionY());
 					
 					JOY_requestCurrentPosition('x');
 					
@@ -173,39 +190,7 @@ int main(void)
 				break;
 			}
 		}		
-		//SRAM_test();
 		
-		//*pointer = 1;
-		
-		//test the ADC
-		//first the CS is being activated by writing to the address 0x1400
-		//to access ch1 (bin 0100 / hex 0x04) has to be transmitted 
-		//to access ch2 (bin 0101 / hex 0x0A)
-		//to access ch3 (bin 0110
-		//to access ch4 (bin 0111
-		//saveToAddress(ADDRESS, 0b0101);
-		
-		//_delay_ms(20);
-		
-		//convertedValue = readFromAddress(ADDRESS);
-		//printf("convertedValue: %d\n", convertedValue);
-		
-		//_delay_ms(40);
-		
-		//set WR low
-		
-				
-		//if(receivedFlag == 1)
-		//{
-			//receivedFlag = 0;
-			//SRAM_test();
-//
-			////*pointer = 1;
-			//
-			////saveToAddress(pointer, (unsigned char)'b');
-			////char test = readFromAddress(address);
-			//
-		//}
 
     }
 }

@@ -34,5 +34,15 @@
 
 #define uint16_t unsigned int
 
+// joystick position and direction
+typedef struct  {
+	int X_abs;
+	int Y_abs;
+	int X_per;
+	int Y_per;
+} JOY_position_t;
+
+typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
+
 
 #endif /* DEFINITIONS_H_ */

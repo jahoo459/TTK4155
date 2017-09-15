@@ -9,6 +9,7 @@
 
 #include "JoystickLib.h"
 #include "..\ADCLib\ADCLib.h"
+#include <util/delay.h>
 
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
@@ -19,18 +20,29 @@ JOY_direction_t currentDirection;
 #define Y_channel 1
 #define X_channel 2
 
+//calibration
+#define delay1 200
+#define delay2 50
+//variables needed for joystick calibration
+volatile uint8_t calR = 200;
+volatile  uint8_t calL = 25;
+volatile  uint8_t calUp =200;
+volatile  uint8_t calDown = 25;
+
+
+volatile uint8_t meanVert = 128;
+volatile uint8_t meanHor = 128;
+
 void JOY_init()
 {
 	// set initial values for Position and Direction
-	currentPosition.X = 0;
-	currentPosition.Y = 0;
+	currentPosition.X_abs = 0;
+	currentPosition.Y_abs = 0;
+	currentPosition.X_per = 0;
+	currentPosition.Y_per = 0;
 	currentDirection = CENTRE;
 }
 
-void JOY_calibrate()
-{
-	
-}
 
 char JOY_button(int button)
 {
@@ -39,22 +51,40 @@ char JOY_button(int button)
 
 JOY_position_t JOY_getPosition()
 {
+	//calculate current position [in %]
+	// 0 % corresponds to mean vert / hor value
+
+	currentPosition.X_per = ((int)currentPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
+	currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
+	
+	printf("currentPosition.X = %d(per)\t currentPosition.Y = %d(per)\n", currentPosition.X_per, currentPosition.Y_per);
+	
 	return currentPosition;
 }
 
-unsigned char JOY_getPositionX()
+uint8_t JOY_getPositionX()
 {
-	return currentPosition.X;
+	return currentPosition.X_abs;
 }
 
-unsigned char JOY_getPositionY()
+uint8_t JOY_getPositionY()
 {
-	return currentPosition.Y;
+	return currentPosition.Y_abs;
 }
 
-JOY_direction_t JOY_getDirection()
+void JOY_calculateDirection()
 {
-	return currentDirection;
+	//calculate current direction, first update position
+	JOY_getPosition();
+	
+	if(currentPosition.X_abs > 50) {
+		currentDirection = RIGHT;}
+	else if(currentPosition.X_abs < 50) {
+		currentDirection = LEFT;}
+	else if(currentPosition.Y_abs > 50) {
+		currentDirection = UP;}
+	else if(currentPosition.X_abs < 50) {
+		currentDirection = DOWN;}
 }
 
 void JOY_requestCurrentPosition(char axis)
@@ -74,16 +104,88 @@ void JOY_updatePosition(char axis)
 {
 	if(axis == 'x')
 	{
-		currentPosition.X = ADC_read(adc_ext_ram);
+		currentPosition.X_abs = ADC_read(adc_ext_ram);
 	}
 
 	else if(axis == 'y')
 	{
-		currentPosition.Y = ADC_read(adc_ext_ram);
+		currentPosition.Y_abs = ADC_read(adc_ext_ram);
 	}
+	
+	JOY_getPosition();
+	JOY_calculateDirection();
 }
 
 void JOY_updateDirection()
 {
 	
+}
+
+void JOY_calibrate()
+{
+	uint8_t temp = 0;
+	
+	printf("Move JOY to the right\n");
+	_delay_ms(delay1);
+	
+	for(int i = 0; i < 20; i++)
+	{
+		ADC_request(X_channel, adc_ext_ram);
+		_delay_ms(delay2);
+		temp = ADC_read(adc_ext_ram);
+		
+		if(temp > calR) {calR = temp;}			
+	}
+	
+	printf("Move JOY to the left\n");
+	_delay_ms(delay1);
+	
+	for(int i = 0; i < 20; i++)
+	{
+		ADC_request(X_channel, adc_ext_ram);
+		_delay_ms(delay2);
+		temp = ADC_read(adc_ext_ram);
+		
+		if(temp < calL) {calL = temp;}
+	}
+	
+	printf("Move JOY up\n");
+	_delay_ms(delay1);
+	
+	for(int i = 0; i < 20; i++)
+	{
+		ADC_request(Y_channel, adc_ext_ram);
+		_delay_ms(delay2);
+		temp = ADC_read(adc_ext_ram);
+		
+		if(temp > calUp) {calUp = temp;}
+	}
+	
+	printf("Move JOY down\n");
+	_delay_ms(delay1);
+	
+	for(int i = 0; i < 20; i++)
+	{
+		ADC_request(Y_channel, adc_ext_ram);
+		_delay_ms(delay2);
+		temp = ADC_read(adc_ext_ram);
+		
+		if(temp < calDown) {calDown = temp;}
+	}
+	
+	
+	printf("calR: %d, calL: %d, calUp:%d, calDown:%d\n", calR, calL, calUp, calDown);
+	
+	meanVert = (calUp - calDown)/2;
+	meanHor = (calR - calL)/2;
+	
+	printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
+}
+
+void JOY_printPosAndDir()
+{
+	JOY_getPosition();
+	JOY_calculateDirection();
+	
+	printf("JOY: %d, X:%d (abs), Y: %d (abs)\n", currentDirection, currentPosition.X_abs, currentPosition.Y_abs);
 }
