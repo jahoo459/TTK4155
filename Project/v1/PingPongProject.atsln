@@ -22,6 +22,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "JoystickLib", "JoystickLib\
 		{6D83BE5A-9D59-4A17-A83C-C6E2EB982770} = {6D83BE5A-9D59-4A17-A83C-C6E2EB982770}
 	EndProjectSection
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SliderLib", "SliderLib\SliderLib.cproj", "{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -48,6 +50,10 @@ Global
 		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Debug|AVR.Build.0 = Debug|AVR
 		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Release|AVR.ActiveCfg = Release|AVR
 		{451B9DF4-52C1-458B-938B-6731ABCC07C1}.Release|AVR.Build.0 = Release|AVR
+		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Debug|AVR.ActiveCfg = Debug|AVR
+		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Debug|AVR.Build.0 = Debug|AVR
+		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Release|AVR.ActiveCfg = Release|AVR
+		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

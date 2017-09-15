@@ -10,6 +10,7 @@
 #include "JoystickLib.h"
 #include "..\ADCLib\ADCLib.h"
 #include <util/delay.h>
+#include <string.h>
 
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
@@ -57,7 +58,7 @@ JOY_position_t JOY_getPosition()
 	currentPosition.X_per = ((int)currentPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
 	currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
 	
-	printf("currentPosition.X = %d(per)\t currentPosition.Y = %d(per)\n", currentPosition.X_per, currentPosition.Y_per);
+	//printf("currentPosition.X = %d(per)\t currentPosition.Y = %d(per)\n", currentPosition.X_per, currentPosition.Y_per);
 	
 	return currentPosition;
 }
@@ -77,14 +78,15 @@ void JOY_calculateDirection()
 	//calculate current direction, first update position
 	JOY_getPosition();
 	
-	if(currentPosition.X_abs > 50) {
+	if(currentPosition.X_per > 50) {
 		currentDirection = RIGHT;}
-	else if(currentPosition.X_abs < 50) {
+	else if(currentPosition.X_per < -50) {
 		currentDirection = LEFT;}
-	else if(currentPosition.Y_abs > 50) {
+	else if(currentPosition.Y_per > 50) {
 		currentDirection = UP;}
-	else if(currentPosition.X_abs < 50) {
+	else if(currentPosition.Y_per < -50) {
 		currentDirection = DOWN;}
+	else{currentDirection = CENTRE;}
 }
 
 void JOY_requestCurrentPosition(char axis)
@@ -187,5 +189,32 @@ void JOY_printPosAndDir()
 	JOY_getPosition();
 	JOY_calculateDirection();
 	
-	printf("JOY: %d, X:%d (abs), Y: %d (abs)\n", currentDirection, currentPosition.X_abs, currentPosition.Y_abs);
+	char directions[] = {'C', 'U', 'D', 'R', 'L'};
+	char* dir;
+	
+	switch(currentDirection)
+	{
+		case 0:
+		
+		dir = "CENTER"; 
+		break;
+		
+		case 1:
+		dir = "UP"; 
+		break;
+		
+		case 2:
+		dir = "DOWN"; 
+		break;
+		
+		case 3:
+		dir = "RIGHT"; 
+		break;
+		
+		case 4:
+		dir = "LEFT"; 
+		break;
+	}
+	
+	printf("JOY: %s, X:%d, Y: %d\n", dir, currentPosition.X_per, currentPosition.Y_per);
 }

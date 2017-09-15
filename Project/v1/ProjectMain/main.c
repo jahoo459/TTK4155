@@ -151,7 +151,6 @@ int main(void)
 
     while(1)
     {	
-		_delay_ms(200);
 		if(JOYcalibFlag)
 		{
 			//run joystick calibration
@@ -159,25 +158,20 @@ int main(void)
 			JOYcalibFlag = 0;
 		}
 		
-		//JOY_printPosAndDir();
+		JOY_printPosAndDir();
 		
 		if(ADCconversionCompletedFlag)
 		{
 			switch(currentChannel){
 				case 1:	//X axis
 					JOY_updatePosition('x');
-					//printf("Current X: %d\n", JOY_getPositionX());
-					
 					JOY_requestCurrentPosition('y');
 					currentChannel++;
 				break;	
 				
 				case 2:	//Y_axis
 					JOY_updatePosition('y');
-					//printf(" Current Y: %d\n", JOY_getPositionY());
-					
 					JOY_requestCurrentPosition('x');
-					
 					currentChannel = 1;
 				break;
 				
