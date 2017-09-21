@@ -15,8 +15,8 @@
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
 //current position and direction of the joystick
-JOY_position_t currentPosition;
-JOY_direction_t currentDirection;
+JOY_position_t currentJoyPosition;
+JOY_direction_t currentJoyDirection;
 
 #define Y_channel 1
 #define X_channel 2
@@ -30,19 +30,18 @@ volatile uint8_t calL = 25;
 volatile uint8_t calUp =200;
 volatile uint8_t calDown = 25;
 
-
 volatile uint8_t meanVert = 128;
 volatile uint8_t meanHor = 128;
 
-//-----------------------------------------------------------------------------.
+//------------------------------------------------------------------------------
 // set initial values for Position and Direction
 void JOY_init()
 {
-	currentPosition.X_abs = 0;
-	currentPosition.Y_abs = 0;
-	currentPosition.X_per = 0;
-	currentPosition.Y_per = 0;
-	currentDirection = CENTRE;
+	currentJoyPosition.X_abs = 0;
+	currentJoyPosition.Y_abs = 0;
+	currentJoyPosition.X_per = 0;
+	currentJoyPosition.Y_per = 0;
+	currentJoyDirection = CENTRE;
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +109,7 @@ void JOY_calibrate()
 
 //------------------------------------------------------------------------------
 // This function requests an AD conversion for the specified axis.
-void JOY_requestCurrentPosition(char axis)
+void JOY_requestcurrentPosition(char axis)
 {
 	if(axis == 'x')
 	{
@@ -136,14 +135,14 @@ void JOY_updatePosition(char axis)
 {
 	if(axis == 'x')
 	{
-		currentPosition.X_abs = ADC_read(adc_ext_ram);
-		currentPosition.X_per = ((int)currentPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
+		currentJoyPosition.X_abs = ADC_read(adc_ext_ram);
+		currentJoyPosition.X_per = ((int)currentJoyPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
 	}
 
 	else if(axis == 'y')
 	{
-		currentPosition.Y_abs = ADC_read(adc_ext_ram);
-		currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
+		currentJoyPosition.Y_abs = ADC_read(adc_ext_ram);
+		currentJoyPosition.Y_per = ((int)currentJoyPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
 	}
 
 	// JOY_getPosition();
@@ -157,15 +156,29 @@ void JOY_calculateDirection()
 {
 	//calculate current direction, first update position
 	// JOY_getPosition();
-	if(currentPosition.X_per > 50) {
-		currentDirection = RIGHT;}
-	else if(currentPosition.X_per < -50) {
-		currentDirection = LEFT;}
-	else if(currentPosition.Y_per > 50) {
-		currentDirection = UP;}
-	else if(currentPosition.Y_per < -50) {
-		currentDirection = DOWN;}
-	else{currentDirection = CENTRE;}
+	if(currentJoyPosition.X_per > 50) {
+		currentJoyDirection = RIGHT;}
+	else if(currentJoyPosition.X_per < -50) {
+		currentJoyDirection = LEFT;}
+	else if(currentJoyPosition.Y_per > 50) {
+		currentJoyDirection = UP;}
+	else if(currentJoyPosition.Y_per < -50) {
+		currentJoyDirection = DOWN;}
+	else{currentJoyDirection = CENTRE;}
+}
+
+//------------------------------------------------------------------------------
+//
+JOY_position_t JOY_getPosition()
+{
+	return currentJoyPosition;
+}
+
+//------------------------------------------------------------------------------
+//
+JOY_direction_t JOY_getDirection()
+{
+	return currentJoyDirection;
 }
 
 //------------------------------------------------------------------------------
@@ -178,7 +191,7 @@ void JOY_printPosAndDir()
 	char directions[] = {'C', 'U', 'D', 'R', 'L'};
 	char* dir;
 
-	switch(currentDirection)
+	switch(currentJoyDirection)
 	{
 		case 0:
 
@@ -202,7 +215,7 @@ void JOY_printPosAndDir()
 		break;
 	}
 
-	printf("JOY: %s, X:%d, Y: %d\n", dir, currentPosition.X_per, currentPosition.Y_per);
+	printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
 }
 
 // char JOY_button(int button)
@@ -210,25 +223,14 @@ void JOY_printPosAndDir()
 //
 // }
 
-// JOY_position_t JOY_getPosition()
-// {
-// 	calculate current position [in %]
-// 	0 % corresponds to mean vert / hor value
-//
-// 	currentPosition.X_per = ((int)currentPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
-// 	currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
-//
-// 	return currentPosition;
-// }
-
 // uint8_t JOY_getPositionX()
 // {
-// 	return currentPosition.X_abs;
+// 	return currentJoyPosition.X_abs;
 // }
 
 // uint8_t JOY_getPositionY()
 // {
-// 	return currentPosition.Y_abs;
+// 	return currentJoyPosition.Y_abs;
 // }
 
 

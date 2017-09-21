@@ -3,7 +3,7 @@
  *
  * Created: 15.09.2017 12:53:59
  *  Author: janwh
- */ 
+ */
 
 
 #ifndef DEFINITIONS_H_
@@ -28,8 +28,8 @@
 
 // basic stuff..
 #define BAUDRATE 9600
-#define FOSC  4915200
-#define  F_CPU FOSC
+#define FOSC 4915200
+#define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 
 #define uint16_t unsigned int
@@ -44,5 +44,17 @@ typedef struct  {
 
 typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
 
+// slider positions and buttons
+typedef struct {
+	uint8_t R_abs;
+	uint8_t L_abs;
+	uint8_t R_per;
+	uint8_t L_per;
+} SLI_position_t;
+
+typedef struct {
+	uint8_t leftButton;
+	uint8_t rightButton;
+}SLI_buttons_t;
 
 #endif /* DEFINITIONS_H_ */
