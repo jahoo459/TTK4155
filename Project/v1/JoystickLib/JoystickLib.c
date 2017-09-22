@@ -89,6 +89,12 @@ void JOY_calculateDirection()
 	else{currentDirection = CENTRE;}
 }
 
+JOY_direction_t JOY_getDirection()
+{
+	return currentDirection;
+}
+
+
 void JOY_requestCurrentPosition(char axis)
 {
 	if(axis == 'x')
@@ -216,5 +222,5 @@ void JOY_printPosAndDir()
 		break;
 	}
 	
-	printf("JOY: %s, X:%d, Y: %d\n", dir, currentPosition.X_per, currentPosition.Y_per);
+	//printf("JOY: %s, X:%d, Y: %d\n", dir, currentPosition.X_per, currentPosition.Y_per);
 }

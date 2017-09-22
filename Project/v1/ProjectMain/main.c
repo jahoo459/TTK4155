@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 //#include "definitions.h"
 #include "..\JoystickLib\JoystickLib.h"
+#include "..\SliderLib\SliderLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
 
 #include <util/delay.h>
@@ -125,6 +126,62 @@ void SRAM_test(void)
 	printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
 }
 
+// print status variables of Multifunction Board
+void statusMultifunctionBoard(){
+	JOY_position_t currentJoyPosition;
+	currentJoyPosition = JOY_getPosition();
+
+	JOY_direction_t currentJoyDirection;
+	currentJoyDirection = JOY_getDirection();
+
+	SLI_position_t currentSliPosition;
+	currentSliPosition = SLI_getPosition();
+	
+	uint8_t leftButton = 0;
+	uint8_t rightButton = 0;
+
+	char directions[] = {'C', 'U', 'D', 'R', 'L'};
+	char* dir;
+	
+	if((PINB & (1<<PB0)))
+		{
+			//printf("Left button clicked ");
+			leftButton = 1;
+		}
+		else if((PINE & (1<<PE2)))
+		{
+			//printf("Right button clicked ");
+			rightButton = 1;
+		}
+		
+	switch(currentJoyDirection)
+	{
+		case 0:
+
+		dir = "CENTER";
+		break;
+
+		case 1:
+		dir = "UP";
+		break;
+
+		case 2:
+		dir = "DOWN";
+		break;
+
+		case 3:
+		dir = "RIGHT";
+		break;
+
+		case 4:
+		dir = "LEFT";
+		break;
+	}
+
+	printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
+}
+
+
 
 /*
 =======================MAIN FUNCTION=========================
@@ -136,6 +193,8 @@ int main(void)
 {	
 	uartInit(BAUDRATE, FOSC, UBRR);
 	enableXMEM(1);
+	SLI_init();
+	JOY_init();
 	
 	//init external interrupt INT0 on falling edge
 	set_bit(GICR, INT0);
@@ -171,15 +230,9 @@ int main(void)
 
     while(1)
     {	
-		if((PINB & (1<<PB0)))
-		{
-			printf("Left button clicked ");
-		}
-		else if((PINE & (1<<PE2)))
-		{
-			printf("Right button clicked ");
-		}
+		statusMultifunctionBoard();
 		
+
 		if(JOYcalibFlag)
 		{
 			//run joystick calibration
@@ -201,16 +254,20 @@ int main(void)
 				
 				case 2:	//Y_axis
 					JOY_updatePosition('y');
-					JOY_requestCurrentPosition('x');
-					currentChannel = 1;
+					SLI_requestCurrentPosition('l');
+					currentChannel++;
 				break;
 				
 				case 3: //slider_left
-				
+					SLI_updatePosition('l');
+					SLI_requestCurrentPosition('r');
+					currentChannel++;
 				break;
 				
 				case 4:	//slider_right
-				
+					SLI_updatePosition('r');
+					JOY_requestCurrentPosition('x');
+					currentChannel = 1;
 				break;
 			}
 		}

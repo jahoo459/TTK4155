@@ -170,6 +170,11 @@
       <Project>{451b9df4-52c1-458b-938b-6731abcc07c1}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\SliderLib\SliderLib.cproj">
+      <Name>SliderLib</Name>
+      <Project>{6feec37c-51e3-42ad-86f0-67d7402a6f38}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\UARTlib\UARTlib.cproj">
       <Name>UARTlib</Name>
       <Project>{9853b26c-08a0-4743-925d-6be3a949355d}</Project>

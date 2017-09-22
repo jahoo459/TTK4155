@@ -48,5 +48,13 @@ typedef struct  {
 
 typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
 
+// slider positions and buttons
+typedef struct {
+	uint8_t R_abs;
+	uint8_t L_abs;
+	uint8_t R_per;
+	uint8_t L_per;
+} SLI_position_t;
+
 
 #endif /* DEFINITIONS_H_ */
