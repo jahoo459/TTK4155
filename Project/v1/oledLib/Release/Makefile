@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../JoystickLib.c
+../oledLib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,27 +47,26 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-JoystickLib.o
+oledLib.o
 
 OBJS_AS_ARGS +=  \
-JoystickLib.o
+oledLib.o
 
 C_DEPS +=  \
-JoystickLib.d
+oledLib.d
 
 C_DEPS_AS_ARGS +=  \
-JoystickLib.d
+oledLib.d
 
-OUTPUT_FILE_PATH +=libJoystickLib.a
+OUTPUT_FILE_PATH +=liboledLib.a
 
-OUTPUT_FILE_PATH_AS_ARGS +=libJoystickLib.a
+OUTPUT_FILE_PATH_AS_ARGS +=liboledLib.a
 
 ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
-LIB_DEP+=  \
-D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+LIB_DEP+= 
 
 LINKER_SCRIPT_DEP+= 
 
@@ -79,7 +78,7 @@ LINKER_SCRIPT_DEP+=
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"../../ADCLib"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -121,5 +120,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "libJoystickLib.elf" "libJoystickLib.a" "libJoystickLib.hex" "libJoystickLib.lss" "libJoystickLib.eep" "libJoystickLib.map" "libJoystickLib.srec" "libJoystickLib.usersignatures"
+	rm -rf "liboledLib.elf" "liboledLib.a" "liboledLib.hex" "liboledLib.lss" "liboledLib.eep" "liboledLib.map" "liboledLib.srec" "liboledLib.usersignatures"
 	

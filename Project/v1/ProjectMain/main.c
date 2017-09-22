@@ -13,6 +13,7 @@
 #include "..\JoystickLib\JoystickLib.h"
 #include "..\SliderLib\SliderLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
+#include "../oledLib/oledLib.h"
 
 #include <util/delay.h>
 #include <UARTlib.h>
@@ -227,6 +228,8 @@ int main(void)
 	sei();
 
 	JOY_requestCurrentPosition('x');
+	
+	OLED_init();
 
     while(1)
     {	

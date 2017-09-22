@@ -24,6 +24,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "JoystickLib", "JoystickLib\
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SliderLib", "SliderLib\SliderLib.cproj", "{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "oledLib", "oledLib\oledLib.cproj", "{2A428698-8ABF-41EE-9325-FA7AD8995D93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -54,6 +56,10 @@ Global
 		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Debug|AVR.Build.0 = Debug|AVR
 		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Release|AVR.ActiveCfg = Release|AVR
 		{6FEEC37C-51E3-42AD-86F0-67D7402A6F38}.Release|AVR.Build.0 = Release|AVR
+		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Debug|AVR.ActiveCfg = Debug|AVR
+		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Debug|AVR.Build.0 = Debug|AVR
+		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Release|AVR.ActiveCfg = Release|AVR
+		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
