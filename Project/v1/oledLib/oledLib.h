@@ -10,6 +10,7 @@
 #define OLEDLIB_H_
 
 void OLED_init();
+void OLED_clear();
 //void OLED_reset();
 //void OLED_home();
 //void OLED_goto_line(int line);
@@ -18,9 +19,10 @@ void OLED_init();
 //void OLED_print(char* text);
 //void OLED_set_brightness(int lvl);
 //
-//void OLED_print_arrow(int row, int col);
+void OLED_print_arrow();
 
-void writeByteToOLED(volatile uint8_t *address, uint8_t data);
+void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data);
+void OLED_goto(int row, int column);
 
 
 

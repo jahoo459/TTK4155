@@ -67,7 +67,7 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
-D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
 
 LINKER_SCRIPT_DEP+= 
 

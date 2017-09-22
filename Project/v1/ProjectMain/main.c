@@ -227,9 +227,20 @@ int main(void)
 	
 	sei();
 
+	SRAM_test();
 	JOY_requestCurrentPosition('x');
 	
 	OLED_init();
+	
+		int i = 0;
+		for(i; i< 100; i++)
+		{
+			OLED_print_arrow();
+		}
+		
+		_delay_ms(1000);
+	OLED_clear();
+	
 
     while(1)
     {	
