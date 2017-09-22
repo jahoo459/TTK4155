@@ -12,7 +12,6 @@
 #include <util/delay.h>
 #include <string.h>
 
-volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
 //current position and direction of the joystick
 JOY_position_t currentJoyPosition;
@@ -109,7 +108,7 @@ void JOY_calibrate()
 
 //------------------------------------------------------------------------------
 // This function requests an AD conversion for the specified axis.
-void JOY_requestcurrentPosition(char axis)
+void JOY_requestCurrentPosition(char axis)
 {
 	if(axis == 'x')
 	{
@@ -135,6 +134,7 @@ void JOY_updatePosition(char axis)
 {
 	if(axis == 'x')
 	{
+		printf("RAW X %d \n", currentJoyPosition.X_abs);
 		currentJoyPosition.X_abs = ADC_read(adc_ext_ram);
 		currentJoyPosition.X_per = ((int)currentJoyPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
 	}
@@ -142,7 +142,7 @@ void JOY_updatePosition(char axis)
 	else if(axis == 'y')
 	{
 		currentJoyPosition.Y_abs = ADC_read(adc_ext_ram);
-		currentJoyPosition.Y_per = ((int)currentJoyPosition.Y_abs -  (int)meanHor)*100 / (int) meanHor;
+		currentJoyPosition.Y_per = ((int)currentJoyPosition.Y_abs -  (int)meanVert)*100 / (int) meanVert;
 	}
 
 	// JOY_getPosition();

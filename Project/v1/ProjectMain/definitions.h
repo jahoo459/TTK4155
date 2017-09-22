@@ -20,6 +20,11 @@
 #define ADC_EXT_RAM 0x1400
 #define SRAM_EXT 0x1800
 
+extern volatile char *adc_ext_ram;
+extern volatile char *oled_cmd_ext_ram;
+extern volatile char *oled_data_ext_ram;
+extern volatile char *sram_ext;
+
 
 //BIT operations
 #define set_bit( reg, bit ) (reg |= (1 << bit))
@@ -46,15 +51,15 @@ typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
 
 // slider positions and buttons
 typedef struct {
-	uint8_t R_abs;
-	uint8_t L_abs;
-	uint8_t R_per;
-	uint8_t L_per;
+	int R_abs;
+	int L_abs;
+	int R_per;
+	int L_per;
 } SLI_position_t;
 
 typedef struct {
-	uint8_t leftButton;
-	uint8_t rightButton;
+	int leftButton;
+	int rightButton;
 }SLI_buttons_t;
 
 #endif /* DEFINITIONS_H_ */

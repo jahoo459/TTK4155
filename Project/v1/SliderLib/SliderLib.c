@@ -10,6 +10,7 @@
 #include "SliderLib.h"
 #include "..\ADCLib\ADCLib.h"
 
+
 // channels of sliders for AD conversion
 #define L_channel 3
 #define R_channel 4

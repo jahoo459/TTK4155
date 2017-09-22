@@ -9,7 +9,8 @@
 =======================INCLUDES=========================
 */
 #include <avr/interrupt.h>
-//#include "definitions.h"
+
+#include "..\SliderLib\SliderLib.h"
 #include "..\JoystickLib\JoystickLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
 
@@ -45,6 +46,7 @@ uint16_t ext_ram_size = (uint16_t)EXT_RAM_SIZE;
 volatile char *oled_cmd_ext_ram = (char*) OLED_CMD_EXT_RAM;
 volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
+volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
 
 /*
@@ -71,16 +73,24 @@ ISR(INT1_vect)
 }
 
 // interrupt generated when left Button on Multifunction Board is pressed
-ISR()
-{
-	SLIleftBtnFlag = 1;
-}
+//ISR(INT2_vect)
+//{
+	//if(test_bit(PORTE, PE2))
+	//{
+		//SLIrightBtnFlag = 1;
+	//}
+	//else
+	//{
+		//SLIleftBtnFlag = 1;
+	//}
+	//
+//}
 
 // interrupt generated when right Button on Multifunction Board is pressed
-ISR()
-{
-	SLIrightBtnFlag = 1;
-}
+//ISR()
+//{
+	//SLIrightBtnFlag = 1;
+//}
 
 /*
 =======================FUNCTION DEFINITIONS=========================
@@ -181,8 +191,6 @@ void statusMultifunctionBoard(){
 =======================MAIN FUNCTION=========================
 */
 
-//#define ADDRESS 0x1400
-
 int main(void)
 {
 	uartInit(BAUDRATE, FOSC, UBRR);
@@ -193,15 +201,26 @@ int main(void)
 	set_bit(MCUCR, ISC01);
 	clear_bit(MCUCR, ISC00);
 
-	//Pull-up on PD3
+	//Pull-up on PD3 and PE0 and PE2(button)
+	//As there are not enough ext interrupts we connect both MB buttons to INT2(falling edge) and additionally we connect one (right) button to PE2. Then we check PE2 while processing the interrupt
 	clear_bit(DDRD, PD3);
 	set_bit(PORTD, PD3);
+	
+	clear_bit(DDRD, PE0);
+	set_bit(PORTD, PE0);
+	
+	//clear_bit(DDRD, PE2);
+	//clear_bit(PORTD, PE2);
 
 	//init external interrupt INT1 on falling edge
 	set_bit(GICR, INT1);
 	set_bit(MCUCR, ISC11);
 	clear_bit(MCUCR, ISC10);
-
+	
+	//init ext. interrupt on INT2 on falling edge
+	//set_bit(GICR, INT2);
+	//clear_bit(EMCUCR, ISC2); //falling edge activates interrupt
+	
 	sei();
 
 	JOY_requestCurrentPosition('x');
@@ -228,6 +247,7 @@ int main(void)
 			{
 				SLI_button('l');
 				SLIleftBtnFlag = 0;
+				printf("left button clicked");
 			}
 
 			// right Button on Multifunction Board was pressed
@@ -235,6 +255,7 @@ int main(void)
 			{
 				SLI_button('r');
 				SLIrightBtnFlag = 0;
+				printf("right button clicked");
 			}
 
 			// AD conversion was completed

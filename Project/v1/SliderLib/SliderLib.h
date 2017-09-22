@@ -11,6 +11,7 @@
 
 #include "..\ADCLib\ADCLib.h"
 
+
 void SLI_init();
 void SLI_requestCurrentPosition(uint8_t side);
 void SLI_updatePosition(uint8_t side);

@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../JoystickLib.c
+../SliderLib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,20 +47,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-JoystickLib.o
+SliderLib.o
 
 OBJS_AS_ARGS +=  \
-JoystickLib.o
+SliderLib.o
 
 C_DEPS +=  \
-JoystickLib.d
+SliderLib.d
 
 C_DEPS_AS_ARGS +=  \
-JoystickLib.d
+SliderLib.d
 
-OUTPUT_FILE_PATH +=libJoystickLib.a
+OUTPUT_FILE_PATH +=libSliderLib.a
 
-OUTPUT_FILE_PATH_AS_ARGS +=libJoystickLib.a
+OUTPUT_FILE_PATH_AS_ARGS +=libSliderLib.a
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -79,7 +79,7 @@ LINKER_SCRIPT_DEP+=
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"../../ADCLib"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -121,5 +121,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "libJoystickLib.elf" "libJoystickLib.a" "libJoystickLib.hex" "libJoystickLib.lss" "libJoystickLib.eep" "libJoystickLib.map" "libJoystickLib.srec" "libJoystickLib.usersignatures"
+	rm -rf "libSliderLib.elf" "libSliderLib.a" "libSliderLib.hex" "libSliderLib.lss" "libSliderLib.eep" "libSliderLib.map" "libSliderLib.srec" "libSliderLib.usersignatures"
 	
