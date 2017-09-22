@@ -6,6 +6,9 @@
  */ 
 
 #include <avr/io.h>
+#include "SliderLib.h"
+#include "..\ADCLib\ADCLib.h"
+
 
 int function(void)
 {

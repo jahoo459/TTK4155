@@ -30,6 +30,8 @@ volatile char receivedByte;
 volatile uint8_t USARTreceivedFlag = 0;
 volatile uint8_t ADCconversionCompletedFlag = 0;
 volatile uint8_t JOYcalibFlag = 0;
+volatile uint8_t LeftButtonFlag = 0;
+volatile uint8_t RightButtonFlag = 0;
 
 //ADC CONVERTER
 uint8_t currentChannel = 1;
@@ -41,6 +43,7 @@ uint16_t ext_ram_size = (uint16_t)EXT_RAM_SIZE;
 volatile char *oled_cmd_ext_ram = (char*) OLED_CMD_EXT_RAM;
 volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
+volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
 
 /*
@@ -65,6 +68,9 @@ ISR(INT1_vect)
 	//interrupt generated on pin PD3 to start the joystick calibration
 	JOYcalibFlag = 1;
 }
+
+
+
 
 /*
 =======================FUNCTION DEFINITIONS=========================
@@ -144,6 +150,20 @@ int main(void)
 	set_bit(GICR, INT1);
 	set_bit(MCUCR, ISC11);
 	clear_bit(MCUCR, ISC10);
+
+	////init external interrupt INT2 on falling edge
+	//set_bit(GICR, INT2);
+	//clear_bit(EMCUCR, ISC2);
+	
+	//PE2
+	clear_bit(DDRE, PE2);
+	clear_bit(PORTE, PE2);
+	
+	//PB0
+	clear_bit(DDRB, PB0);
+	clear_bit(PORTB, PB0);
+	
+
 	
 	sei();
 
@@ -151,12 +171,22 @@ int main(void)
 
     while(1)
     {	
+		if((PINB & (1<<PB0)))
+		{
+			printf("Left button clicked ");
+		}
+		else if((PINE & (1<<PE2)))
+		{
+			printf("Right button clicked ");
+		}
+		
 		if(JOYcalibFlag)
 		{
 			//run joystick calibration
 			JOY_calibrate();
 			JOYcalibFlag = 0;
 		}
+		
 		
 		JOY_printPosAndDir();
 		
@@ -183,8 +213,8 @@ int main(void)
 				
 				break;
 			}
-		}		
-		
+		}
 
+				
     }
 }

@@ -12,7 +12,7 @@
 #include <util/delay.h>
 #include <string.h>
 
-volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
+
 
 //current position and direction of the joystick
 JOY_position_t currentPosition;

@@ -20,6 +20,10 @@
 #define ADC_EXT_RAM 0x1400
 #define SRAM_EXT 0x1800
 
+extern volatile char *oled_cmd_ext_ram;
+extern volatile char *oled_data_ext_ram;
+extern volatile char *sram_ext;
+extern volatile char *adc_ext_ram;
 
 //BIT operations
 #define set_bit( reg, bit ) (reg |= (1 << bit))
