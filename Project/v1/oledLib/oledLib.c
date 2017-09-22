@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include "oledLib.h"
+#include "..\fonts\fonts.h"
 
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
@@ -23,6 +24,13 @@ void OLED_print_arrow()
 	OLED_writeByteToOLED(oled_data, 0b00111100);
 	OLED_writeByteToOLED(oled_data, 0b00011000);
 	//OLED_writeByteToOLED(oled_cmd, 0x2f);
+}
+
+void OLED_print_character(uint8_t charNo){
+	for(uint8_t i = 0; i < 8; i++)
+	{
+		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[charNo][i]));
+	}
 }
 
 void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data)

@@ -232,14 +232,16 @@ int main(void)
 	
 	OLED_init();
 	
-		int i = 0;
+		/*int i = 0;
 		for(i; i< 100; i++)
 		{
 			OLED_print_arrow();
 		}
 		
 		_delay_ms(1000);
-	OLED_clear();
+	OLED_clear();*/
+		
+	OLED_print_character('a');
 	
 
     while(1)
