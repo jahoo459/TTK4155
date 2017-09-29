@@ -228,7 +228,7 @@ int main(void)
 	
 	sei();
 
-	SRAM_test();
+	//SRAM_test();
 	JOY_requestCurrentPosition('x');
 	
 	OLED_init();
@@ -241,8 +241,10 @@ int main(void)
 		
 		_delay_ms(1000);*/
 	OLED_clear();
-		
-	// OLED_print_string("Huhu! I'm Text! :) ");
+	OLED_goto(0, 10);
+	OLED_print_string("Huhu! I'm Text!");
+	OLED_goto(6, 7);
+	OLED_print_character('?');
 	
 
     while(1)

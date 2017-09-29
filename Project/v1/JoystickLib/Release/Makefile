@@ -67,7 +67,7 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
-C:/Users/olgak/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
 
 LINKER_SCRIPT_DEP+= 
 

@@ -14,8 +14,8 @@
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
 
-int height = 8; //screen height in 
-int width = 128; //screen width in 
+int height = 8; //screen height (8 pages) 
+int width = 128; //screen width (128 columns)
 
 void OLED_init()
 {
@@ -45,17 +45,17 @@ void OLED_init()
 
 void OLED_clear()
 {
-	int count_row = 0;
-	int count_column = 0;
+	int count_row;
+	int count_column;	
 
-	for(count_row; count_row < height; count_row++)
+	for(count_row = 0; count_row < height; count_row++)
 	{
 		// move to first column in row
-		OLED_goto(count_row, 0);
+		OLED_goto(count_row,0);
 
-		for(count_column; count_column < width; count_column++)
+		for(count_column = 0; count_column < width; count_column++)
 		{
-			OLED_writeByteToOLED(oled_data, 0xff);
+			OLED_writeByteToOLED(oled_data, 0x00);
 		}
 	}
 }
@@ -69,8 +69,8 @@ void OLED_goto(int row, int column)
 {
 	//row should be 0-7
 	//column should be 16 - 127
-	uint8_t lnib;
-	uint8_t hnib;
+	uint8_t lnib = 0;
+	uint8_t hnib = 0;
 
 	// row:
 	row = 0xb0 + row;
@@ -84,12 +84,13 @@ void OLED_goto(int row, int column)
 	hnib = column >> 4;
 	hnib = 0x10 + hnib;
 
-	printf("row: %d,\thnib: %#x,\tlnib: %#x", row, hnib, lnib);
+	printf("row: %#x,\thnib: %#x,\tlnib: %#x \n", row, hnib, lnib);
 
 	// get to page
 	OLED_writeByteToOLED(oled_cmd, row);
 	OLED_writeByteToOLED(oled_cmd, lnib);
 	OLED_writeByteToOLED(oled_cmd, hnib);
+	
 }
 
 void OLED_print_arrow()
