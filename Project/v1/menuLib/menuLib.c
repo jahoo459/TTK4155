@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <util/delay.h>
 #include "menuLib.h"
+#include "..\JoystickLib\JoystickLib.h"
 
 //******************************************************************************************
 menuItemNode_t *mainMenu = NULL; //pointer pointing to the first main menu item
@@ -17,17 +18,21 @@ menuItemNode_t *currItem = NULL; //current item, at the beginning will point at 
 uint8_t menuActiveFlag = 0; //When this flag gets 0 waitForInput function will stop so menu will be inactive
 
 int currentPosition = 0; //Current menu position read from the Joystick
+
+int menuFrameOffset = 10; //Columns from left frame border
 //******************************************************************************************
-char *mainMenuItems[] = {"New Game", "Highscores", "Joystick Calibration"};
+char *mainMenuItems[] = {"New Game", "Highscores", "Joy Calib", "Debugging", "Info"};
 // char *difficultyMenuItems[] = {"easy", "medium", "hard"};
 
 void MENU_init()
 {
 	//create main menu
-	for(int i = 0; i < 3/*sizeof(mainMenuItems)/sizeof(char*)*/; i++)
+	for(int i = 0; i < sizeof(mainMenuItems)/sizeof(char*); i++)
 	{
 		MENU_addMenuItem(mainMenuItems[i], currItem, mainMenu);
 	}
+	
+	MENU_printMenu(mainMenu);
 	
 }
 
@@ -52,27 +57,30 @@ void MENU_addMenuItem(char* name, menuItemNode_t *parent, menuItemNode_t* curren
 	
 }
 
-void MENU_printMenuItem(menuItemNode_t* item)
+void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 {
-    if(item != NULL)
-    {
-	    printf("%s Parent: %s \n", item->text, item->parentMenu->text);
-    }
-    else
-    {
-        printf("NULL pointer...");
-    }
+	if(item != NULL)
+	{
+		OLED_goto(lineNumber, menuFrameOffset);
+		OLED_print_string(item->text);
+		//printf("%s\n", item->text);
+	}
+	else
+	{
+		printf("NULL pointer...");
+	}
 }
 
 void MENU_printMenu(menuItemNode_t* firstItem)
-{	
+{
 	menuItemNode_t *item2print;
 	item2print = firstItem;
-	
+	int lineNumber = 0;
 	while(item2print != NULL)
 	{
-		MENU_printMenuItem(item2print);
+		MENU_printMenuItem(item2print, lineNumber);
 		item2print = item2print->next;
+		lineNumber++;
 	}
 }
 
@@ -82,26 +90,26 @@ void MENU_waitForInput()
 	
 	while(menuActiveFlag)
 	{
-		while(JOY_getDirection == "CENTRE")
+		while(JOY_getDirection() == "CENTRE")
 		{
 			//wait for changing the direction
-			if(JOY_getDirection != "CENTRE")
+			if(JOY_getDirection() != "CENTRE")
 			{
 				currDir = JOY_getDirection();
 				switch(currDir){
-					case: "LEFT":
+					case LEFT:
 					MENU_moveLeft();
 					break;
 					
-					case: "RIGHT":
+					case RIGHT:
 					MENU_moveRight();
 					break;
 					
-					case: "UP":
+					case UP:
 					MENU_moveUp();
 					break;
 					
-					case: "DOWN":
+					case DOWN:
 					MENU_moveDown();
 					break;	
 				}

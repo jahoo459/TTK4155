@@ -14,6 +14,7 @@
 #include "..\SliderLib\SliderLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
 #include "../oledLib/oledLib.h"
+#include "..\menuLib\menuLib.h"
 
 #include <util/delay.h>
 #include <UARTlib.h>
@@ -230,9 +231,9 @@ int main(void)
 
 	//SRAM_test();
 	JOY_requestCurrentPosition('x');
-	
 	OLED_init();
-
+	OLED_clear();
+	MENU_init();
 	//OLED_goto(4, 0);
 	//OLED_print_arrow();
 	//OLED_goto(4, 10);

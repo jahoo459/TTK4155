@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../uartTester.c
+../main.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,27 +47,33 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-uartTester.o
+main.o
 
 OBJS_AS_ARGS +=  \
-uartTester.o
+main.o
 
 C_DEPS +=  \
-uartTester.d
+main.d
 
 C_DEPS_AS_ARGS +=  \
-uartTester.d
+main.d
 
-OUTPUT_FILE_PATH +=uartTester.elf
+OUTPUT_FILE_PATH +=ProjectMain.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=uartTester.elf
+OUTPUT_FILE_PATH_AS_ARGS +=ProjectMain.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
-C:/Users/olgak/TTK4155/Project/v1/UARTlib/Debug/libUARTlib.a
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ADCLib/Debug/libADCLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/JoystickLib/Debug/libJoystickLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/menuLib/Debug/libmenuLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/oledLib/Debug/liboledLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/SliderLib/Debug/libSliderLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/UARTlib/Debug/libUARTlib.a
 
 LINKER_SCRIPT_DEP+= 
 
@@ -79,7 +85,7 @@ LINKER_SCRIPT_DEP+=
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../../UARTlib"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega128 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../../UARTlib" -I"../../ExtSramLib"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -108,13 +114,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="uartTester.map" -Wl,--start-group -Wl,-lm -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"C:\Users\janwh\Documents\ProjectGit\UARTLib\UARTLib\UARTLib\Release" -Wl,-L"C:\Users\olgak\TTK4155\Project\v1\UARTlib\Debug"  -Wl,--gc-sections -mrelax -mmcu=atmega128  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-lmenuLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ADCLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ExtSramLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\JoystickLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\menuLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\oledLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\SliderLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\UARTlib\Debug"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "uartTester.elf" "uartTester.hex"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "uartTester.elf" "uartTester.eep" || exit 0
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "uartTester.elf" > "uartTester.lss"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "uartTester.elf" "uartTester.srec"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-size.exe" "uartTester.elf"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "ProjectMain.elf" "ProjectMain.hex"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "ProjectMain.elf" "ProjectMain.eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "ProjectMain.elf" > "ProjectMain.lss"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "ProjectMain.elf" "ProjectMain.srec"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-size.exe" "ProjectMain.elf"
 	
 	
 
@@ -126,5 +132,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "uartTester.elf" "uartTester.a" "uartTester.hex" "uartTester.lss" "uartTester.eep" "uartTester.map" "uartTester.srec" "uartTester.usersignatures"
+	rm -rf "ProjectMain.elf" "ProjectMain.a" "ProjectMain.hex" "ProjectMain.lss" "ProjectMain.eep" "ProjectMain.map" "ProjectMain.srec" "ProjectMain.usersignatures"
 	

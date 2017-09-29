@@ -170,6 +170,11 @@
       <Project>{451b9df4-52c1-458b-938b-6731abcc07c1}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\menuLib\menuLib.cproj">
+      <Name>menuLib</Name>
+      <Project>{800bc642-ca13-423b-8a53-dbc88c8d8602}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\oledLib\oledLib.cproj">
       <Name>oledLib</Name>
       <Project>{2a428698-8abf-41ee-9325-fa7ad8995d93}</Project>

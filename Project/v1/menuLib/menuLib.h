@@ -23,7 +23,7 @@ typedef struct menuItemNode
 void MENU_init();
 void MENU_addMenuItem(char* text, menuItemNode_t *parent, menuItemNode_t *menu);
 void MENU_removeMenuItem(menuItemNode_t* item);
-void MENU_printMenuItem(menuItemNode_t* item);
+void MENU_printMenuItem(menuItemNode_t* item, int lineNumber);
 void MENU_printMenu(menuItemNode_t* firstItem);
 void MENU_moveUp();
 void MENU_moveDown();
