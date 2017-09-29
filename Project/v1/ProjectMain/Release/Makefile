@@ -67,12 +67,28 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
+<<<<<<< HEAD
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ADCLib/Release/libADCLib.a \
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a \
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/JoystickLib/Release/libJoystickLib.a \
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/oledLib/Release/liboledLib.a \
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/SliderLib/Release/libSliderLib.a \
+D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/UARTlib/Release/libUARTlib.a
+||||||| merged common ancestors
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ADCLib/Release/libADCLib.a \
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a \
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/JoystickLib/Release/libJoystickLib.a \
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/oledLib/Release/liboledLib.a \
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/SliderLib/Release/libSliderLib.a \
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/UARTlib/Release/libUARTlib.a
+=======
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ADCLib/Release/libADCLib.a \
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a \
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/JoystickLib/Release/libJoystickLib.a \
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/oledLib/Release/liboledLib.a \
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/SliderLib/Release/libSliderLib.a \
 C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/UARTlib/Release/libUARTlib.a
+>>>>>>> 809012ad26d7aeb9ec5bba2403168ad14d6e1189
 
 LINKER_SCRIPT_DEP+= 
 
@@ -113,7 +129,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 4.8.1
+<<<<<<< HEAD
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\ADCLib\Release" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\ExtSramLib\Release" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\JoystickLib\Release" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\oledLib\Release" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\SliderLib\Release" -Wl,-L"D:\Google Drive\Trondheim_2017\TTK4155\TTK4155\Project\v1\UARTlib\Release"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
+||||||| merged common ancestors
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\ADCLib\Release" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\ExtSramLib\Release" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\JoystickLib\Release" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\oledLib\Release" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\SliderLib\Release" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\UARTlib\Release"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
+=======
 	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ADCLib\Release" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ExtSramLib\Release" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\JoystickLib\Release" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\oledLib\Release" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\SliderLib\Release" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\UARTlib\Release"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
+>>>>>>> 809012ad26d7aeb9ec5bba2403168ad14d6e1189
 	@echo Finished building target: $@
 	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "ProjectMain.elf" "ProjectMain.hex"
 	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "ProjectMain.elf" "ProjectMain.eep" || exit 0

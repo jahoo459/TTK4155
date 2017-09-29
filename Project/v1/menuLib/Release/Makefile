@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../ADCLib.c
+../menuLib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,33 +47,26 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-ADCLib.o
+menuLib.o
 
 OBJS_AS_ARGS +=  \
-ADCLib.o
+menuLib.o
 
 C_DEPS +=  \
-ADCLib.d
+menuLib.d
 
 C_DEPS_AS_ARGS +=  \
-ADCLib.d
+menuLib.d
 
-OUTPUT_FILE_PATH +=libADCLib.a
+OUTPUT_FILE_PATH +=libmenuLib.a
 
-OUTPUT_FILE_PATH_AS_ARGS +=libADCLib.a
+OUTPUT_FILE_PATH_AS_ARGS +=libmenuLib.a
 
 ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
-LIB_DEP+=  \
-<<<<<<< HEAD
-D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a
-||||||| merged common ancestors
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a
-=======
-C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Release/libExtSramLib.a
->>>>>>> 809012ad26d7aeb9ec5bba2403168ad14d6e1189
+LIB_DEP+= 
 
 LINKER_SCRIPT_DEP+= 
 
@@ -85,7 +78,7 @@ LINKER_SCRIPT_DEP+=
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -I"../../ExtSramLib"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega162 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -127,5 +120,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "libADCLib.elf" "libADCLib.a" "libADCLib.hex" "libADCLib.lss" "libADCLib.eep" "libADCLib.map" "libADCLib.srec" "libADCLib.usersignatures"
+	rm -rf "libmenuLib.elf" "libmenuLib.a" "libmenuLib.hex" "libmenuLib.lss" "libmenuLib.eep" "libmenuLib.map" "libmenuLib.srec" "libmenuLib.usersignatures"
 	
