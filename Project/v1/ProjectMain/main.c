@@ -241,10 +241,10 @@ int main(void)
 		
 		_delay_ms(1000);*/
 	OLED_clear();
-	OLED_goto(0, 10);
-	OLED_print_string("Huhu! I'm Text!");
-	OLED_goto(6, 7);
-	OLED_print_character('?');
+	OLED_goto(4, 0);
+	OLED_print_arrow();
+	OLED_goto(4, 10);
+	OLED_print_string("Set difficulty");
 	
 
     while(1)

@@ -14,8 +14,9 @@
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
 
-int height = 8; //screen height (8 pages) 
-int width = 128; //screen width (128 columns)
+int height = 8;			//screen height (8 pages) 
+int width = 128;		//screen width (128 columns)
+int arrow_width = 5;	//depends on the arrow size
 
 void OLED_init()
 {
@@ -93,15 +94,40 @@ void OLED_goto(int row, int column)
 	
 }
 
+void OLED_clear_arrow()
+{
+	int count_row;
+	int count_column;
+
+	for(count_row = 0; count_row < height; count_row++)
+	{
+		// move to first column in row
+		OLED_goto(count_row,0);
+
+		for(count_column = 0; count_column < arrow_width; count_column++)
+		{
+			OLED_writeByteToOLED(oled_data, 0x00);
+		}
+	}
+}
+
+//void OLED_move_arrow(int joy_counter)
+//{
+	//OLED_clear_arrow();
+	//OLED_goto(joy_counter,0);
+	//OLED_print_arrow();	
+//}
+
+
 void OLED_print_arrow()
 {
-	//OLED_pos(row, col);
+	//change the arrow_width as changing the size here 
 	OLED_writeByteToOLED(oled_data, 0b00011000);
 	OLED_writeByteToOLED(oled_data, 0b00011000);
 	OLED_writeByteToOLED(oled_data, 0b01111110);
 	OLED_writeByteToOLED(oled_data, 0b00111100);
 	OLED_writeByteToOLED(oled_data, 0b00011000);
-	//OLED_writeByteToOLED(oled_cmd, 0x2f);
+
 }
 
 void OLED_print_character(uint8_t character)
