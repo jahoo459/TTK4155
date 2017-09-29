@@ -11,6 +11,7 @@
 #ifndef MENULIB_H_
 #define MENULIB_H_
 
+#define MAX_MENU_SIZE 8
 //struct that defines menu item
 typedef struct menuItemNode
 {
@@ -26,6 +27,10 @@ void MENU_printMenuItem(menuItemNode_t* item);
 void MENU_printMenu(menuItemNode_t* firstItem);
 void MENU_moveUp();
 void MENU_moveDown();
+void MENU_moveRight();
+void MENU_moveLeft();
+void MENU_waitForInput();
+void MENU_activate();
 
 
 
