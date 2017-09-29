@@ -26,6 +26,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SliderLib", "SliderLib\Slid
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "oledLib", "oledLib\oledLib.cproj", "{2A428698-8ABF-41EE-9325-FA7AD8995D93}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "menuLib", "menuLib\menuLib.cproj", "{800BC642-CA13-423B-8A53-DBC88C8D8602}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -60,6 +62,10 @@ Global
 		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Debug|AVR.Build.0 = Debug|AVR
 		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Release|AVR.ActiveCfg = Release|AVR
 		{2A428698-8ABF-41EE-9325-FA7AD8995D93}.Release|AVR.Build.0 = Release|AVR
+		{800BC642-CA13-423B-8A53-DBC88C8D8602}.Debug|AVR.ActiveCfg = Debug|AVR
+		{800BC642-CA13-423B-8A53-DBC88C8D8602}.Debug|AVR.Build.0 = Debug|AVR
+		{800BC642-CA13-423B-8A53-DBC88C8D8602}.Release|AVR.ActiveCfg = Release|AVR
+		{800BC642-CA13-423B-8A53-DBC88C8D8602}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
