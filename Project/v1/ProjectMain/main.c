@@ -232,24 +232,16 @@ int main(void)
 	JOY_requestCurrentPosition('x');
 	
 	OLED_init();
-	
-		/*int i = 0;
-		for(i; i< 100; i++)
-		{
-			OLED_print_arrow();
-		}
-		
-		_delay_ms(1000);*/
-	OLED_clear();
-	OLED_goto(4, 0);
-	OLED_print_arrow();
-	OLED_goto(4, 10);
-	OLED_print_string("Set difficulty");
+
+	//OLED_goto(4, 0);
+	//OLED_print_arrow();
+	//OLED_goto(4, 10);
+	//OLED_print_string("Set difficulty");
 	
 
     while(1)
     {	
-		//statusMultifunctionBoard();
+		statusMultifunctionBoard();
 
 		// todo: remove! will be included in the menu driver later
 		if(JOYcalibFlag)
@@ -258,9 +250,7 @@ int main(void)
 			JOY_calibrate();
 			JOYcalibFlag = 0;
 		}
-		
-		JOY_printPosAndDir();
-		
+
 		// todo: add ADconversion complete handling function to shrink the main method
 		if(ADCconversionCompletedFlag)
 		{
