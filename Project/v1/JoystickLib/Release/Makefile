@@ -67,7 +67,13 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
+<<<<<<< HEAD
 D:/Google\ Drive/Trondheim_2017/TTK4155/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+||||||| merged common ancestors
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+=======
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ADCLib/Release/libADCLib.a
+>>>>>>> 809012ad26d7aeb9ec5bba2403168ad14d6e1189
 
 LINKER_SCRIPT_DEP+= 
 

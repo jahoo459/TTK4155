@@ -192,6 +192,7 @@ void statusMultifunctionBoard(){
 
 int main(void)
 {	
+	// todo: write init() that calls all other init functions
 	uartInit(BAUDRATE, FOSC, UBRR);
 	enableXMEM(1);
 	SLI_init();
@@ -227,7 +228,7 @@ int main(void)
 	
 	sei();
 
-	SRAM_test();
+	//SRAM_test();
 	JOY_requestCurrentPosition('x');
 	
 	OLED_init();
@@ -238,17 +239,19 @@ int main(void)
 			OLED_print_arrow();
 		}
 		
-		_delay_ms(1000);
-	OLED_clear();*/
-		
-	OLED_print_character('a');
+		_delay_ms(1000);*/
+	OLED_clear();
+	OLED_goto(0, 10);
+	OLED_print_string("Huhu! I'm Text!");
+	OLED_goto(6, 7);
+	OLED_print_character('?');
 	
 
     while(1)
     {	
-		statusMultifunctionBoard();
-		
+		//statusMultifunctionBoard();
 
+		// todo: remove! will be included in the menu driver later
 		if(JOYcalibFlag)
 		{
 			//run joystick calibration
@@ -256,9 +259,9 @@ int main(void)
 			JOYcalibFlag = 0;
 		}
 		
-		
 		JOY_printPosAndDir();
 		
+		// todo: add ADconversion complete handling function to shrink the main method
 		if(ADCconversionCompletedFlag)
 		{
 			switch(currentChannel){
