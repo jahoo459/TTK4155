@@ -6,6 +6,8 @@
  */ 
 
 #include <avr/io.h>
+#include <string.h>
+
 #include "oledLib.h"
 #include "..\fonts\fonts.h"
 
@@ -26,10 +28,23 @@ void OLED_print_arrow()
 	//OLED_writeByteToOLED(oled_cmd, 0x2f);
 }
 
-void OLED_print_character(uint8_t charNo){
+void OLED_print_character(uint8_t character)
+{
+	// subtract 32 from character ASCII-code to match SPACE to the first entry of the font array
+	character = character-32;
+	
+	// print 8 columns into OLED RAM
 	for(uint8_t i = 0; i < 8; i++)
 	{
-		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[charNo][i]));
+		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[character][i]));
+	}
+}
+
+void OLED_print_string(char* msg)
+{
+	for(uint8_t i = 0; i < strlen(msg); i++)
+	{
+		OLED_print_character(msg[i]);
 	}
 }
 

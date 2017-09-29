@@ -241,6 +241,7 @@ int main(void)
 		_delay_ms(1000);
 	OLED_clear();*/
 		
+	OLED_print_string("Hier kommt ein Character: ");
 	OLED_print_character('a');
 	
 
