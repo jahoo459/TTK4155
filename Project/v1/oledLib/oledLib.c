@@ -85,7 +85,7 @@ void OLED_goto(int row, int column)
 	hnib = column >> 4;
 	hnib = 0x10 + hnib;
 
-	printf("row: %#x,\thnib: %#x,\tlnib: %#x \n", row, hnib, lnib);
+	//printf("row: %#x,\thnib: %#x,\tlnib: %#x \n", row, hnib, lnib);
 
 	// get to page
 	OLED_writeByteToOLED(oled_cmd, row);
@@ -111,12 +111,12 @@ void OLED_clear_arrow()
 	}
 }
 
-//void OLED_move_arrow(int joy_counter)
-//{
-	//OLED_clear_arrow();
-	//OLED_goto(joy_counter,0);
-	//OLED_print_arrow();	
-//}
+void OLED_move_arrow(int joy_counter)
+{
+	OLED_clear_arrow();
+	OLED_goto(joy_counter,0);
+	OLED_print_arrow();
+}
 
 
 void OLED_print_arrow()

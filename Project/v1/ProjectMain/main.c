@@ -180,7 +180,8 @@ void statusMultifunctionBoard(){
 		break;
 	}
 
-	printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
+	//printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
+	printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
 }
 
 
@@ -233,7 +234,8 @@ int main(void)
 	JOY_requestCurrentPosition('x');
 	OLED_init();
 	OLED_clear();
-	MENU_init();
+	//MENU_init();
+	MENU_activate();
 	//OLED_goto(4, 0);
 	//OLED_print_arrow();
 	//OLED_goto(4, 10);
@@ -242,7 +244,8 @@ int main(void)
 
     while(1)
     {	
-		statusMultifunctionBoard();
+		// statusMultifunctionBoard();
+		JOY_getDirection();
 
 		// todo: remove! will be included in the menu driver later
 		if(JOYcalibFlag)
@@ -253,6 +256,7 @@ int main(void)
 		}
 
 		// todo: add ADconversion complete handling function to shrink the main method
+		/*
 		if(ADCconversionCompletedFlag)
 		{
 			switch(currentChannel){
@@ -281,7 +285,7 @@ int main(void)
 				break;
 			}
 		}
-
+		*/
 				
     }
 }

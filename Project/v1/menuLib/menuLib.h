@@ -16,11 +16,13 @@
 typedef struct menuItemNode
 {
 	char* text;
-	struct menuItemNode* next;
+	// func*()
+	// int numChilds
+	struct menuItemNode* next; // children[7]
 	struct menuItemNode* parentMenu;
 } menuItemNode_t;
 
-void MENU_init();
+void MENU_init(menuItemNode_t* menu, char* menuItems[], size_t size);
 void MENU_addMenuItem(char* text, menuItemNode_t *parent, menuItemNode_t *menu);
 void MENU_removeMenuItem(menuItemNode_t* item);
 void MENU_printMenuItem(menuItemNode_t* item, int lineNumber);

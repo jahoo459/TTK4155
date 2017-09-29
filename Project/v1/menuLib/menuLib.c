@@ -6,55 +6,57 @@
  */ 
 
 #include <avr/io.h>
+#include <stdlib.h>
 #include <stddef.h>
 #include <util/delay.h>
 #include "menuLib.h"
 #include "..\JoystickLib\JoystickLib.h"
+#include "../oledLib/oledLib.h"
 
 //******************************************************************************************
 menuItemNode_t *mainMenu = NULL; //pointer pointing to the first main menu item
+menuItemNode_t *difficultyMenu = NULL; //pointer pointing to the first main menu item
 menuItemNode_t *currItem = NULL; //current item, at the beginning will point at the first item (mainMenu)
 
 uint8_t menuActiveFlag = 0; //When this flag gets 0 waitForInput function will stop so menu will be inactive
 
-int currentPosition = 0; //Current menu position read from the Joystick
+static int currentPosition = 0; //Current menu position read from the Joystick
 
 int menuFrameOffset = 10; //Columns from left frame border
 //******************************************************************************************
-char *mainMenuItems[] = {"New Game", "Highscores", "Joy Calib", "Debugging", "Info"};
-// char *difficultyMenuItems[] = {"easy", "medium", "hard"};
+char *mainMenuItems[] = {"New Game", "Difficulty", "Highscores", "Joy Calib", "Debugging", "Info"};
+char *difficultyMenuItems[] = {"easy", "medium", "hard"};
 
-void MENU_init()
+void MENU_init(menuItemNode_t* menu, char *menuItems[], size_t size)
 {
 	//create main menu
-	for(int i = 0; i < sizeof(mainMenuItems)/sizeof(char*); i++)
+	for(size_t i = 0; i < size; i++)
 	{
-		MENU_addMenuItem(mainMenuItems[i], currItem, mainMenu);
+		MENU_addMenuItem(menuItems[i], currItem, menu);
+		printf("Index %d, currItem: %d, Menu: %d\n",i, &currItem, &menu);
 	}
-	
-	MENU_printMenu(mainMenu);
-	
 }
 
 void MENU_addMenuItem(char* name, menuItemNode_t *parent, menuItemNode_t* currentMenu)
 {
+	printf("parent: %d, currentMenu: %d\n", &parent, &currentMenu);
 	if(mainMenu == NULL) //create first item for this menu
 	{
-		mainMenu = malloc(sizeof(menuItemNode_t));
-		mainMenu->text = name;
-		mainMenu->next = NULL;
-		mainMenu->parentMenu = mainMenu;
-		currItem = mainMenu;
+		currentMenu = malloc(sizeof(menuItemNode_t));
+		currentMenu->text = name;
+		currentMenu->next = NULL;
+		currentMenu->parentMenu = currentMenu;
+		currItem = currentMenu;
 	}
 	else //next element
 	{
 		parent->next = malloc(sizeof(menuItemNode_t));
 		parent->next->text = name;
 		parent->next->next = NULL;
-		parent->next->parentMenu = mainMenu;
+		parent->next->parentMenu = currentMenu;
 		currItem = parent->next; //now current item (last item) points at the just created item
 	}
-	
+	printf("After parent: %d, currentMenu: %d\n", &parent, &currentMenu);
 }
 
 void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
@@ -86,39 +88,31 @@ void MENU_printMenu(menuItemNode_t* firstItem)
 
 void MENU_waitForInput()
 {
+	OLED_move_arrow(currentPosition);
 	JOY_direction_t currDir;
 	
 	while(menuActiveFlag)
 	{
-		while(JOY_getDirection() == "CENTRE")
-		{
-			//wait for changing the direction
-			if(JOY_getDirection() != "CENTRE")
-			{
-				currDir = JOY_getDirection();
-				switch(currDir){
-					case LEFT:
-					MENU_moveLeft();
-					break;
-					
-					case RIGHT:
-					MENU_moveRight();
-					break;
-					
-					case UP:
-					MENU_moveUp();
-					break;
-					
-					case DOWN:
-					MENU_moveDown();
-					break;	
-				}
-			}
-			else
-			{
-				_delay_ms(100);
-			}
+		currDir = JOY_getDirection();
+		switch(currDir){
+			case LEFT:
+			MENU_moveLeft();
+			break;
+			
+			case RIGHT:
+			MENU_moveRight();
+			break;
+			
+			case UP:
+			MENU_moveUp();
+			break;
+			
+			case DOWN:
+			MENU_moveDown();
+			break;
 		}
+		_delay_ms(1200);
+
 	}
 }
 
@@ -127,6 +121,8 @@ void MENU_moveUp()
 	if(currentPosition >0)
 	{
 		currentPosition = currentPosition - 1;
+		printf("Curr Pos Up: %d\n", currentPosition);
+		OLED_move_arrow(currentPosition);
 	}
 }
 
@@ -135,22 +131,31 @@ void MENU_moveDown()
 	if(currentPosition < MAX_MENU_SIZE -1)
 	{
 		currentPosition = currentPosition + 1;
+		printf("Curr Pos Down: %d\n", currentPosition);
+		OLED_move_arrow(currentPosition);
 	}
 }
 
 void MENU_moveRight()
 {
-	//Move to the next menu
+	//MENU_init(mainMenu, mainMenuItems);
+	MENU_printMenu(mainMenu);
 }
 
 void MENU_moveLeft()
 {
-	//Move to the previous Menu
+	currentPosition = 0;
+	//MENU_init(mainMenu, mainMenuItems);
+	MENU_printMenu(currItem->parentMenu);
 }
 
 void MENU_activate()
 {
 	menuActiveFlag = 1;
+	//mainMenu = malloc(sizeof(menuItemNode_t));
+	MENU_init(mainMenu, mainMenuItems, sizeof(mainMenuItems)/sizeof(char*));
+	MENU_printMenu(mainMenu);
+	MENU_waitForInput();
 }
 
 

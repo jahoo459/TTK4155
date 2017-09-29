@@ -16,8 +16,9 @@
 JOY_position_t currentPosition;
 JOY_direction_t currentDirection;
 
-#define Y_channel 1
-#define X_channel 2
+#define X_channel 1
+#define Y_channel 2
+
 
 // calibration
 #define delay1 200
@@ -142,8 +143,6 @@ void JOY_updatePosition(char axis)
 		currentPosition.Y_abs = ADC_read(adc_ext_ram);
 		currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanVert)*100 / (int) meanVert;
 	}
-	
-	JOY_calculateDirection();
 }
 
 //------------------------------------------------------------------------------
@@ -151,13 +150,13 @@ void JOY_updatePosition(char axis)
 // A direction is valid after the threshold of 50% was passed.
 void JOY_calculateDirection()
 {
-	if(currentPosition.X_per > 50) {
+	if(currentPosition.X_per > 90) {
 	currentDirection = RIGHT;}
-	else if(currentPosition.X_per < -50) {
+	else if(currentPosition.X_per < -90) {
 	currentDirection = LEFT;}
-	else if(currentPosition.Y_per > 50) {
+	else if(currentPosition.Y_per > 90) {
 	currentDirection = UP;}
-	else if(currentPosition.Y_per < -50) {
+	else if(currentPosition.Y_per < -90) {
 	currentDirection = DOWN;}
 	else{currentDirection = CENTRE;}
 }
@@ -173,5 +172,10 @@ JOY_position_t JOY_getPosition()
 //
 JOY_direction_t JOY_getDirection()
 {
+	JOY_requestCurrentPosition('x');
+	JOY_updatePosition('x');
+	JOY_requestCurrentPosition('y');
+	JOY_updatePosition('y');
+	JOY_calculateDirection();
 	return currentDirection;
 }
