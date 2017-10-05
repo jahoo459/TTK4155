@@ -192,3 +192,35 @@ JOY_direction_t JOY_getDirection()
 	
 	return currentDirection;
 }
+
+// old AD conversion handling in the main method
+/*
+if(ADCconversionCompletedFlag)
+{
+	switch(currentChannel){
+		case 1:	//X axis
+			JOY_updatePosition('x');
+			JOY_requestCurrentPosition('y');
+			currentChannel++;
+		break;	
+				
+		case 2:	//Y_axis
+			JOY_updatePosition('y');
+			SLI_requestCurrentPosition('l');
+			currentChannel++;
+		break;
+				
+		case 3: //slider_left
+			SLI_updatePosition('l');
+			SLI_requestCurrentPosition('r');
+			currentChannel++;
+		break;
+				
+		case 4:	//slider_right
+			SLI_updatePosition('r');
+			JOY_requestCurrentPosition('x');
+			currentChannel = 1;
+		break;
+	}
+}
+*/

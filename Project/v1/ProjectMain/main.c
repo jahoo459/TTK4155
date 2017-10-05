@@ -13,7 +13,7 @@
 #include "..\JoystickLib\JoystickLib.h"
 #include "..\SliderLib\SliderLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
-#include "../oledLib/oledLib.h"
+#include "..\oledLib\oledLib.h"
 #include "..\menuLib\menuLib.h"
 
 #include <util/delay.h>
@@ -77,6 +77,7 @@ ISR(INT1_vect)
 /*
 =======================FUNCTION DEFINITIONS=========================
 */
+
 void SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
@@ -125,6 +126,41 @@ void SRAM_test(void)
 	}
 	
 	printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
+}
+
+void init(void)
+{
+	// call initialization subroutines
+	uartInit(BAUDRATE, FOSC, UBRR);
+	enableXMEM(1);
+	SLI_init();
+	JOY_init();
+	OLED_init();
+	//MENU_activate();
+	
+	// setup interrupts
+	// init external interrupt INT0 on falling edge
+	set_bit(GICR, INT0);
+	set_bit(MCUCR, ISC01);
+	clear_bit(MCUCR, ISC00);
+	// Pull-up on PD3
+	clear_bit(DDRD, PD3);
+	set_bit(PORTD, PD3);
+	// init external interrupt INT1 on falling edge
+	set_bit(GICR, INT1);
+	set_bit(MCUCR, ISC11);
+	clear_bit(MCUCR, ISC10);
+	// PE2
+	clear_bit(DDRE, PE2);
+	clear_bit(PORTE, PE2);
+	// PB0
+	clear_bit(DDRB, PB0);
+	clear_bit(PORTB, PB0);
+	// activate interrupts
+	sei();
+
+	// call SRAM Test
+	SRAM_test();
 }
 
 // print status variables of Multifunction Board
@@ -189,58 +225,10 @@ void statusMultifunctionBoard(){
 =======================MAIN FUNCTION=========================
 */
 
-//#define ADDRESS 0x1400
-
 int main(void)
 {	
-	// todo: write init() that calls all other init functions
-	uartInit(BAUDRATE, FOSC, UBRR);
-	enableXMEM(1);
-	SLI_init();
-	JOY_init();
+	init();
 	
-	//init external interrupt INT0 on falling edge
-	set_bit(GICR, INT0);
-	set_bit(MCUCR, ISC01);
-	clear_bit(MCUCR, ISC00);
-	
-	//Pull-up on PD3
-	clear_bit(DDRD, PD3);
-	set_bit(PORTD, PD3);
-	
-	//init external interrupt INT1 on falling edge
-	set_bit(GICR, INT1);
-	set_bit(MCUCR, ISC11);
-	clear_bit(MCUCR, ISC10);
-
-	////init external interrupt INT2 on falling edge
-	//set_bit(GICR, INT2);
-	//clear_bit(EMCUCR, ISC2);
-	
-	//PE2
-	clear_bit(DDRE, PE2);
-	clear_bit(PORTE, PE2);
-	
-	//PB0
-	clear_bit(DDRB, PB0);
-	clear_bit(PORTB, PB0);
-	
-
-	
-	sei();
-
-	//SRAM_test();
-	JOY_requestCurrentPosition('x');
-	OLED_init();
-
-	//MENU_init();
-	//MENU_activate();
-	
-	OLED_goto(1, 0);
-	OLED_printString("Hello World...");
-	OLED_printArrow();
-	OLED_moveArrow(3);
-
     while(1)
     {	
 		statusMultifunctionBoard();
@@ -252,39 +240,6 @@ int main(void)
 			//run joystick calibration
 			JOY_calibrate();
 			JOYcalibFlag = 0;
-		}
-
-		// todo: add ADconversion complete handling function to shrink the main method
-		/*
-		if(ADCconversionCompletedFlag)
-		{
-			switch(currentChannel){
-				case 1:	//X axis
-					JOY_updatePosition('x');
-					JOY_requestCurrentPosition('y');
-					currentChannel++;
-				break;	
-				
-				case 2:	//Y_axis
-					JOY_updatePosition('y');
-					SLI_requestCurrentPosition('l');
-					currentChannel++;
-				break;
-				
-				case 3: //slider_left
-					SLI_updatePosition('l');
-					SLI_requestCurrentPosition('r');
-					currentChannel++;
-				break;
-				
-				case 4:	//slider_right
-					SLI_updatePosition('r');
-					JOY_requestCurrentPosition('x');
-					currentChannel = 1;
-				break;
-			}
-		}
-		*/
-				
+		}				
     }
 }
