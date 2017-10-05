@@ -9,16 +9,18 @@
 #ifndef OLEDLIB_H_
 #define OLEDLIB_H_
 
-void OLED_init();
-void OLED_clear();
+void OLED_init(void);
+void OLED_clear(void);
 
 void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data);
 void OLED_goto(int row, int column);
 
-void OLED_print_arrow();
-void OLED_print_character(uint8_t character);
-void OLED_print_string(char* msg);
+void OLED_printCharacter(uint8_t character);
+void OLED_printString(char* msg);
 
+void OLED_printArrow(void);
+void OLED_clearArrow(void);
+void OLED_moveArrow(int joy_counter);
 
 //void OLED_reset();
 //void OLED_home();

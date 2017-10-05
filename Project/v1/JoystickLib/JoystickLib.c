@@ -13,8 +13,8 @@
 #include <string.h>
 
 // current position and direction of the joystick
-JOY_position_t currentPosition;
-JOY_direction_t currentDirection;
+static JOY_position_t currentPosition;
+static JOY_direction_t currentDirection;
 
 // channels for Joy axes used by ADC
 #define Y_channel 1
@@ -29,13 +29,13 @@ JOY_direction_t currentDirection;
 #define delay1 200
 #define delay2 75
 // thresholds for directions
-volatile uint8_t calR = 200;
-volatile uint8_t calL = 25;
-volatile uint8_t calUp = 200;
-volatile uint8_t calDown = 25;
+static volatile uint8_t calR = 200;
+static volatile uint8_t calL = 25;
+static volatile uint8_t calUp = 200;
+static volatile uint8_t calDown = 25;
 // default mean values for vertical and horizontal axis
-volatile uint8_t meanVert = 128;
-volatile uint8_t meanHor = 128;
+static volatile uint8_t meanVert = 128;
+static volatile uint8_t meanHor = 128;
 
 //------------------------------------------------------------------------------
 // set initial values for Position and Direction
@@ -167,14 +167,19 @@ void JOY_calculateDirection()
 }
 
 //------------------------------------------------------------------------------
-//
+// This function returns the current position of the Joystick.
+// It is a struct with the four parameters X_abs, Y_abs, X_per and Y_per
 JOY_position_t JOY_getPosition()
 {
 	return currentPosition;
 }
 
 //------------------------------------------------------------------------------
-//
+// This function returns the current Direction of the Joystick in the form of
+// text.
+// Before the value is returned, the values of position in x and y direction are 
+// requested from the ADC and written to the currentPosition and 
+// currentDirection variables.
 JOY_direction_t JOY_getDirection()
 {
 	JOY_requestCurrentPosition('x');

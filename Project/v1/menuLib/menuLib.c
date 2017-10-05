@@ -64,7 +64,7 @@ void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 	if(item != NULL)
 	{
 		OLED_goto(lineNumber, menuFrameOffset);
-		OLED_print_string(item->text);
+		OLED_printString(item->text);
 		//printf("%s\n", item->text);
 	}
 	else
@@ -88,7 +88,7 @@ void MENU_printMenu(menuItemNode_t* firstItem)
 
 void MENU_waitForInput()
 {
-	OLED_move_arrow(currentPosition);
+	OLED_moveArrow(currentPosition);
 	JOY_direction_t currDir;
 	
 	while(menuActiveFlag)
@@ -122,7 +122,7 @@ void MENU_moveUp()
 	{
 		currentPosition = currentPosition - 1;
 		printf("Curr Pos Up: %d\n", currentPosition);
-		OLED_move_arrow(currentPosition);
+		OLED_moveArrow(currentPosition);
 	}
 }
 
@@ -132,7 +132,7 @@ void MENU_moveDown()
 	{
 		currentPosition = currentPosition + 1;
 		printf("Curr Pos Down: %d\n", currentPosition);
-		OLED_move_arrow(currentPosition);
+		OLED_moveArrow(currentPosition);
 	}
 }
 
