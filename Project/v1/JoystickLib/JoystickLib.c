@@ -16,19 +16,24 @@
 JOY_position_t currentPosition;
 JOY_direction_t currentDirection;
 
-#define X_channel 1
-#define Y_channel 2
+// channels for Joy axes used by ADC
+#define Y_channel 1
+#define X_channel 2
 
+// delay in us after which the AD conversion should be finished
+// todo: handle conversion with interrupts
+#define delayConversion 60
 
-// calibration
-#define delay1 200
-#define delay2 50
 // variables needed for joystick calibration
+// delay for sampling in ms
+#define delay1 200
+#define delay2 75
+// thresholds for directions
 volatile uint8_t calR = 200;
 volatile uint8_t calL = 25;
 volatile uint8_t calUp = 200;
 volatile uint8_t calDown = 25;
-// mean values for vertical and horizontal axis
+// default mean values for vertical and horizontal axis
 volatile uint8_t meanVert = 128;
 volatile uint8_t meanHor = 128;
 
@@ -173,9 +178,12 @@ JOY_position_t JOY_getPosition()
 JOY_direction_t JOY_getDirection()
 {
 	JOY_requestCurrentPosition('x');
+	_delay_us(delayConversion);
 	JOY_updatePosition('x');
 	JOY_requestCurrentPosition('y');
+	_delay_us(delayConversion);
 	JOY_updatePosition('y');
 	JOY_calculateDirection();
+	
 	return currentDirection;
 }

@@ -36,8 +36,7 @@ volatile uint8_t JOYcalibFlag = 0;
 volatile uint8_t LeftButtonFlag = 0;
 volatile uint8_t RightButtonFlag = 0;
 
-//ADC CONVERTER
-uint8_t currentChannel = 1;
+
 
 
 //INITIALIZATION
@@ -234,17 +233,17 @@ int main(void)
 	JOY_requestCurrentPosition('x');
 	OLED_init();
 	OLED_clear();
+
 	//MENU_init();
 	MENU_activate();
-	//OLED_goto(4, 0);
-	//OLED_print_arrow();
-	//OLED_goto(4, 10);
-	//OLED_print_string("Set difficulty");
+	
+// 	OLED_goto(1, 5);
+// 	OLED_print_string("Cleaning up...");
 	
 
     while(1)
     {	
-		// statusMultifunctionBoard();
+		//statusMultifunctionBoard();
 		JOY_getDirection();
 
 		// todo: remove! will be included in the menu driver later
