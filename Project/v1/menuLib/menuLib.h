@@ -13,25 +13,37 @@
 
 #define MAX_MENU_SIZE 8
 //struct that defines menu item
+typedef struct menuNode
+{
+	char* menuName;
+	int noChilds;
+	struct menuItemNode* children[MAX_MENU_SIZE]; // children[8] maximum 8 elements in menu
+	struct menuNode* parentMenu;
+} menuNode_t;
+
 typedef struct menuItemNode
 {
-	char* text;
+	char* name;
+	struct menuNode* parentMenu;
+	struct menuNode* childMenu;
+	int hasChildMenu;
+	struct menuItemNode_t* next;
 	// func*()
-	// int numChilds
-	struct menuItemNode* next; // children[7]
-	struct menuItemNode* parentMenu;
-} menuItemNode_t;
+}menuItemNode_t;
 
-void MENU_init(menuItemNode_t* menu, char* menuItems[], size_t size);
-void MENU_addMenuItem(char* text, menuItemNode_t *parent, menuItemNode_t *menu);
-void MENU_removeMenuItem(menuItemNode_t* item);
+void MENU_buildMenus();
+void MENU_addMenuItem(char* name, menuNode_t* parentMenu, menuNode_t* childMenu, int hasChildMenu);
+
+//void MENU_removeMenuItem(menuItemNode_t* item);
 void MENU_printMenuItem(menuItemNode_t* item, int lineNumber);
-void MENU_printMenu(menuItemNode_t* firstItem);
+void MENU_printMenu(menuNode_t* menu, int noElements);
+
 void MENU_moveUp();
 void MENU_moveDown();
 void MENU_moveRight();
 void MENU_moveLeft();
 void MENU_waitForInput();
+
 void MENU_activate();
 
 
