@@ -8,7 +8,7 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <util/delay.h>
+//#include <util/delay.h>
 #include "menuLib.h"
 #include "..\JoystickLib\JoystickLib.h"
 #include "../oledLib/oledLib.h"
@@ -25,6 +25,25 @@ static int currentPosition = 0; //Current menu position read from the Joystick
 
 int menuFrameOffset = 10; //Columns from left frame border
 //******************************************************************************************
+
+void startGame()
+{
+	OLED_clear();
+	OLED_goto(0,0);
+	OLED_printString("START");
+	
+	OLED_goto(3,0);
+	
+	for(int i = 14; i > 0; i--)
+	{
+		OLED_printString("*");
+		_delay_ms(500);
+	}
+	
+	OLED_goto(5,0);
+	OLED_printString("YUPII :)");
+	_delay_ms(3000);
+}
 
 void MENU_buildMenus()
 {
@@ -43,6 +62,7 @@ void MENU_buildMenus()
 	//create menu items for created menus
 	MENU_addMenuItem("New Game", mainMenu, NULL, 0);
 	mainMenu->children[0] = currItem;
+	mainMenu->children[0]->functionPtr = &startGame;
 	
 	MENU_addMenuItem("Difficulty", mainMenu, difficultyMenu, 1);
 	mainMenu->children[1] = currItem;
@@ -52,6 +72,7 @@ void MENU_buildMenus()
 	
 	MENU_addMenuItem("Joy Calib", mainMenu, NULL, 0);
 	mainMenu->children[3] = currItem;
+	mainMenu->children[3]->functionPtr = &JOY_calibrate; //assign function to this item
 	
 	MENU_addMenuItem("Info", mainMenu, NULL, 0);
 	mainMenu->children[4] = currItem;
@@ -108,19 +129,21 @@ void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 
 void MENU_printMenu(menuNode_t* menu, int noElements)
 {
-	printf("%s: Number of elements:%d\n", menu->menuName, noElements);
+	//clear the OLED display
+	OLED_clear();
+	//print arrow
+	OLED_moveArrow(0);
 	
 	for(int i = 0; i < noElements; i++)
 	{
 		MENU_printMenuItem(menu->children[i], i);
-		printf("%d: %s\n", i, menu->children[i]->name);
-		if(menu->children[i]->hasChildMenu)
-		{
-			printf("*****Child Menu: %s\n", menu->children[i]->childMenu->menuName);
-		}
 	}
+	
 	//currentMenu points to currently printed menu
 	currentMenu = menu;
+	
+	currentPosition = 0;
+	currItem = currentMenu->children[currentPosition];
 }
 
 void MENU_waitForInput()
@@ -148,43 +171,56 @@ void MENU_waitForInput()
 			MENU_moveDown();
 			break;
 		}
-		_delay_ms(1200);
+		_delay_ms(300);
 
 	}
 }
 
 void MENU_moveUp()
 {
-	if(currentPosition >0)
+	if(currentPosition > 0)
 	{
 		currentPosition = currentPosition - 1;
-		printf("Curr Pos Up: %d\n", currentPosition);
+		currItem = currentMenu->children[currentPosition];
 		OLED_moveArrow(currentPosition);
 	}
 }
 
 void MENU_moveDown()
 {
-	if(currentPosition < MAX_MENU_SIZE -1)
+	if(currentPosition < currentMenu->noChilds -1)
 	{
 		currentPosition = currentPosition + 1;
-		printf("Curr Pos Down: %d\n", currentPosition);
+		currItem = currentMenu->children[currentPosition];
+		OLED_moveArrow(currentPosition);
+	}
+	else
+	{
+		//go back to first item
+		currentPosition = 0;
+		currItem = currentMenu->children[currentPosition];
 		OLED_moveArrow(currentPosition);
 	}
 }
 
 void MENU_moveRight()
 {
-	//MENU_init(mainMenu, mainMenuItems);
-	if(currentMenu)
-	MENU_printMenu(mainMenu, mainMenu->noChilds);
+	if(currItem->hasChildMenu)
+	MENU_printMenu(currItem->childMenu, currItem->childMenu->noChilds);
+	
+	else if(currItem->functionPtr)
+	{
+		currItem->functionPtr();
+		MENU_reactivate();
+	}
 }
 
 void MENU_moveLeft()
 {
-	currentPosition = 0;
-	//MENU_init(mainMenu, mainMenuItems);
-	//MENU_printMenu();
+	if(currentMenu->parentMenu != NULL)
+	{
+		MENU_printMenu(currentMenu->parentMenu, currentMenu->parentMenu->noChilds);
+	}
 }
 
 void MENU_activate()
@@ -193,6 +229,12 @@ void MENU_activate()
 	//mainMenu = malloc(sizeof(menuItemNode_t));
 	MENU_buildMenus();
 	MENU_printMenu(mainMenu, mainMenu->noChilds);
+	MENU_waitForInput();
+}
+
+void MENU_reactivate()
+{
+	MENU_printMenu(currentMenu, currentMenu->noChilds);
 	MENU_waitForInput();
 }
 

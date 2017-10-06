@@ -15,8 +15,7 @@
 #include "..\ExtSramLib\ExtSramLib.h"
 #include "..\oledLib\oledLib.h"
 #include "..\menuLib\menuLib.h"
-
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <UARTlib.h>
 
 
@@ -136,7 +135,7 @@ void init(void)
 	SLI_init();
 	JOY_init();
 	OLED_init();
-	//MENU_activate();
+	MENU_activate();
 	
 	// setup interrupts
 	// init external interrupt INT0 on falling edge

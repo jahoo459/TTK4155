@@ -28,7 +28,7 @@ typedef struct menuItemNode
 	struct menuNode* childMenu;
 	int hasChildMenu;
 	struct menuItemNode_t* next;
-	// func*()
+	void (*functionPtr)();
 }menuItemNode_t;
 
 void MENU_buildMenus();

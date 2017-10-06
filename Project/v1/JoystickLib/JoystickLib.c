@@ -9,7 +9,7 @@
 
 #include "JoystickLib.h"
 #include "..\ADCLib\ADCLib.h"
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <string.h>
 
 // current position and direction of the joystick

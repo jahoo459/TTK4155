@@ -38,6 +38,8 @@ extern volatile char *adc_ext_ram;
 
 #define uint16_t unsigned int
 
+#include <util/delay.h>
+
 // joystick position and direction
 typedef struct  {
 	int X_abs;
