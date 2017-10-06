@@ -3,7 +3,7 @@
  *
  * Created: 15.09.2017 12:53:59
  *  Author: janwh
- */
+ */ 
 
 
 #ifndef DEFINITIONS_H_
@@ -20,11 +20,10 @@
 #define ADC_EXT_RAM 0x1400
 #define SRAM_EXT 0x1800
 
-extern volatile char *adc_ext_ram;
 extern volatile char *oled_cmd_ext_ram;
 extern volatile char *oled_data_ext_ram;
 extern volatile char *sram_ext;
-
+extern volatile char *adc_ext_ram;
 
 //BIT operations
 #define set_bit( reg, bit ) (reg |= (1 << bit))
@@ -33,11 +32,13 @@ extern volatile char *sram_ext;
 
 // basic stuff..
 #define BAUDRATE 9600
-#define FOSC 4915200
+#define FOSC  4915200
 #define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 
 #define uint16_t unsigned int
+
+#include <util/delay.h>
 
 // joystick position and direction
 typedef struct  {
@@ -51,15 +52,17 @@ typedef enum {CENTRE, UP, DOWN, RIGHT, LEFT} JOY_direction_t;
 
 // slider positions and buttons
 typedef struct {
-	int R_abs;
-	int L_abs;
-	int R_per;
-	int L_per;
+	uint8_t R_abs;
+	uint8_t L_abs;
+	uint8_t R_per;
+	uint8_t L_per;
 } SLI_position_t;
 
-typedef struct {
-	int leftButton;
-	int rightButton;
-}SLI_buttons_t;
+//CAN MESSAGE
+typedef struct can_message{
+	unsigned int id;
+	uint8_t length;
+	uint8_t data[8];
+} can_message_t;
 
 #endif /* DEFINITIONS_H_ */

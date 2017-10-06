@@ -3,44 +3,49 @@
  *
  * Created: 15.09.2017 11:44:47
  *  Author: janwh
- */
+ */ 
 
 #include <avr/io.h>
 
 #include "JoystickLib.h"
 #include "..\ADCLib\ADCLib.h"
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <string.h>
 
+// current position and direction of the joystick
+static JOY_position_t currentPosition;
+static JOY_direction_t currentDirection;
 
-//current position and direction of the joystick
-JOY_position_t currentJoyPosition;
-JOY_direction_t currentJoyDirection;
-
+// channels for Joy axes used by ADC
 #define Y_channel 1
 #define X_channel 2
 
-//calibration
-#define delay1 200
-#define delay2 50
-//variables needed for joystick calibration
-volatile uint8_t calR = 200;
-volatile uint8_t calL = 25;
-volatile uint8_t calUp =200;
-volatile uint8_t calDown = 25;
+// delay in us after which the AD conversion should be finished
+// todo: handle conversion with interrupts
+#define delayConversion 60
 
-volatile uint8_t meanVert = 128;
-volatile uint8_t meanHor = 128;
+// variables needed for joystick calibration
+// delay for sampling in ms
+#define delay1 200
+#define delay2 75
+// thresholds for directions
+static volatile uint8_t calR = 200;
+static volatile uint8_t calL = 25;
+static volatile uint8_t calUp = 200;
+static volatile uint8_t calDown = 25;
+// default mean values for vertical and horizontal axis
+static volatile uint8_t meanVert = 128;
+static volatile uint8_t meanHor = 128;
 
 //------------------------------------------------------------------------------
 // set initial values for Position and Direction
 void JOY_init()
 {
-	currentJoyPosition.X_abs = 0;
-	currentJoyPosition.Y_abs = 0;
-	currentJoyPosition.X_per = 0;
-	currentJoyPosition.Y_per = 0;
-	currentJoyDirection = CENTRE;
+	currentPosition.X_abs = 0;
+	currentPosition.Y_abs = 0;
+	currentPosition.X_per = 0;
+	currentPosition.Y_per = 0;
+	currentDirection = CENTRE;
 }
 
 //------------------------------------------------------------------------------
@@ -49,61 +54,74 @@ void JOY_init()
 void JOY_calibrate()
 {
 	uint8_t temp = 0;
-
+	
+	OLED_clear();
+	OLED_goto(0,0);
+	OLED_printString("JOY RIGHT");
 	printf("Move JOY to the right\n");
 	_delay_ms(delay1);
-
+	
 	for(int i = 0; i < 20; i++)
 	{
 		ADC_request(X_channel, adc_ext_ram);
 		_delay_ms(delay2);
 		temp = ADC_read(adc_ext_ram);
-
+		
 		if(temp > calR) {calR = temp;}
 	}
-
+	
+	OLED_goto(1,0);
+	OLED_printString("JOY LEFT");
 	printf("Move JOY to the left\n");
 	_delay_ms(delay1);
-
+	
 	for(int i = 0; i < 20; i++)
 	{
 		ADC_request(X_channel, adc_ext_ram);
 		_delay_ms(delay2);
 		temp = ADC_read(adc_ext_ram);
-
+		
 		if(temp < calL) {calL = temp;}
 	}
-
+	
+	OLED_goto(2,0);
+	OLED_printString("JOY UP");
 	printf("Move JOY up\n");
 	_delay_ms(delay1);
-
+	
 	for(int i = 0; i < 20; i++)
 	{
 		ADC_request(Y_channel, adc_ext_ram);
 		_delay_ms(delay2);
 		temp = ADC_read(adc_ext_ram);
-
+		
 		if(temp > calUp) {calUp = temp;}
 	}
-
+	
+	OLED_goto(3,0);
+	OLED_printString("JOY DOWN");
 	printf("Move JOY down\n");
 	_delay_ms(delay1);
-
+	
 	for(int i = 0; i < 20; i++)
 	{
 		ADC_request(Y_channel, adc_ext_ram);
 		_delay_ms(delay2);
 		temp = ADC_read(adc_ext_ram);
-
+		
 		if(temp < calDown) {calDown = temp;}
 	}
-
+	
+	
 	printf("calR: %d, calL: %d, calUp:%d, calDown:%d\n", calR, calL, calUp, calDown);
-
+	
 	meanVert = (calUp - calDown)/2;
 	meanHor = (calR - calL)/2;
-
+	
+	OLED_goto(4,0);
+	OLED_printString("CALIB DONE");
 	printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
+	_delay_ms(1000);
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +132,7 @@ void JOY_requestCurrentPosition(char axis)
 	{
 		ADC_request(X_channel, adc_ext_ram);
 	}
-
+	
 	else if(axis == 'y')
 	{
 		ADC_request(Y_channel, adc_ext_ram);
@@ -129,24 +147,19 @@ void JOY_requestCurrentPosition(char axis)
 // 2.) Calculate relative value X_per for position (-100% .. 100%) and write
 // them to the current position.
 // 3.) Call method to calculate current direction.
-
 void JOY_updatePosition(char axis)
 {
 	if(axis == 'x')
 	{
-		printf("RAW X %d \n", currentJoyPosition.X_abs);
-		currentJoyPosition.X_abs = ADC_read(adc_ext_ram);
-		currentJoyPosition.X_per = ((int)currentJoyPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
+		currentPosition.X_abs = ADC_read(adc_ext_ram);
+		currentPosition.X_per = ((int)currentPosition.X_abs -  (int)meanHor)*100 / (int) meanHor;
 	}
 
 	else if(axis == 'y')
 	{
-		currentJoyPosition.Y_abs = ADC_read(adc_ext_ram);
-		currentJoyPosition.Y_per = ((int)currentJoyPosition.Y_abs -  (int)meanVert)*100 / (int) meanVert;
+		currentPosition.Y_abs = ADC_read(adc_ext_ram);
+		currentPosition.Y_per = ((int)currentPosition.Y_abs -  (int)meanVert)*100 / (int) meanVert;
 	}
-
-	// JOY_getPosition();
-	JOY_calculateDirection();
 }
 
 //------------------------------------------------------------------------------
@@ -154,87 +167,72 @@ void JOY_updatePosition(char axis)
 // A direction is valid after the threshold of 50% was passed.
 void JOY_calculateDirection()
 {
-	//calculate current direction, first update position
-	// JOY_getPosition();
-	if(currentJoyPosition.X_per > 50) {
-		currentJoyDirection = RIGHT;}
-	else if(currentJoyPosition.X_per < -50) {
-		currentJoyDirection = LEFT;}
-	else if(currentJoyPosition.Y_per > 50) {
-		currentJoyDirection = UP;}
-	else if(currentJoyPosition.Y_per < -50) {
-		currentJoyDirection = DOWN;}
-	else{currentJoyDirection = CENTRE;}
+	if(currentPosition.X_per > 90) {
+	currentDirection = RIGHT;}
+	else if(currentPosition.X_per < -90) {
+	currentDirection = LEFT;}
+	else if(currentPosition.Y_per > 90) {
+	currentDirection = UP;}
+	else if(currentPosition.Y_per < -90) {
+	currentDirection = DOWN;}
+	else{currentDirection = CENTRE;}
 }
 
 //------------------------------------------------------------------------------
-//
+// This function returns the current position of the Joystick.
+// It is a struct with the four parameters X_abs, Y_abs, X_per and Y_per
 JOY_position_t JOY_getPosition()
 {
-	return currentJoyPosition;
+	return currentPosition;
 }
 
 //------------------------------------------------------------------------------
-//
+// This function returns the current Direction of the Joystick in the form of
+// text.
+// Before the value is returned, the values of position in x and y direction are 
+// requested from the ADC and written to the currentPosition and 
+// currentDirection variables.
 JOY_direction_t JOY_getDirection()
 {
-	return currentJoyDirection;
+	JOY_requestCurrentPosition('x');
+	_delay_us(delayConversion);
+	JOY_updatePosition('x');
+	JOY_requestCurrentPosition('y');
+	_delay_us(delayConversion);
+	JOY_updatePosition('y');
+	JOY_calculateDirection();
+	
+	return currentDirection;
 }
 
-//------------------------------------------------------------------------------
-// Output of the current position and direction of the joystick.
-void JOY_printPosAndDir()
+// old AD conversion handling in the main method
+/*
+if(ADCconversionCompletedFlag)
 {
-	// JOY_getPosition();
-	// JOY_calculateDirection();
-
-	char directions[] = {'C', 'U', 'D', 'R', 'L'};
-	char* dir;
-
-	switch(currentJoyDirection)
-	{
-		case 0:
-
-		dir = "CENTER";
+	switch(currentChannel){
+		case 1:	//X axis
+			JOY_updatePosition('x');
+			JOY_requestCurrentPosition('y');
+			currentChannel++;
+		break;	
+				
+		case 2:	//Y_axis
+			JOY_updatePosition('y');
+			SLI_requestCurrentPosition('l');
+			currentChannel++;
 		break;
-
-		case 1:
-		dir = "UP";
+				
+		case 3: //slider_left
+			SLI_updatePosition('l');
+			SLI_requestCurrentPosition('r');
+			currentChannel++;
 		break;
-
-		case 2:
-		dir = "DOWN";
-		break;
-
-		case 3:
-		dir = "RIGHT";
-		break;
-
-		case 4:
-		dir = "LEFT";
+				
+		case 4:	//slider_right
+			SLI_updatePosition('r');
+			JOY_requestCurrentPosition('x');
+			currentChannel = 1;
 		break;
 	}
-
-	printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
 }
-
-// char JOY_button(int button)
-// {
-//
-// }
-
-// uint8_t JOY_getPositionX()
-// {
-// 	return currentJoyPosition.X_abs;
-// }
-
-// uint8_t JOY_getPositionY()
-// {
-// 	return currentJoyPosition.Y_abs;
-// }
-
-
-// void JOY_updateDirection()
-// {
-//
-// }
+*/
