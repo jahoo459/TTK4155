@@ -176,7 +176,7 @@ void statusMultifunctionBoard(){
 	uint8_t leftButton = 0;
 	uint8_t rightButton = 0;
 
-	char directions[] = {'C', 'U', 'D', 'R', 'L'};
+	//char directions[] = {'C', 'U', 'D', 'R', 'L'};
 	char* dir;
 	
 	if((PINB & (1<<PB0)))
@@ -230,7 +230,7 @@ int main(void)
 	
     while(1)
     {	
-		statusMultifunctionBoard();
+		// statusMultifunctionBoard();
 		JOY_getDirection();
 
 		// todo: remove! will be included in the menu driver later

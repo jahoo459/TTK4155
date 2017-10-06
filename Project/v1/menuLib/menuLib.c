@@ -8,10 +8,16 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stddef.h>
+<<<<<<< HEAD
 //#include <util/delay.h>
+||||||| merged common ancestors
+#include <util/delay.h>
+=======
+>>>>>>> ed2a3d16a7e5b4dbd9c9839902d82303175f5930
 #include "menuLib.h"
 #include "..\JoystickLib\JoystickLib.h"
 #include "../oledLib/oledLib.h"
+#include <util/delay.h>
 
 //******************************************************************************************
 menuNode_t *mainMenu = NULL; //pointer pointing to main menu

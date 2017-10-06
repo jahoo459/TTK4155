@@ -33,7 +33,7 @@ extern volatile char *adc_ext_ram;
 // basic stuff..
 #define BAUDRATE 9600
 #define FOSC  4915200
-#define  F_CPU FOSC
+#define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 
 #define uint16_t unsigned int

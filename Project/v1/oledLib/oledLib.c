@@ -7,9 +7,10 @@
 
 #include <avr/io.h>
 #include <string.h>
-
+#include "..\ProjectMain\definitions.h"
 #include "oledLib.h"
 #include "..\fonts\fonts.h"
+#include <util/delay.h>
 
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
@@ -37,7 +38,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
 	OLED_writeByteToOLED(oled_cmd, 0x80);
 	OLED_writeByteToOLED(oled_cmd, 0x81); // Contrast control
-	OLED_writeByteToOLED(oled_cmd, 0x50);
+	OLED_writeByteToOLED(oled_cmd, 0x50); // set contrast
 	OLED_writeByteToOLED(oled_cmd, 0xd9); // Set pre-charge period
 	OLED_writeByteToOLED(oled_cmd, 0x21);
 	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
@@ -51,8 +52,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	OLED_goto(7, 119);
-	OLED_printCharacter('*');
+	OLED_splashScreen();
 }
 
 
@@ -204,4 +204,62 @@ void OLED_moveArrow(int joy_counter)
 	OLED_clearArrow(); // clear the arrow space
 	OLED_goto(joy_counter,0); // move cursor to specified row
 	OLED_printArrow(); // print arrow
+}
+
+void OLED_setContrast(uint8_t contrast)
+{
+	// activate contrast contol
+	OLED_writeByteToOLED(oled_cmd, 0x81);
+	// set contrast to provided value
+	OLED_writeByteToOLED(oled_cmd, contrast);
+}
+
+void OLED_fadeIn(void)
+{
+	// gradually increase contrast
+	for(uint8_t i = 0; i < 255; i++)
+	{
+		OLED_setContrast(i);
+		_delay_ms(4);
+		printf("%d\n",i);
+	}
+	printf("was here");
+}
+
+void OLED_fadeOut(void)
+{
+	// gradually decrease contrast
+	for(uint8_t i = 0; i < 255; i++)
+	{
+		OLED_setContrast(255-i);
+		_delay_ms(4);
+	}
+}
+
+void OLED_splashScreen(void)
+{
+	_delay_ms(200);
+	OLED_setContrast(0);
+	OLED_goto(2,4);
+	OLED_printString("Group 46 Soft");
+	OLED_fadeIn();
+	_delay_ms(500);
+	OLED_setContrast(0);
+	OLED_goto(4,28);
+	OLED_printString("proudly");
+	OLED_goto(5,24);	
+	OLED_printString("presents");
+	OLED_fadeIn();
+	_delay_ms(500);
+	
+	OLED_clear();
+	OLED_setContrast(0);
+	OLED_goto(3, 28);
+	OLED_printString("FIFA 18");
+	OLED_fadeIn();
+	_delay_ms(1000);
+	
+	// clean up
+	OLED_clear(); // wipe screen
+	OLED_setContrast(0x50); // back to standard contrast
 }
