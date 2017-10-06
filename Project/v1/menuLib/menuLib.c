@@ -8,10 +8,10 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <util/delay.h>
 #include "menuLib.h"
 #include "..\JoystickLib\JoystickLib.h"
 #include "../oledLib/oledLib.h"
+#include <util/delay.h>
 
 //******************************************************************************************
 menuNode_t *mainMenu = NULL; //pointer pointing to main menu
