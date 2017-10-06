@@ -38,6 +38,11 @@
 
 # Debug files
 *.dSYM/
+
+#Folders
+Debug/
+Release/
+
 *.su
 *.idb
 *.pdb
