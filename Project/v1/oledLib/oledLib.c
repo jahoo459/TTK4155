@@ -221,9 +221,7 @@ void OLED_fadeIn(void)
 	{
 		OLED_setContrast(i);
 		_delay_ms(4);
-		printf("%d\n",i);
 	}
-	printf("was here");
 }
 
 void OLED_fadeOut(void)

@@ -15,6 +15,7 @@
 #include "..\ExtSramLib\ExtSramLib.h"
 #include "..\oledLib\oledLib.h"
 #include "..\menuLib\menuLib.h"
+#include "..\SPILib\SPILib.h"
 //#include <util/delay.h>
 #include <UARTlib.h>
 
@@ -28,15 +29,21 @@
 // GLOBAL VARIABLES
 
 //UART COMMUNICATION
-volatile char receivedByte;
+volatile char UART_ReceivedByte;
 volatile uint8_t USARTreceivedFlag = 0;
+
+//INPUT MULTIFANCTION BOARD
 volatile uint8_t ADCconversionCompletedFlag = 0;
 volatile uint8_t JOYcalibFlag = 0;
 volatile uint8_t LeftButtonFlag = 0;
 volatile uint8_t RightButtonFlag = 0;
 
+//MENU
+volatile uint8_t activateMenuFlag = 0;
 
-
+//SPI COMMUNICATION
+volatile uint8_t SPI_ReceivedByte;
+volatile uint8_t SPIreceivedFlag = 0;
 
 //INITIALIZATION
 uint16_t ext_ram_size = (uint16_t)EXT_RAM_SIZE;
@@ -54,7 +61,7 @@ volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 ISR(USART0_RXC_vect)		
 {
 	//interrupt generated after receiving a byte over UART 
-	receivedByte = UDR0;		//received byte
+	UART_ReceivedByte = UDR0;		//received byte
 	USARTreceivedFlag = 1;		//set the flag to 1
 }
 
@@ -66,8 +73,13 @@ ISR(INT0_vect)
 
 ISR(INT1_vect)
 {
-	//interrupt generated on pin PD3 to start the joystick calibration
-	JOYcalibFlag = 1;
+	//interrupt generated on pin PD3 to start menu
+	activateMenuFlag = 1;
+}
+
+ISR(INT2_vect)
+{
+	SPIreceivedFlag = 1;
 }
 
 
@@ -127,7 +139,7 @@ void SRAM_test(void)
 	printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
 }
 
-void init(void)
+void init()
 {
 	// call initialization subroutines
 	uartInit(BAUDRATE, FOSC, UBRR);
@@ -135,8 +147,7 @@ void init(void)
 	SLI_init();
 	JOY_init();
 	OLED_init();
-	MENU_activate();
-	
+	SPI_init();
 	// setup interrupts
 	// init external interrupt INT0 on falling edge
 	set_bit(GICR, INT0);
@@ -155,11 +166,14 @@ void init(void)
 	// PB0
 	clear_bit(DDRB, PB0);
 	clear_bit(PORTB, PB0);
+	//init external interrupt INT2 on falling edge
+	clear_bit(EMCUCR, ISC2);
+	set_bit(GICR, ISC2);
 	// activate interrupts
 	sei();
 
 	// call SRAM Test
-	SRAM_test();
+	//SRAM_test();
 }
 
 // print status variables of Multifunction Board
@@ -230,6 +244,11 @@ int main(void)
 	
     while(1)
     {	
+		//TEST SPI
+		//SPI_send((uint8_t)19);
+		SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
+		printf("SPI received byte: %d\n", SPI_ReceivedByte);
+			
 		// statusMultifunctionBoard();
 		JOY_getDirection();
 
@@ -239,6 +258,18 @@ int main(void)
 			//run joystick calibration
 			JOY_calibrate();
 			JOYcalibFlag = 0;
-		}				
+		}	
+		
+		if(activateMenuFlag)
+		{
+			MENU_activate();
+		}
+		
+		if(SPI_ReceivedByte)
+		{
+			//TODO: check which slave caused teh interrupt. SS_CAN_CONTROLLER assumed now
+			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);	
+			printf("SPI received byte: %d\n", SPI_ReceivedByte);
+		}
     }
 }

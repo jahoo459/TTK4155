@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../ADCLib.c
+../SPILib.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,27 +47,26 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-ADCLib.o
+SPILib.o
 
 OBJS_AS_ARGS +=  \
-ADCLib.o
+SPILib.o
 
 C_DEPS +=  \
-ADCLib.d
+SPILib.d
 
 C_DEPS_AS_ARGS +=  \
-ADCLib.d
+SPILib.d
 
-OUTPUT_FILE_PATH +=libADCLib.a
+OUTPUT_FILE_PATH +=libSPILib.a
 
-OUTPUT_FILE_PATH_AS_ARGS +=libADCLib.a
+OUTPUT_FILE_PATH_AS_ARGS +=libSPILib.a
 
 ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
-LIB_DEP+=  \
-C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a
+LIB_DEP+= 
 
 LINKER_SCRIPT_DEP+= 
 
@@ -121,5 +120,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "libADCLib.elf" "libADCLib.a" "libADCLib.hex" "libADCLib.lss" "libADCLib.eep" "libADCLib.map" "libADCLib.srec" "libADCLib.usersignatures"
+	rm -rf "libSPILib.elf" "libSPILib.a" "libSPILib.hex" "libSPILib.lss" "libSPILib.eep" "libSPILib.map" "libSPILib.srec" "libSPILib.usersignatures"
 	

@@ -185,6 +185,11 @@
       <Project>{6feec37c-51e3-42ad-86f0-67d7402a6f38}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\SPILib\SPILib.cproj">
+      <Name>SPILib</Name>
+      <Project>{57cafacf-0bbd-47fa-89ba-69c8d37457a5}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\UARTlib\UARTlib.cproj">
       <Name>UARTlib</Name>
       <Project>{9853b26c-08a0-4743-925d-6be3a949355d}</Project>
