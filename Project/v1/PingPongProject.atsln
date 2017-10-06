@@ -30,6 +30,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "menuLib", "menuLib\menuLib.
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SPILib", "SPILib\SPILib.cproj", "{57CAFACF-0BBD-47FA-89BA-69C8D37457A5}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "MCP2515Lib", "MCP2515Lib\MCP2515Lib.cproj", "{98762802-D29A-40F2-98E0-9C1603527268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -72,6 +74,10 @@ Global
 		{57CAFACF-0BBD-47FA-89BA-69C8D37457A5}.Debug|AVR.Build.0 = Debug|AVR
 		{57CAFACF-0BBD-47FA-89BA-69C8D37457A5}.Release|AVR.ActiveCfg = Release|AVR
 		{57CAFACF-0BBD-47FA-89BA-69C8D37457A5}.Release|AVR.Build.0 = Release|AVR
+		{98762802-D29A-40F2-98E0-9C1603527268}.Debug|AVR.ActiveCfg = Debug|AVR
+		{98762802-D29A-40F2-98E0-9C1603527268}.Debug|AVR.Build.0 = Debug|AVR
+		{98762802-D29A-40F2-98E0-9C1603527268}.Release|AVR.ActiveCfg = Release|AVR
+		{98762802-D29A-40F2-98E0-9C1603527268}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

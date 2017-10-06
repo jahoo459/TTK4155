@@ -16,7 +16,7 @@
 #include "..\oledLib\oledLib.h"
 #include "..\menuLib\menuLib.h"
 #include "..\SPILib\SPILib.h"
-//#include <util/delay.h>
+#include "..\MCP2515Lib\MCP2515Lib.h"
 #include <UARTlib.h>
 
 
@@ -242,13 +242,16 @@ int main(void)
 {	
 	init();
 	
+	MCP2515_init();
+	//MCP2525_requestToSend(SS_CAN_CONTROLLER, 1, 1, 1);
+	printf("STATUS: %d\n", MCP2515_readStatus(SS_CAN_CONTROLLER));
     while(1)
     {	
 		//TEST SPI
-		//SPI_send((uint8_t)19);
-		SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
-		printf("SPI received byte: %d\n", SPI_ReceivedByte);
-			
+		//SPI_send((uint8_t)19, SS_CAN_CONTROLLER);
+		//SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
+		//printf("SPI received byte: %d\n", SPI_ReceivedByte);
+		
 		// statusMultifunctionBoard();
 		JOY_getDirection();
 
@@ -268,8 +271,8 @@ int main(void)
 		if(SPI_ReceivedByte)
 		{
 			//TODO: check which slave caused teh interrupt. SS_CAN_CONTROLLER assumed now
-			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);	
-			printf("SPI received byte: %d\n", SPI_ReceivedByte);
+// 			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);	
+// 			printf("SPI received byte: %d\n", SPI_ReceivedByte);
 		}
     }
 }

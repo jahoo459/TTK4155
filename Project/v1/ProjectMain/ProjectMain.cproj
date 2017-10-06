@@ -170,6 +170,11 @@
       <Project>{451b9df4-52c1-458b-938b-6731abcc07c1}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\MCP2515Lib\MCP2515Lib.cproj">
+      <Name>MCP2515Lib</Name>
+      <Project>{98762802-d29a-40f2-98e0-9c1603527268}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\menuLib\menuLib.cproj">
       <Name>menuLib</Name>
       <Project>{800bc642-ca13-423b-8a53-dbc88c8d8602}</Project>

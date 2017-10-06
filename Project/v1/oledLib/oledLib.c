@@ -261,3 +261,21 @@ void OLED_splashScreen(void)
 	OLED_clear(); // wipe screen
 	OLED_setContrast(0x50); // back to standard contrast
 }
+
+//void OLED_flyingArrows()
+//{
+	//for(uint8_t i=0; i<8; i++)
+	//{
+		//if(i%2 != 0)
+		//{
+			//OLED_goto(i,119);
+			//OLED_printArrow();
+		//}
+		//else
+		//{
+			//OLED_goto(i,111);
+			//OLED_printArrow();
+		//}
+	//}
+	//OLED_writeByteToOLED();
+//}

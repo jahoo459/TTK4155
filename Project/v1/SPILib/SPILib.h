@@ -14,10 +14,10 @@
 typedef enum {SS_CAN_CONTROLLER} SPI_SLAVES;
 
 void SPI_init(void);
-void SPI_send(uint8_t cData, SPI_SLAVES slave);
-uint8_t SPI_receive(SPI_SLAVES slave);
-void activateSlave(SPI_SLAVES slave);
-void deactivateSlave(SPI_SLAVES slave);
+void SPI_send(uint8_t cData);
+uint8_t SPI_receive(void);
+void SPI_activateSlave(SPI_SLAVES slave);
+void SPI_deactivateSlave(SPI_SLAVES slave);
 
 
 #endif /* SPILIB_H_ */

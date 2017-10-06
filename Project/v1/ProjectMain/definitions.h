@@ -58,5 +58,11 @@ typedef struct {
 	uint8_t L_per;
 } SLI_position_t;
 
+//CAN MESSAGE
+typedef struct can_message{
+	unsigned int id;
+	uint8_t length;
+	uint8_t data[8];
+} can_message_t;
 
 #endif /* DEFINITIONS_H_ */
