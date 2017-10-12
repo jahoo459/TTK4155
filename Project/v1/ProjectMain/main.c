@@ -242,16 +242,41 @@ int main(void)
 {	
 	init();
 	
-	MCP2515_init();
-	//MCP2525_requestToSend(SS_CAN_CONTROLLER, 1, 1, 1);
-	printf("STATUS: %d\n", MCP2515_readStatus(SS_CAN_CONTROLLER));
+	//MCP2515_init();
+	
+	printf("manual mcp init...\n");
+	SPI_activateSlave(SS_CAN_CONTROLLER);
+	SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	// reset mcp
+	SPI_activateSlave(SS_CAN_CONTROLLER);
+	SPI_send(MCP_RESET);
+	SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	
+	// read canstat
+	SPI_activateSlave(SS_CAN_CONTROLLER);
+	SPI_send(MCP_READ);
+	SPI_send(MCP_CANSTAT);
+	SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	
+	// push out value (does this have to be in previous block?)
+	SPI_activateSlave(SS_CAN_CONTROLLER);
+	SPI_send(0xa0);
+	SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	
+	// receive value
+	uint8_t value = SPDR;
+	printf("Value: %d (%#x)\n", value, value);
+	if((value & MODE_MASK) != MODE_CONFIG)
+	{
+		printf("MCP2515 is NOT in configuration mode after reset! Value: %d (%#x)\n", value, value);
+	}
+	else
+	{
+		printf("finished MCP2515_init\n");
+	}
+		
     while(1)
     {	
-		//TEST SPI
-		//SPI_send((uint8_t)19, SS_CAN_CONTROLLER);
-		//SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
-		//printf("SPI received byte: %d\n", SPI_ReceivedByte);
-		
 		// statusMultifunctionBoard();
 		JOY_getDirection();
 
@@ -270,7 +295,7 @@ int main(void)
 		
 		if(SPI_ReceivedByte)
 		{
-			//TODO: check which slave caused teh interrupt. SS_CAN_CONTROLLER assumed now
+			//TODO: check which slave caused the interrupt. SS_CAN_CONTROLLER assumed now
 // 			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);	
 // 			printf("SPI received byte: %d\n", SPI_ReceivedByte);
 		}
