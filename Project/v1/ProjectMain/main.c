@@ -3,7 +3,7 @@
  *
  * Created: 01.09.2017 15:04:31
  *  Author: janwh
- */ 
+ */
 
 /*
 =======================INCLUDES=========================
@@ -58,9 +58,9 @@ volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 =======================INTERRUPTS=========================
 */
 
-ISR(USART0_RXC_vect)		
+ISR(USART0_RXC_vect)
 {
-	//interrupt generated after receiving a byte over UART 
+	//interrupt generated after receiving a byte over UART
 	UART_ReceivedByte = UDR0;		//received byte
 	USARTreceivedFlag = 1;		//set the flag to 1
 }
@@ -95,47 +95,47 @@ void SRAM_test(void)
 	uint16_t ext_ram_size = 0x800;
 	uint16_t write_errors= 0;
 	uint16_t retrieval_errors= 0;
-	
+
 	printf("Starting SRAM test...\n");
-	
+
 	// rand() stores some internal state, so calling this function in a loop will
 	// yield different seeds each time (unless srand() is called before thisfunction)
-	
+
 	uint16_t seed = rand();
-	
+
 	// Write phase: Immediately check that the correct value was stored
 	srand(seed);
-	
-	for (uint16_t i = 0; i < ext_ram_size; i++) 
+
+	for (uint16_t i = 0; i < ext_ram_size; i++)
 	{
 		uint8_t some_value = rand();
 		ext_ram[i] = some_value;
 		uint8_t retreived_value = ext_ram[i];
-		
-		if (retreived_value != some_value) 
+
+		if (retreived_value != some_value)
 		{
 			//printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n", i, retreived_value, some_value);
 			write_errors++;
 		}
 
 	}
-	
+
 	// Retrieval phase: Check that no values were changed during or after the write phase
 	srand(seed);
-	
+
 	// reset the PRNG to the state it had before the write phase
-	for (uint16_t i = 0; i < ext_ram_size; i++) 
+	for (uint16_t i = 0; i < ext_ram_size; i++)
 	{
 		uint8_t some_value = rand();
 		uint8_t retreived_value = ext_ram[i];
-		
-		if (retreived_value != some_value) 
+
+		if (retreived_value != some_value)
 		{
 			//printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\n", i, retreived_value, some_value);
 			retrieval_errors++;
 		}
 	}
-	
+
 	printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
 }
 
@@ -186,13 +186,13 @@ void statusMultifunctionBoard(){
 
 	SLI_position_t currentSliPosition;
 	currentSliPosition = SLI_getPosition();
-	
+
 	uint8_t leftButton = 0;
 	uint8_t rightButton = 0;
 
 	//char directions[] = {'C', 'U', 'D', 'R', 'L'};
 	char* dir;
-	
+
 	if((PINB & (1<<PB0)))
 		{
 			//printf("Left button clicked ");
@@ -203,7 +203,7 @@ void statusMultifunctionBoard(){
 			//printf("Right button clicked ");
 			rightButton = 1;
 		}
-		
+
 	switch(currentJoyDirection)
 	{
 		case 0:
@@ -239,30 +239,34 @@ void statusMultifunctionBoard(){
 */
 
 int main(void)
-{	
+{
 	init();
-	
+
 	//MCP2515_init();
-	
+
 	printf("manual mcp init...\n");
 	SPI_activateSlave(SS_CAN_CONTROLLER);
 	SPI_deactivateSlave(SS_CAN_CONTROLLER);
 	// reset mcp
 	SPI_activateSlave(SS_CAN_CONTROLLER);
 	SPI_send(MCP_RESET);
+	_delay_ms(1); // wait 1ms
 	SPI_deactivateSlave(SS_CAN_CONTROLLER);
-	
+	_delay_ms(10); // wait for reset 
+
 	// read canstat
-	SPI_activateSlave(SS_CAN_CONTROLLER);
-	SPI_send(MCP_READ);
-	SPI_send(MCP_CANSTAT);
-	SPI_deactivateSlave(SS_CAN_CONTROLLER);
-	
+	// same procedure as in MCP2515_read()
+	SPI_activateSlave(SS_CAN_CONTROLLER); // Chip select
+	SPI_send(MCP_READ); // send READ command
+	SPI_send(MCP_CANSTAT); // send address of CANSTAT
+	SPI_send(0xa0); // send DUMMY to push out answer
+	SPI_deactivateSlave(SS_CAN_CONTROLLER); // Chip deselect
+
 	// push out value (does this have to be in previous block?)
-	SPI_activateSlave(SS_CAN_CONTROLLER);
-	SPI_send(0xa0);
-	SPI_deactivateSlave(SS_CAN_CONTROLLER);
-	
+	// SPI_activateSlave(SS_CAN_CONTROLLER);
+	// SPI_send(0xa0);
+	// SPI_deactivateSlave(SS_CAN_CONTROLLER);
+
 	// receive value
 	uint8_t value = SPDR;
 	printf("Value: %d (%#x)\n", value, value);
@@ -274,9 +278,9 @@ int main(void)
 	{
 		printf("finished MCP2515_init\n");
 	}
-		
+
     while(1)
-    {	
+    {
 		// statusMultifunctionBoard();
 		JOY_getDirection();
 
@@ -286,17 +290,17 @@ int main(void)
 			//run joystick calibration
 			JOY_calibrate();
 			JOYcalibFlag = 0;
-		}	
-		
+		}
+
 		if(activateMenuFlag)
 		{
 			MENU_activate();
 		}
-		
+
 		if(SPI_ReceivedByte)
 		{
 			//TODO: check which slave caused the interrupt. SS_CAN_CONTROLLER assumed now
-// 			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);	
+// 			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
 // 			printf("SPI received byte: %d\n", SPI_ReceivedByte);
 		}
     }
