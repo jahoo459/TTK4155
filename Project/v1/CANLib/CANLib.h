@@ -10,7 +10,7 @@
 #define CANLIB_H_
 
 
-
+// void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 
 
 #endif /* CANLIB_H_ */

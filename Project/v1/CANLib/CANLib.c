@@ -15,33 +15,35 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 	switch(transmitBufferNumber)
 	{
 		// TXB0
-		case 0:
+		case 0: 
+		{
 			// register TXB0CTRL (30h)
 			// configuration of flags and buffer priority
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, MCP_TXP1, 1);
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, MCP_TXP0, 1);
+			//MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL,);
+			//MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, );
 			
 			// write ID to TXB0SIDH and TXB0SIDL
-			uint16_t canID = 0b11111111111 & msg->id; // map id to 11 bits
-			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>4); // write first 7 bits to TXB0SIDH Register
-			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDL, 0b00000001111 & canID); // write last 4 bits to TXB0SIDL Register
+			unsigned int canID;
+			canID = msg->id; 
+			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>3); // write first 7 bits to TXB0SIDH Register
+			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDL, 0x0003 & canID); // write last 4 bits to TXB0SIDL Register
 			
 			// write Data length to TXB0DLC Register
-			uint8_t canDataLength = 0b1111 & msg->length;
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0DLC, MCP_DLC3, 0b1000 & canDataLength);	
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0DLC, MCP_DLC2, 0b0100 & canDataLength);
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0DLC, MCP_DLC1, 0b0010 & canDataLength);
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0DLC, MCP_DLC0, 0b0001 & canDataLength);
+			// TODO: only modify the lowest 4 bits
+			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0DLC, msg->length);
 			
-			// write Data to TXB0Dm Register
-			int i = msg->length;
-			
-			for(i; i > 0; i++);
+			uint8_t dataRegister = MCP_TXB0D0;
+			// write Data to TXB0Dm Register			
+			for(uint8_t i = 0; i < msg->length; i++)
 			{
-				//MCP2515_write();
+				dataRegister ++;
+				MCP2515_write(SS_CAN_CONTROLLER, dataRegister, msg->data[i]);
 			}
+			
+			// initiating transmission
+			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, 0x08, 0x08);
 		break;
-		
+		}
 	}
 	//send ID
 	//send length

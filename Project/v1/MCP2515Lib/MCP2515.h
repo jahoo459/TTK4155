@@ -157,6 +157,22 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define WAKFIL_ENABLE	0x40
 #define WAKFIL_DISABLE	0x00
 
+// CANCTRL
+#define MCP_REQOP2		7
+#define MCP_REQOP1		6
+#define MCP_REQOP0		5
+#define MCP_ABAT		4
+#define MCP_CLKEN		2
+#define MCP_CLKPRE1		1
+#define MCP_CLKPRE0		0
+
+// CANSTAT Register Bits
+#define MCP_OPMOD2		7
+#define MCP_OPMOD1		6
+#define MCP_OPMOD0		5
+#define MCP_ICOD2		3
+#define MCP_ICOD1		2
+#define MCP_ICOD0		1
 
 // CANINTF Register Bits
 

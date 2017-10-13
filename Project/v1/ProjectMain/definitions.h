@@ -36,7 +36,7 @@ extern volatile char *adc_ext_ram;
 #define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 
-#define uint16_t unsigned int
+//#define uint16_t unsigned int
 
 #include <util/delay.h>
 
@@ -60,7 +60,7 @@ typedef struct {
 
 //CAN MESSAGE
 typedef struct can_message{
-	unsigned int id;
+	uint16_t id;
 	uint8_t length;
 	uint8_t data[8];
 } can_message_t;

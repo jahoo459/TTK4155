@@ -88,11 +88,8 @@ uint8_t MCP2515_readStatus(SPI_SLAVES slave)
 	return result;
 }
 
-void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t bit2change, uint8_t newValue)
+void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t mask, uint8_t newValue)
 {
-	uint8_t mask = 0;
-	mask |= (1<<bit2change);
-	
 	SPI_activateSlave(slave);
 	
 	SPI_send(MCP_BITMOD);
@@ -102,3 +99,18 @@ void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t bit2ch
 	
 	SPI_deactivateSlave(slave);
 }
+
+//void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t bit2change, uint8_t newValue)
+//{
+	//uint8_t mask = 0;
+	//mask |= (1<<bit2change);
+	//
+	//SPI_activateSlave(slave);
+	//
+	//SPI_send(MCP_BITMOD);
+	//SPI_send(register2change);
+	//SPI_send(mask);
+	//SPI_send(newValue);
+	//
+	//SPI_deactivateSlave(slave);
+//}

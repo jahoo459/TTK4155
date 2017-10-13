@@ -243,7 +243,10 @@ int main(void)
 	init();
 
 	MCP2515_init();
+	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
 
+	printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
+	
     while(1)
     {
 		// statusMultifunctionBoard();
