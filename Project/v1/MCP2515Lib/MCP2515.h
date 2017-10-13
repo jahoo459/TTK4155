@@ -77,6 +77,18 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
 #define MCP_RXB0SIDH	0x61
+#define MCP_RXB0SIDL	0x62
+#define MCP_RXB0EID8	0x63
+#define MCP_RXB0EID0	0x64
+#define MCP_RXB0DLC		0x65
+#define MCP_RXB0D0		0x66
+#define MCP_RXB0D1		0x67
+#define MCP_RXB0D2		0x68
+#define MCP_RXB0D3		0x69
+#define MCP_RXB0D4		0x6A
+#define MCP_RXB0D5		0x6B
+#define MCP_RXB0D6		0x6C
+#define MCP_RXB0D7		0x6D
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
 
@@ -174,6 +186,16 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_ICOD1		2
 #define MCP_ICOD0		1
 
+// CANINTE Register Bits
+#define MCP_MERRE		7
+#define MCP_WAKIE		6
+#define MCP_ERRIE		5
+#define MCP_TX2IE		4
+#define MCP_TX1IE		3
+#define MCP_TX0IE		2
+#define MCP_RX1IE		1
+#define MCP_RX0IE		0
+
 // CANINTF Register Bits
 
 #define MCP_RX0IF		0x01
@@ -201,5 +223,13 @@ Copyright 2003 Kimberly Otten Software Consulting
  #define MCP_DLC2		2
  #define MCP_DLC1		1
  #define MCP_DLC0		0
+ 
+// RXB0CTRL Register Bits
+ #define MCP_RXM1			6
+ #define MCP_RXM0			5
+ #define MCP_RXRTR			3
+ #define MCP_BUKT			2
+ #define MCP_BUKT1			1
+ #define MCP_FILHIT0		0
 
 #endif

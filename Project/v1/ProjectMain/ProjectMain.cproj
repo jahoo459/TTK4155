@@ -160,6 +160,11 @@
       <Project>{5ca97e6c-6a36-4af7-833f-814f8342886f}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\CANLib\CANLib.cproj">
+      <Name>CANLib</Name>
+      <Project>{dce6c7e3-ee26-4d79-826b-08594b9ad897}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\ExtSramLib\ExtSramLib.cproj">
       <Name>ExtSramLib</Name>
       <Project>{6d83be5a-9d59-4a17-a83c-c6e2eb982770}</Project>
