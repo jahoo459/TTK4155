@@ -9,7 +9,13 @@
 #ifndef SPILIB_H_
 #define SPILIB_H_
 
-#define SS_CAN_CONTROLLER_PIN PB4
+#define DDR_SPI DDRB
+#define PORT_SPI PORTB				//for slave selection
+#define SS_CAN_CONTROLLER_PIN PB4	//for slave selection
+#define MOSI_PIN DDB5
+#define MISO_PIN DDB6
+#define SCK_PIN DDB7
+
 
 typedef enum {SS_CAN_CONTROLLER} SPI_SLAVES;
 
