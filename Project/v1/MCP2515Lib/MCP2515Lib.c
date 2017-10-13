@@ -6,9 +6,8 @@
  */ 
 
 #include <avr/io.h>
-#include "..\SPILib\SPILib.h"
 #include "MCP2515Lib.h"
-#include "..\ProjectMain\definitions.h"
+
 
 
 uint8_t MCP2515_init()
@@ -19,7 +18,7 @@ uint8_t MCP2515_init()
 	//printf("MCP_CANSTAT: %d\n", MCP2515_read(MCP_CANSTAT, SS_CAN_CONTROLLER));
 	
 	// Self-test
-	value = MCP2515_read(MCP_CANSTAT, SS_CAN_CONTROLLER);
+	value = MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT);
 	printf("CANSTAT: %#x\n", value);
 	if((value & MODE_MASK) != MODE_CONFIG) 
 	{
@@ -35,10 +34,12 @@ uint8_t MCP2515_init()
 {
 	SPI_activateSlave(slave);
 	SPI_send(MCP_RESET);
+	_delay_ms(1);
 	SPI_deactivateSlave(slave);
+	_delay_ms(10);
 }
 
-uint8_t MCP2515_read(uint8_t address, SPI_SLAVES slave)
+uint8_t MCP2515_read(SPI_SLAVES slave, uint8_t address)
 {
 	SPI_activateSlave(slave);
 	SPI_send(MCP_READ);
@@ -51,7 +52,7 @@ uint8_t MCP2515_read(uint8_t address, SPI_SLAVES slave)
 	return result;
 }
 
-void MCP2515_write(uint8_t address, uint8_t data, SPI_SLAVES slave)
+void MCP2515_write(SPI_SLAVES slave, uint8_t address, uint8_t data)
 {
 	SPI_activateSlave(slave);
 	SPI_send(MCP_WRITE);

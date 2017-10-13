@@ -52,7 +52,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	OLED_splashScreen();
+	//OLED_splashScreen();
 }
 
 

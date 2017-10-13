@@ -242,42 +242,7 @@ int main(void)
 {
 	init();
 
-	//MCP2515_init();
-
-	printf("manual mcp init...\n");
-	SPI_activateSlave(SS_CAN_CONTROLLER);
-	SPI_deactivateSlave(SS_CAN_CONTROLLER);
-	// reset mcp
-	SPI_activateSlave(SS_CAN_CONTROLLER);
-	SPI_send(MCP_RESET);
-	_delay_ms(1); // wait 1ms
-	SPI_deactivateSlave(SS_CAN_CONTROLLER);
-	_delay_ms(10); // wait for reset 
-
-	// read canstat
-	// same procedure as in MCP2515_read()
-	SPI_activateSlave(SS_CAN_CONTROLLER); // Chip select
-	SPI_send(MCP_READ); // send READ command
-	SPI_send(MCP_CANSTAT); // send address of CANSTAT
-	SPI_send(0xa0); // send DUMMY to push out answer
-	SPI_deactivateSlave(SS_CAN_CONTROLLER); // Chip deselect
-
-	// push out value (does this have to be in previous block?)
-	// SPI_activateSlave(SS_CAN_CONTROLLER);
-	// SPI_send(0xa0);
-	// SPI_deactivateSlave(SS_CAN_CONTROLLER);
-
-	// receive value
-	uint8_t value = SPDR;
-	printf("Value: %d (%#x)\n", value, value);
-	if((value & MODE_MASK) != MODE_CONFIG)
-	{
-		printf("MCP2515 is NOT in configuration mode after reset! Value: %d (%#x)\n", value, value);
-	}
-	else
-	{
-		printf("finished MCP2515_init\n");
-	}
+	MCP2515_init();
 
     while(1)
     {

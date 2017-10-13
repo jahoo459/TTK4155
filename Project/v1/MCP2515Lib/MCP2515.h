@@ -57,7 +57,22 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_CANINTE		0x2B
 #define MCP_CANINTF		0x2C
 #define MCP_EFLG		0x2D
+
 #define MCP_TXB0CTRL	0x30
+#define MCP_TXB0SIDH	0x31
+#define MCP_TXB0SIDL	0x32
+#define MCP_TXB0EID8	0x33
+#define MCP_TXB0EID0	0x34
+#define MCP_TXB0DLC		0x35
+#define MCP_TXB0D0		0x36
+#define MCP_TXB0D1		0x37
+#define MCP_TXB0D2		0x38
+#define MCP_TXB0D3		0x39
+#define MCP_TXB0D4		0x3A
+#define MCP_TXB0D5		0x3B
+#define MCP_TXB0D6		0x3C
+#define MCP_TXB0D7		0x3D
+
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
@@ -154,6 +169,21 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
 
+// TXBnCTRL Register Bits
 
+#define MCP_ABTF		6
+#define MCP_MLOA		5
+#define MCP_TXERR		4
+#define MCP_TXREQ		3
+#define MCP_TXP1		1
+#define MCP_TXP0		0
+
+// RXBnDLC (n = 0, 1) Register Bits
+
+ #define MCP_RTR		6
+ #define MCP_DLC3		3
+ #define MCP_DLC2		2
+ #define MCP_DLC1		1
+ #define MCP_DLC0		0
 
 #endif
