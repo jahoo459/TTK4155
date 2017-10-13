@@ -17,6 +17,7 @@
 #include "..\menuLib\menuLib.h"
 #include "..\SPILib\SPILib.h"
 #include "..\MCP2515Lib\MCP2515Lib.h"
+#include "..\CANLib\CANLib.h"
 #include <UARTlib.h>
 
 
@@ -243,9 +244,48 @@ int main(void)
 	init();
 
 	MCP2515_init();
-	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
-
-	printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
+	CAN_init();
+	
+	//SPI_activateSlave(SS_CAN_CONTROLLER);
+	//SPI_send(MCP_RX_STATUS);
+	//uint8_t reception = SPI_receive();
+	//SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	//
+	//printf("reception: %#x\n", reception);
+	
+	struct can_message message2send;
+	message2send.id = 0b11111111111;
+	message2send.length = 2;
+	message2send.data[0] = '@';
+	message2send.data[1] = '%';
+	
+	CAN_sendMessage(&message2send, 0);
+	_delay_ms(100);
+	
+	//SPI_activateSlave(SS_CAN_CONTROLLER);
+	//SPI_send(MCP_RX_STATUS);
+	//reception = SPI_receive();
+	//SPI_deactivateSlave(SS_CAN_CONTROLLER);
+	//
+	//printf("reception: %#x\n", reception);
+	
+	
+	struct can_message receivedMessage;
+	
+	receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDH);	
+	receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDL)>>5);
+	printf("id 2: %d\n",receivedMessage.id);
+	
+	receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0DLC);
+	printf("length: %d\n", receivedMessage.length);
+	
+	uint8_t dataRegister = MCP_RXB0D0;
+	for(uint8_t i = 0; i < receivedMessage.length; i++)
+	{
+		receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
+		printf("data: %c\n", receivedMessage.data[i]);
+		dataRegister++;
+	}
 	
     while(1)
     {
