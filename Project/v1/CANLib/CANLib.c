@@ -43,11 +43,8 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 			// write ID to TXB0SIDH and TXB0SIDL
 			unsigned int canID;
 			canID = msg->id; 
-			printf("canID: %#x\n", canID);
 			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDL, (0x0007 & canID)<<5); // write last 4 bits to TXB0SIDL Register
-			printf("SIDL: %#x\n", 0x0007 & canID);
 			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>3); // write first 7 bits to TXB0SIDH Register		
-			printf("SIDH: %#x\n", canID>>3);
 			
 			// write Data length to TXB0DLC Register
 			// TODO: only modify the lowest 4 bits
