@@ -21,13 +21,13 @@ void SPI_init()
 	DDR_SPI = (1<<DDB4) | (1<<MOSI_PIN) | (1<<SCK_PIN);
 
  	//Enable SPI, Master, set clock rate fck/16
- 	SPCR = (1<<SPE) | (1<<MSTR) | (1<<SPR0);
+ 	//SPCR = (1<<SPE) | (1<<MSTR) | (1<<SPR0);
 
 	// Enable SPI, Master, set clock rate fck/4
-	//SPCR = (1<<SPE) | (1<<MSTR);
+	SPCR = (1<<SPE) | (1<<MSTR);
 
 	// clock rate fck/2
-	//SPSR = (1<<SPI2X);
+	SPSR = (1<<SPI2X);
 
 	// set SS_CAN_CONTROLLER high for default (slave not selected)
 	set_bit(PORT_SPI, SS_CAN_CONTROLLER_PIN);
@@ -37,7 +37,6 @@ void SPI_send(uint8_t cData)
 {
 	// Start transmission
 	SPDR = cData;
-	printf("Sendind %d\n", cData);
 
 	// Wait for transmission complete
 	while(!(SPSR & (1<<SPIF)));

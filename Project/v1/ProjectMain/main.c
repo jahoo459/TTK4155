@@ -149,27 +149,33 @@ void init()
 	JOY_init();
 	OLED_init();
 	SPI_init();
+	
 	// setup interrupts
 	// init external interrupt INT0 on falling edge
 	set_bit(GICR, INT0);
 	set_bit(MCUCR, ISC01);
 	clear_bit(MCUCR, ISC00);
+	
 	// Pull-up on PD3
 	clear_bit(DDRD, PD3);
 	set_bit(PORTD, PD3);
+	
 	// init external interrupt INT1 on falling edge
 	set_bit(GICR, INT1);
 	set_bit(MCUCR, ISC11);
 	clear_bit(MCUCR, ISC10);
+	
+	//init external interrupt INT2 on falling edge
+	set_bit(GICR, INT2);
+	clear_bit(EMCUCR, ISC2);
+		
 	// PE2
 	clear_bit(DDRE, PE2);
 	clear_bit(PORTE, PE2);
 	// PB0
 	clear_bit(DDRB, PB0);
 	clear_bit(PORTB, PB0);
-	//init external interrupt INT2 on falling edge
-	clear_bit(EMCUCR, ISC2);
-	set_bit(GICR, ISC2);
+
 	// activate interrupts
 	sei();
 
@@ -247,30 +253,19 @@ int main(void)
 	CAN_init();
 	
 	struct can_message message2send;
-	message2send.id = 0b11111111111;
-	message2send.length = 2;
+	message2send.id = 23;
+	message2send.length = 8;
 	message2send.data[0] = '@';
 	message2send.data[1] = '~';
+	message2send.data[2] = 'H';
+	message2send.data[3] = 'l';
+	message2send.data[4] = '1';
+	message2send.data[5] = '.';
+	message2send.data[6] = '/';
+	message2send.data[7] = '|';
 	
 	CAN_sendMessage(&message2send, 0);
 	_delay_ms(100);
-		
-	struct can_message receivedMessage;
-	
-	receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDH);	
-	receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDL)>>5);
-	printf("id: %d\n",receivedMessage.id);
-	
-	receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0DLC);
-	printf("length: %d\n", receivedMessage.length);
-	
-	uint8_t dataRegister = MCP_RXB0D0;
-	for(uint8_t i = 0; i < receivedMessage.length; i++)
-	{
-		receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
-		printf("data: %c\n", receivedMessage.data[i]);
-		dataRegister++;
-	}
 	
     while(1)
     {
@@ -290,11 +285,24 @@ int main(void)
 			MENU_activate();
 		}
 
-		if(SPI_ReceivedByte)
+		if(SPIreceivedFlag)
 		{
 			//TODO: check which slave caused the interrupt. SS_CAN_CONTROLLER assumed now
-// 			SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
-// 			printf("SPI received byte: %d\n", SPI_ReceivedByte);
+			//SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
+			//printf("SPI received byte: %d\n", SPI_ReceivedByte);
+			
+			struct can_message receivedMessage;
+
+			receivedMessage = CAN_receiveMessage();
+
+			printf("id: %d, length: %d, data:", receivedMessage.id, receivedMessage.length);
+			for(uint8_t i = 0; i < receivedMessage.length; i++)
+			{
+				printf(" %c", receivedMessage.data[i]);
+			}
+			printf("\n");
+			
+			SPIreceivedFlag = 0;
 		}
     }
 }

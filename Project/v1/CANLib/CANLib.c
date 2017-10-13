@@ -25,6 +25,9 @@ void CAN_init()
    
     // switch to loopback mode
     MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
+	
+	//Enable interrupt when message received
+	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANINTE, 0x01, 0x01);
 }
 
 void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
@@ -63,8 +66,24 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 		break;
 		}
 	}
-	//send ID
-	//send length
-	//send data
+}
 	
+	
+can_message_t CAN_receiveMessage()
+{
+	struct can_message receivedMessage;
+	
+	receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDH);
+	receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDL)>>5);
+
+	receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0DLC);
+
+	uint8_t dataRegister = MCP_RXB0D0;
+	for(uint8_t i = 0; i < receivedMessage.length; i++)
+	{
+		receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
+		dataRegister++;
+	}
+	
+	return receivedMessage;
 }
