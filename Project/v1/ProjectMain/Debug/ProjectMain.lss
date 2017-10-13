@@ -3636,7 +3636,7 @@ void SPI_init()
     141e:	80 eb       	ldi	r24, 0xB0	; 176
 	// Set _SS, MOSI and SCK output, all others input
 	//DDRB = (1<<SS_CAN_CONTROLLER_PIN) | (1<<DDB5) | (1<<DDB7);
-	DDR_SPI = (1<<DDB4) | (1<<MOSI_PIN) | (1<<SCK_PIN);
+	DDR_SPI = (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
     1420:	87 bb       	out	0x17, r24	; 23
     1422:	80 e5       	ldi	r24, 0x50	; 80
 
