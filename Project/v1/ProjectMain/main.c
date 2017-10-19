@@ -143,12 +143,14 @@ void SRAM_test(void)
 void init()
 {
 	// call initialization subroutines
-	uartInit(BAUDRATE, FOSC, UBRR);
+	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
 	enableXMEM(1);
 	SLI_init();
 	JOY_init();
 	OLED_init();
 	SPI_init();
+	MCP2515_init();
+	CAN_init();
 	
 	// setup interrupts
 	// init external interrupt INT0 on falling edge
@@ -247,10 +249,11 @@ void statusMultifunctionBoard(){
 
 int main(void)
 {
+	
 	init();
 
-	MCP2515_init();
-	CAN_init();
+// 	MCP2515_init();
+// 	CAN_init();
 	
 	struct can_message message2send;
 	message2send.id = 23;
@@ -262,10 +265,17 @@ int main(void)
 	message2send.data[4] = '1';
 	message2send.data[5] = '.';
 	message2send.data[6] = '/';
-	message2send.data[7] = '|';
-	
+	message2send.data[7] = '5';
 	CAN_sendMessage(&message2send, 0);
 	_delay_ms(100);
+	
+	struct can_message message3send;
+	message3send.id = 12;
+	message3send.length = 2;
+	message3send.data[0] = 'a';
+	message3send.data[1] = '+';
+	
+	uint8_t SPIcount = 0;
 	
     while(1)
     {
@@ -287,22 +297,31 @@ int main(void)
 
 		if(SPIreceivedFlag)
 		{
-			//TODO: check which slave caused the interrupt. SS_CAN_CONTROLLER assumed now
-			//SPI_ReceivedByte = SPI_receive(SS_CAN_CONTROLLER);
-			//printf("SPI received byte: %d\n", SPI_ReceivedByte);
-			
-			struct can_message receivedMessage;
-
-			receivedMessage = CAN_receiveMessage();
-
-			printf("id: %d, length: %d, data:", receivedMessage.id, receivedMessage.length);
-			for(uint8_t i = 0; i < receivedMessage.length; i++)
+			uint8_t receiveBufferStatus;
+			// check for message reception
+			if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))
 			{
-				printf(" %c", receivedMessage.data[i]);
-			}
-			printf("\n");
+				struct can_message receivedMessage;
+				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
+
+	// 			printf("id: %d, length: %d, data:", receivedMessage.id, receivedMessage.length);
+	// 			for(uint8_t i = 0; i < receivedMessage.length; i++)
+	// 			{
+	// 				printf(" %c", receivedMessage.data[i]);
+	// 			}
+	// 			printf("\n");
+
+				CAN_printMessage(&receivedMessage);
 			
-			SPIreceivedFlag = 0;
+				SPIreceivedFlag = 0;
+			
+				if(SPIcount == 0)
+				{
+					CAN_sendMessage(&message3send, 0);
+					_delay_ms(100);
+					SPIcount = 1;
+				}
+			}
 		}
     }
 }

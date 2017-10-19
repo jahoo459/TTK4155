@@ -15,13 +15,8 @@
 
 void SPI_init()
 {
-	printf("\n\nInitializing SPI\n");
 	// Set _SS, MOSI and SCK output, all others input
-	//DDRB = (1<<SS_CAN_CONTROLLER_PIN) | (1<<DDB5) | (1<<DDB7);
 	DDR_SPI = (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
-
- 	//Enable SPI, Master, set clock rate fck/16
- 	//SPCR = (1<<SPE) | (1<<MSTR) | (1<<SPR0);
 
 	// Enable SPI, Master, set clock rate fck/4
 	SPCR = (1<<SPE) | (1<<MSTR);

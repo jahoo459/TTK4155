@@ -12,21 +12,19 @@
 
 uint8_t MCP2515_init()
 {
-	uint8_t value;
 	MCP2515_reset(SS_CAN_CONTROLLER); // Send reset-command
 	
-	//printf("MCP_CANSTAT: %d\n", MCP2515_read(MCP_CANSTAT, SS_CAN_CONTROLLER));
-	
 	// Self-test
+	uint8_t value;
 	value = MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT);
-	printf("CANSTAT: %#x\n", value);
+	//printf("CANSTAT: %#x\n", value);
 	if((value & MODE_MASK) != MODE_CONFIG) 
 	{
 		printf("MCP2515 is NOT in configuration mode after reset! Value: %d\n", value);
 		return 1;
 	}
 	
-	printf("finished MCP2515_init\n");
+	//printf("finished MCP2515_init\n");
 	return 0;
 }
 
@@ -99,18 +97,3 @@ void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t mask, 
 	
 	SPI_deactivateSlave(slave);
 }
-
-//void MCP2515_bitModify(SPI_SLAVES slave, uint8_t register2change, uint8_t bit2change, uint8_t newValue)
-//{
-	//uint8_t mask = 0;
-	//mask |= (1<<bit2change);
-	//
-	//SPI_activateSlave(slave);
-	//
-	//SPI_send(MCP_BITMOD);
-	//SPI_send(register2change);
-	//SPI_send(mask);
-	//SPI_send(newValue);
-	//
-	//SPI_deactivateSlave(slave);
-//}

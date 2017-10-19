@@ -13,6 +13,7 @@
 
 void CAN_init(void);
 void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber);
-can_message_t CAN_receiveMessage(void);
+can_message_t CAN_receiveMessage(uint8_t receiveBufferStatus);
+void CAN_printMessage(can_message_t* msg);
 
 #endif /* CANLIB_H_ */

@@ -10,12 +10,12 @@
 
 void CAN_init()
 {
-	// activate Rx Buffer Interrupts
+	// enable Receive Buffer Full Interrupts
     MCP2515_write(SS_CAN_CONTROLLER, MCP_CANINTE, (1<<MCP_RX1IE)|(1<<MCP_RX0IE) );
    
 	// SETUP FILTERS    
     // set both buffers to accept all messages
-    MCP2515_write(SS_CAN_CONTROLLER, MCP_RXB0CTRL, (1<<MCP_RXM1)|(1<<MCP_RXM0) ); // buffer 0
+    MCP2515_write(SS_CAN_CONTROLLER, MCP_RXB0CTRL, (1<<MCP_RXM1)|(1<<MCP_RXM0) );
    
     // delete all bits from reception mask -> accept all messages
     //mcp2515_write_register( RXM0SIDH, 0 );
@@ -25,9 +25,6 @@ void CAN_init()
    
     // switch to loopback mode
     MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
-	
-	//Enable interrupt when message received
-	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANINTE, 0x01, 0x01);
 }
 
 void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
@@ -46,8 +43,8 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 			// write ID to TXB0SIDH and TXB0SIDL
 			unsigned int canID;
 			canID = msg->id; 
-			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDL, (0x0007 & canID)<<5); // write last 4 bits to TXB0SIDL Register
-			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>3); // write first 7 bits to TXB0SIDH Register		
+			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDL, (0x0007 & canID)<<5); // write last 3 bits to first 3 bits in TXB0SIDL Register
+			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>3); // write first 8 bits to TXB0SIDH Register		
 			
 			// write Data length to TXB0DLC Register
 			// TODO: only modify the lowest 4 bits
@@ -62,28 +59,83 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 			}
 			
 			// initiating transmission
-			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, 0x08, 0x08);
+			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, (1<<MCP_TXREQ), 0xff);
 		break;
 		}
 	}
 }
 	
 	
-can_message_t CAN_receiveMessage()
+can_message_t CAN_receiveMessage(uint8_t receiveBufferStatus)
 {
+	// check flag register CANINTF about source of interrupt
+	//uint8_t receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF);
+	
+	// auxiliary variables for the following switch case
 	struct can_message receivedMessage;
+	uint8_t dataRegister;
 	
-	receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDH);
-	receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDL)>>5);
-
-	receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0DLC);
-
-	uint8_t dataRegister = MCP_RXB0D0;
-	for(uint8_t i = 0; i < receivedMessage.length; i++)
+	// read receive buffer depending on where the received message was saved
+	switch(receiveBufferStatus)
 	{
-		receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
-		dataRegister++;
-	}
+		// prioritize RXB0
+		case 1:
+		case 3:
+			// read higher bits from RXBnSIDH
+			receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDH);
+			// read lower bits from RXBnSIDL
+			receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0SIDL)>>5);
+
+			// read message length from RXBnDLC
+			receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB0DLC);
+
+			// start reading message data from lowest register
+			dataRegister = MCP_RXB0D0;
+			// increment data register depending on message length
+			for(uint8_t i = 0; i < receivedMessage.length; i++)
+			{
+				// read message data from data register
+				receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
+				dataRegister++;
+			}
 	
-	return receivedMessage;
+			// clear receive flag of corresponding buffer
+			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANINTF, MCP_RX0IF, 0x00);
+	
+			return receivedMessage;
+			
+		case 2:
+			// read higher bits from RXBnSIDH
+			receivedMessage.id = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB1SIDH);
+			// read lower bits from RXBnSIDL
+			receivedMessage.id = receivedMessage.id<<3 | (MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB1SIDL)>>5);
+
+			// read message length from RXBnDLC
+			receivedMessage.length = MCP2515_read(SS_CAN_CONTROLLER, MCP_RXB1DLC);
+
+			// start reading message data from lowest register
+			dataRegister = MCP_RXB1D0;
+			// increment data register depending on message length
+			for(uint8_t i = 0; i < receivedMessage.length; i++)
+			{
+				// read message data from data register
+				receivedMessage.data[i] = MCP2515_read(SS_CAN_CONTROLLER, dataRegister);
+				dataRegister++;
+			}
+		
+			// clear receive flag of corresponding buffer
+			MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANINTF, MCP_RX1IF, 0x00);
+		
+			return receivedMessage;
+	}
+}
+
+void CAN_printMessage(can_message_t* msg)
+{
+	printf("received message: id: %d, length: %d, data:", msg->id, msg->length);
+	for(uint8_t i = 0; i < msg->length; i++)
+	{
+		printf(" %c", msg->data[i]);
+	}
+	printf("\n");
 }
