@@ -36,7 +36,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xa8); // Multiplex ration mode:63
 	OLED_writeByteToOLED(oled_cmd, 0x3f);
 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
-	OLED_writeByteToOLED(oled_cmd, 0x80);
+	OLED_writeByteToOLED(oled_cmd, 0x80); // default value is 0x80
 	OLED_writeByteToOLED(oled_cmd, 0x81); // Contrast control
 	OLED_writeByteToOLED(oled_cmd, 0x50); // set contrast
 	OLED_writeByteToOLED(oled_cmd, 0xd9); // Set pre-charge period
@@ -53,6 +53,7 @@ void OLED_init(void)
 	
 	OLED_clear(); // wipe the screen
 	OLED_splashScreen();
+	OLED_flyingArrows();
 }
 
 
@@ -236,46 +237,120 @@ void OLED_fadeOut(void)
 
 void OLED_splashScreen(void)
 {
-	_delay_ms(200);
+	printf("run splash screen...\n");
+	
 	OLED_setContrast(0);
+	
+	_delay_ms(500);
 	OLED_goto(2,4);
 	OLED_printString("Group 46 Soft");
 	OLED_fadeIn();
 	_delay_ms(500);
+	
+	OLED_clear();
 	OLED_setContrast(0);
-	OLED_goto(4,28);
+	
+	_delay_ms(200);
+	OLED_goto(3,28);
 	OLED_printString("proudly");
-	OLED_goto(5,24);	
+	OLED_goto(4,24);	
 	OLED_printString("presents");
 	OLED_fadeIn();
 	_delay_ms(500);
 	
 	OLED_clear();
 	OLED_setContrast(0);
+	
+	_delay_ms(200);
 	OLED_goto(3, 28);
 	OLED_printString("FIFA 18");
 	OLED_fadeIn();
 	_delay_ms(1000);
 	
 	// clean up
-	OLED_clear(); // wipe screen
 	OLED_setContrast(0x50); // back to standard contrast
+	
+	printf("splash screen done...\n");
 }
 
-//void OLED_flyingArrows()
-//{
-	//for(uint8_t i=0; i<8; i++)
-	//{
-		//if(i%2 != 0)
-		//{
-			//OLED_goto(i,119);
-			//OLED_printArrow();
-		//}
-		//else
-		//{
-			//OLED_goto(i,111);
-			//OLED_printArrow();
-		//}
-	//}
-	//OLED_writeByteToOLED();
-//}
+void OLED_flyingArrows()
+{
+	printf("let the arrows fly...\n");
+	
+	// setup fosc
+	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
+	OLED_writeByteToOLED(oled_cmd, 0xf0); // default value is 0x80
+	
+	// setup scrolling
+	OLED_writeByteToOLED(oled_cmd, 0x26); // set right horizontal scroll
+	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
+	OLED_writeByteToOLED(oled_cmd, 0x00); // start page address
+	OLED_writeByteToOLED(oled_cmd, 0x07); // time interval between scroll steps (2 frames)
+	OLED_writeByteToOLED(oled_cmd, 0x07); // end page address
+	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
+	OLED_writeByteToOLED(oled_cmd, 0xff); // dummy byte 0xff
+	
+	for(uint8_t i = 0; i < 9; i++)
+	{
+		for(uint8_t count_row = 0; count_row < height; count_row++)
+		{
+			OLED_goto(count_row,117); // move to first column in row
+			
+			// the inner loop iterates the columns of each row
+			for(uint8_t count_column = 117; count_column < width; count_column++)
+			{
+				OLED_writeByteToOLED(oled_data, 0x00);
+			}
+		}
+		
+		OLED_goto(0,0);
+		OLED_printArrow();
+		OLED_goto(2,0);
+		OLED_printArrow();
+		OLED_goto(4,0);
+		OLED_printArrow();
+		OLED_goto(6,0);
+		OLED_printArrow();
+	
+ 		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling 
+ 		_delay_ms(75);
+ 		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling 
+ 	
+ 		OLED_goto(1,0);
+ 		OLED_printArrow();
+ 		OLED_goto(3,0);
+ 		OLED_printArrow();
+ 		OLED_goto(5,0);
+ 		OLED_printArrow();
+ 		OLED_goto(7,0);
+ 		OLED_printArrow();
+ 	
+ 		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
+ 		_delay_ms(75);
+ 		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
+	}
+	
+  	for(uint8_t i = 0; i < 18; i++)
+  	{
+  		for(uint8_t count_row = 0; count_row < height; count_row++)
+  		{
+  			OLED_goto(count_row,122); // move to first column in row
+  
+  			// the inner loop iterates the columns of each row
+  			for(uint8_t count_column = 122; count_column < width; count_column++)
+  			{
+  				OLED_writeByteToOLED(oled_data, 0x00);
+  			}
+  		}
+  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
+  		_delay_ms(75);
+  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
+  	}
+
+	printf("arrows are done...\n");
+	OLED_clear();
+	
+	// reset fosc
+	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
+	OLED_writeByteToOLED(oled_cmd, 0x80); // default value is 0x80
+}

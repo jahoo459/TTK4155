@@ -23,6 +23,7 @@ void OLED_clearArrow(void);
 void OLED_moveArrow(int joy_counter);
 
 void OLED_splashScreen(void);
+void OLED_flyingArrows(void);
 
 //void OLED_reset();
 //void OLED_home();
