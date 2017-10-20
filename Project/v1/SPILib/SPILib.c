@@ -15,12 +15,29 @@
 
 void SPI_init()
 {
-	// Set _SS, MOSI and SCK output, all others input
-	DDR_SPI = (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
+	//init external interrupt INT2 on falling edge
+	#if defined(__AVR_ATmega162__)
+		set_bit(GICR, INT2);
+		clear_bit(EMCUCR, ISC2);
+		
+		// Set _SS, MOSI and SCK output, all others input
+		DDR_SPI |= (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
+	#endif
+	
+	#if defined(__AVR_ATmega2560__)
+		set_bit(EIMSK, INT4);
+		set_bit(EICRB, ISC41);
+		clear_bit(EICRB, ISC40);
+		
+		// Set _SS, PB7 (real SS), MOSI and SCK output, all others input
+		DDR_SPI |= (1<<DDB0) | (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
+	#endif
+	
+	
 
 	// Enable SPI, Master, set clock rate fck/4
 	SPCR = (1<<SPE) | (1<<MSTR);
-
+	
 	// clock rate fck/2
 	SPSR = (1<<SPI2X);
 
@@ -32,7 +49,6 @@ void SPI_send(uint8_t cData)
 {
 	// Start transmission
 	SPDR = cData;
-
 	// Wait for transmission complete
 	while(!(SPSR & (1<<SPIF)));
 }

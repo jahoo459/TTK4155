@@ -43,7 +43,13 @@ void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr)
 	set_bit(UCSR0B, RXCIE0);
 	
 	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
+	#if defined(__AVR_ATmega162__)
+		UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
+	#endif
+	
+	#if defined(__AVR_ATmega2560__)
+		UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	#endif
 	
 	fdevopen(uartSend, uartReceive); //if there are any problems with this try &uartSend &uartReceive
 }

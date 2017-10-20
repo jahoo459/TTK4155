@@ -13,6 +13,7 @@
 uint8_t MCP2515_init()
 {
 	MCP2515_reset(SS_CAN_CONTROLLER); // Send reset-command
+	
 	// Self-test
 	uint8_t value;
 	value = MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT);
@@ -23,7 +24,7 @@ uint8_t MCP2515_init()
 		return 1;
 	}
 	
-	printf("finished MCP2515_init\n");
+	//printf("finished MCP2515_init\n");
 	return 0;
 }
 
@@ -40,7 +41,6 @@ uint8_t MCP2515_read(SPI_SLAVES slave, uint8_t address)
 {
 	SPI_activateSlave(slave);
 	SPI_send(MCP_READ);
-	_delay_ms(1);
 	SPI_send(address);
 	
 	uint8_t result;

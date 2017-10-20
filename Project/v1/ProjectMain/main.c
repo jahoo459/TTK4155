@@ -78,7 +78,7 @@ ISR(INT1_vect)
 	activateMenuFlag = 1;
 }
 
-ISR(INT2_vect)
+ISR(MCP2515_INT)
 {
 	SPIreceivedFlag = 1;
 }
@@ -167,9 +167,6 @@ void init()
 	set_bit(MCUCR, ISC11);
 	clear_bit(MCUCR, ISC10);
 	
-	//init external interrupt INT2 on falling edge
-	set_bit(GICR, INT2);
-	clear_bit(EMCUCR, ISC2);
 		
 	// PE2
 	clear_bit(DDRE, PE2);

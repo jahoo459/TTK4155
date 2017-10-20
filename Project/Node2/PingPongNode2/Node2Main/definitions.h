@@ -31,37 +31,8 @@ extern volatile char *adc_ext_ram;
 #define test_bit( reg, bit ) (reg & (1 << bit))
 
 // basic stuff..
-#if defined(__AVR_ATmega162__)
-#define FOSC  4915200
-#define MCP2515_INT	INT2_vect
-
-#define DDR_SPI						DDRB
-#define PORT_SPI					PORTB				//for slave selection
-#define SS_CAN_CONTROLLER_PIN		PB4					//for slave selection
-#define SS_CAN_CONTROLLER_PIN_MODE	DDB4				//for setting the direction (OUT)
-#define MOSI_PIN					DDB5
-#define MISO_PIN					DDB6
-#define SCK_PIN						DDB7
-
-#endif
-
-// ATMEGA 2560
-#if defined(__AVR_ATmega2560__)
-#define FOSC  16000000
-
-#define MCP2515_INT					INT4_vect
-
-#define DDR_SPI						DDRB
-#define PORT_SPI					PORTB				//for slave selection
-#define SS_CAN_CONTROLLER_PIN		PB7			//for slave selection
-#define SS_CAN_CONTROLLER_PIN_MODE	DDB7				//for setting the direction (OUT)
-#define MOSI_PIN					DDB2
-#define MISO_PIN					DDB3
-#define SCK_PIN						DDB1
-
-#endif
-
 #define BAUDRATE 9600
+#define FOSC  4915200
 #define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 

@@ -67,7 +67,7 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
-C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a
+C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a
 
 LINKER_SCRIPT_DEP+= 
 
