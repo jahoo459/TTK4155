@@ -11,7 +11,7 @@
 
 #include "menuLib.h"
 #include "..\JoystickLib\JoystickLib.h"
-#include "../oledLib/oledLib.h"
+#include "..\oledLib\oledLib.h"
 
 //******************************************************************************************
 menuNode_t *mainMenu = NULL; //pointer pointing to main menu
@@ -19,11 +19,11 @@ menuNode_t *difficultyMenu = NULL; //pointer pointing to difficulty menu
 menuNode_t *currentMenu = NULL;	//pointer pointing to currently displayed menu - for navigation
 menuItemNode_t *currItem = NULL; //current item, at the beginning will point at the first item (mainMenu)
 
-uint8_t menuActiveFlag = 0; //When this flag gets 0 waitForInput function will stop so menu will be inactive
+static uint8_t menuActiveFlag = 0; //When this flag gets 0 waitForInput function will stop so menu will be inactive
 
 static int currentPosition = 0; //Current menu position read from the Joystick
 
-int menuFrameOffset = 10; //Columns from left frame border
+static int menuFrameOffset = 10; //Columns from left frame border
 //******************************************************************************************
 
 void startGame()

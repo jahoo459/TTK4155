@@ -64,6 +64,7 @@ ISR(USART0_RXC_vect)
 	//interrupt generated after receiving a byte over UART
 	UART_ReceivedByte = UDR0;		//received byte
 	USARTreceivedFlag = 1;		//set the flag to 1
+	
 }
 
 ISR(INT0_vect)
@@ -249,43 +250,44 @@ int main(void)
 	
 	init();
 
-// 	MCP2515_init();
-// 	CAN_init();
+	OLED_goto(0,0);
+	OLED_printString("I'm alive");
 	
 	struct can_message message2send;
-	message2send.id = 23;
-	message2send.length = 8;
-	message2send.data[0] = '@';
-	message2send.data[1] = '~';
-	message2send.data[2] = 'H';
-	message2send.data[3] = 'l';
-	message2send.data[4] = '1';
-	message2send.data[5] = '.';
-	message2send.data[6] = '/';
-	message2send.data[7] = '5';
-	CAN_sendMessage(&message2send, 0);
-	_delay_ms(100);
+	//message2send.id = 23;
+	//message2send.length = 8;
+	//message2send.data[0] = '@';
+	//message2send.data[1] = '~';
+	//message2send.data[2] = 'H';
+	//message2send.data[3] = 'l';
+	//message2send.data[4] = '1';
+	//message2send.data[5] = '.';
+	//message2send.data[6] = '/';
+	//message2send.data[7] = '5';
+	//CAN_sendMessage(&message2send, 0);
+	//_delay_ms(100);
 	
-	struct can_message message3send;
-	message3send.id = 12;
-	message3send.length = 2;
-	message3send.data[0] = 'a';
-	message3send.data[1] = '+';
-	
-	uint8_t SPIcount = 0;
+	//struct can_message message3send;
+	//message3send.id = 12;
+	//message3send.length = 2;
+	//message3send.data[0] = 'a';
+	//message3send.data[1] = '+';
+	//
+	//uint8_t SPIcount = 0;
+	static JOY_direction_t currDir;
 	
     while(1)
     {
 		// statusMultifunctionBoard();
-		JOY_getDirection();
+		currDir = JOY_getDirection();
+		
+		message2send.id = 23;
+		message2send.length = 1;
+		message2send.data[0] = currDir;
 
-		// todo: remove! will be included in the menu driver later
-		if(JOYcalibFlag)
-		{
-			//run joystick calibration
-			JOY_calibrate();
-			JOYcalibFlag = 0;
-		}
+		
+		CAN_sendMessage(&message2send, 0);
+		_delay_ms(200);
 
 		if(activateMenuFlag)
 		{
@@ -294,6 +296,7 @@ int main(void)
 
 		if(SPIreceivedFlag)
 		{
+			
 			uint8_t receiveBufferStatus;
 			// check for message reception
 			if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))
@@ -312,12 +315,12 @@ int main(void)
 			
 				SPIreceivedFlag = 0;
 			
-				if(SPIcount == 0)
-				{
-					CAN_sendMessage(&message3send, 0);
-					_delay_ms(100);
-					SPIcount = 1;
-				}
+				//if(SPIcount == 0)
+				//{
+					////CAN_sendMessage(&message3send, 0);
+					//_delay_ms(100);
+					//SPIcount = 1;
+				//}
 			}
 		}
     }

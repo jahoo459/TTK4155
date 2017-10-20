@@ -52,7 +52,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	//OLED_splashScreen();
+	OLED_splashScreen();
 	//OLED_flyingArrows();
 }
 
@@ -247,25 +247,25 @@ void OLED_splashScreen(void)
 	OLED_fadeIn();
 	_delay_ms(500);
 	
-// 	OLED_clear();
-// 	OLED_setContrast(0);
-// 	
-// 	_delay_ms(200);
-// 	OLED_goto(3,28);
-// 	OLED_printString("proudly");
-// 	OLED_goto(4,24);	
-// 	OLED_printString("presents");
-// 	OLED_fadeIn();
-// 	_delay_ms(500);
-// 	
-// 	OLED_clear();
-// 	OLED_setContrast(0);
-// 	
-// 	_delay_ms(200);
-// 	OLED_goto(3, 28);
-// 	OLED_printString("FIFA 18");
-// 	OLED_fadeIn();
-// 	_delay_ms(1000);
+ 	OLED_clear();
+ 	OLED_setContrast(0);
+ 	
+ 	_delay_ms(200);
+ 	OLED_goto(3,28);
+ 	OLED_printString("proudly");
+ 	OLED_goto(4,24);	
+ 	OLED_printString("presents");
+ 	OLED_fadeIn();
+ 	_delay_ms(500);
+ 	
+ 	OLED_clear();
+ 	OLED_setContrast(0);
+ 	
+ 	_delay_ms(200);
+ 	OLED_goto(3, 28);
+ 	OLED_printString("FIFA 18");
+ 	OLED_fadeIn();
+ 	_delay_ms(1000);
 	
 	// clean up
 	OLED_clear();

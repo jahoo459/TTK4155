@@ -63,19 +63,20 @@ int main(void)
 {
 	init();
 	
-	struct can_message message2send;
-	message2send.id = 23;
-	message2send.length = 8;
-	message2send.data[0] = '@';
-	message2send.data[1] = '~';
-	message2send.data[2] = 'H';
-	message2send.data[3] = 'l';
-	message2send.data[4] = '1';
-	message2send.data[5] = '.';
-	message2send.data[6] = '/';
-	message2send.data[7] = '5';
-	CAN_sendMessage(&message2send, 0);
-	_delay_ms(100);
+// 	struct can_message message2send;
+// 	message2send.id = 23;
+// 	message2send.length = 8;
+// 	message2send.data[0] = '@';
+// 	message2send.data[1] = '~';
+// 	message2send.data[2] = 'H';
+// 	message2send.data[3] = 'l';
+// 	message2send.data[4] = '1';
+// 	message2send.data[5] = '.';
+// 	message2send.data[6] = '/';
+// 	message2send.data[7] = '5';
+// 	CAN_sendMessage(&message2send, 0);
+// 	_delay_ms(100);
+	JOY_direction_t currJoyDir;
 	
     while(1)
     {
@@ -89,6 +90,10 @@ int main(void)
 			{
 				struct can_message receivedMessage;
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
+
+				currJoyDir = receivedMessage.data[0];
+				
+				printf("%d\n", currJoyDir);
 
 				CAN_printMessage(&receivedMessage);
 				

@@ -24,7 +24,12 @@ void CAN_init()
     //mcp2515_write_register( RXM0EID0, 0 );
    
     // switch to loopback mode
-    MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
+    //MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
+	
+	// switch to normal mode
+	//printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
+	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0x80, 0x00);
+	//printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
 }
 
 void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
