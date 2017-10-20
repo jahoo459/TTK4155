@@ -58,7 +58,7 @@ void JOY_calibrate()
 	OLED_clear();
 	OLED_goto(0,0);
 	OLED_printString("JOY RIGHT");
-	printf("Move JOY to the right\n");
+	//printf("Move JOY to the right\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -72,7 +72,7 @@ void JOY_calibrate()
 	
 	OLED_goto(1,0);
 	OLED_printString("JOY LEFT");
-	printf("Move JOY to the left\n");
+	//printf("Move JOY to the left\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -86,7 +86,7 @@ void JOY_calibrate()
 	
 	OLED_goto(2,0);
 	OLED_printString("JOY UP");
-	printf("Move JOY up\n");
+	//printf("Move JOY up\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -100,7 +100,7 @@ void JOY_calibrate()
 	
 	OLED_goto(3,0);
 	OLED_printString("JOY DOWN");
-	printf("Move JOY down\n");
+	//printf("Move JOY down\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -113,14 +113,14 @@ void JOY_calibrate()
 	}
 	
 	
-	printf("calR: %d, calL: %d, calUp:%d, calDown:%d\n", calR, calL, calUp, calDown);
+	//printf("calR: %d, calL: %d, calUp:%d, calDown:%d\n", calR, calL, calUp, calDown);
 	
 	meanVert = (calUp - calDown)/2;
 	meanHor = (calR - calL)/2;
 	
 	OLED_goto(4,0);
 	OLED_printString("CALIB DONE");
-	printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
+	//printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
 	_delay_ms(1000);
 }
 

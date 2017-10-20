@@ -16,7 +16,7 @@ uint8_t MCP2515_init()
 	// Self-test
 	uint8_t value;
 	value = MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT);
-	printf("CANSTAT: %#x\n", value);
+	//printf("CANSTAT: %#x\n", value);
 	if((value & MODE_MASK) != MODE_CONFIG) 
 	{
 		//printf("MCP2515 is NOT in configuration mode after reset! Value: %d\n", value);

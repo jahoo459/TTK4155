@@ -98,7 +98,7 @@ void SRAM_test(void)
 	uint16_t write_errors= 0;
 	uint16_t retrieval_errors= 0;
 
-	printf("Starting SRAM test...\n");
+	//printf("Starting SRAM test...\n");
 
 	// rand() stores some internal state, so calling this function in a loop will
 	// yield different seeds each time (unless srand() is called before thisfunction)
@@ -138,13 +138,13 @@ void SRAM_test(void)
 		}
 	}
 
-	printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
+	//printf("SRAM test completed with\n %4d errors in write phase and\n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
 }
 
 void init()
 {
 	// call initialization subroutines
-	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
+	uartInit(BAUDRATE, FOSC, UBRR); //printf("\n======================STARTUP==========================\n");
 	enableXMEM(1);
 	SLI_init();
 	JOY_init();
@@ -236,7 +236,7 @@ void statusMultifunctionBoard(){
 	}
 
 	//printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
-	printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
+	//printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
 }
 
 
