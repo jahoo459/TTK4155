@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Node2Main", "Node2Main\Node2Main.cproj", "{F949010E-FE4E-4832-9E6F-5B44E4C9F07D}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "PWMLib", "PWMLib\PWMLib.cproj", "{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -13,6 +15,10 @@ Global
 		{F949010E-FE4E-4832-9E6F-5B44E4C9F07D}.Debug|AVR.Build.0 = Debug|AVR
 		{F949010E-FE4E-4832-9E6F-5B44E4C9F07D}.Release|AVR.ActiveCfg = Release|AVR
 		{F949010E-FE4E-4832-9E6F-5B44E4C9F07D}.Release|AVR.Build.0 = Release|AVR
+		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Debug|AVR.ActiveCfg = Debug|AVR
+		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Debug|AVR.Build.0 = Debug|AVR
+		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Release|AVR.ActiveCfg = Release|AVR
+		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,7 @@
 */
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "..\..\..\v1\ProjectMain\definitions.h"
+#include "..\PWMLib\PWMLib.h"
 #include "..\..\..\v1\UARTlib\UARTlib.h"
 #include "..\..\..\v1\SPILib\SPILib.h"
 #include "..\..\..\v1\CANLib\CANLib.h"
@@ -31,7 +31,7 @@ volatile uint8_t USARTreceivedFlag = 0;
 volatile uint8_t SPI_ReceivedByte;
 volatile uint8_t SPIreceivedFlag = 0;
 
-
+//PWM
 
 /*
 =======================INTERRUPTS=========================
@@ -49,12 +49,18 @@ ISR(MCP2515_INT)
 	SPIreceivedFlag = 1;
 }
 
+ISR(TIMER1_COMPA_vect)
+{
+	
+}
+
 void init()
 {
 	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
 	SPI_init();
 	MCP2515_init();
 	CAN_init();
+	PWM_init();
 	
 	sei();
 }
@@ -78,24 +84,63 @@ int main(void)
 // 	_delay_ms(100);
 	JOY_direction_t currJoyDir;
 	
+	uint8_t PWMcounter = 0;
+	uint8_t PWMlevel = 50;
+	uint8_t PWMdirection = 'r';
+	
     while(1)
     {
-        //printf("Test node FOSC %ld\n", FOSC);
+		PWM_setLevel(50);
+		_delay_ms(1500);
+		PWM_setLevel(100);
+		_delay_ms(1500);
+		PWM_setLevel(50);
+		_delay_ms(1500);
+		PWM_setLevel(0);
+		_delay_ms(1500);
+		//PWMcounter++;
+		//if(PWMcounter > 1000)
+		//{
+			//printf("boing!\n");
+			//PWMcounter = 0;
+			//if(PWMdirection == 'r')
+			//{
+				//PWM_setLevel(PWMlevel++);
+				//
+				//if(PWMlevel == 100)
+				//{
+					//PWMdirection = 'l';
+				//}
+			//}
+			//else if (PWMdirection == 'l')
+			//{
+				//PWM_setLevel(PWMlevel--);
+				//
+				//if(PWMlevel == 0)
+				//{
+					//PWMdirection = 'r';
+				//}
+			//}
+			//else
+			//{
+				//printf("unknown value for 'PWMdirection'\n");
+			//}
+		//}
 		
 		if(SPIreceivedFlag)
 		{
 			uint8_t receiveBufferStatus;
 			// check for message reception
-			if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))
+			if(receiveBufferStatus = (0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF)))
 			{
 				struct can_message receivedMessage;
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
 
 				currJoyDir = receivedMessage.data[0];
 				
-				printf("%d\n", currJoyDir);
+				//printf("%d\n", currJoyDir);
 
-				CAN_printMessage(&receivedMessage);
+				//CAN_printMessage(&receivedMessage);
 				
 				SPIreceivedFlag = 0;
 				
