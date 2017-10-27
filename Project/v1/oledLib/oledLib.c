@@ -235,6 +235,33 @@ void OLED_fadeOut(void)
 	}
 }
 
+void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness)
+{
+	uint8_t lineSegment = 0;
+	if(y0 == y1)
+	{
+		lineSegment = (1<<y0/8);
+		OLED_goto(y0/8,x0);
+		for(uint8_t i = x0; i <= x1; i++)
+		{
+			OLED_writeByteToOLED(oled_data, lineSegment);
+		}
+	}
+	
+	// page addressing is wrong - should use all possible lines
+	// memory buffer should be used!
+	if(x0 == x1)
+	{
+		lineSegment = 0xff;
+		
+		for(uint8_t i = 0; i<8; i++)
+		{
+			OLED_goto(i,x0);
+			OLED_writeByteToOLED(oled_data, lineSegment);
+		}
+	}
+}
+
 void OLED_splashScreen(void)
 {
 	printf("run splash screen...\n");

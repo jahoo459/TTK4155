@@ -183,6 +183,12 @@ void JOY_calculateDirection()
 // It is a struct with the four parameters X_abs, Y_abs, X_per and Y_per
 JOY_position_t JOY_getPosition()
 {
+	JOY_requestCurrentPosition('x');
+	_delay_us(delayConversion);
+	JOY_updatePosition('x');
+	JOY_requestCurrentPosition('y');
+	_delay_us(delayConversion);
+	JOY_updatePosition('y');
 	return currentPosition;
 }
 

@@ -5,6 +5,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Node2Main", "Node2Main\Node
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "PWMLib", "PWMLib\PWMLib.cproj", "{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ADC2Lib", "ADC2Lib\ADC2Lib.cproj", "{45A3FCCF-0FB3-4DAA-8900-8B4ADF131542}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -19,6 +21,10 @@ Global
 		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Debug|AVR.Build.0 = Debug|AVR
 		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Release|AVR.ActiveCfg = Release|AVR
 		{C3160132-39C2-477B-BAE8-1C7F7B19EBAD}.Release|AVR.Build.0 = Release|AVR
+		{45A3FCCF-0FB3-4DAA-8900-8B4ADF131542}.Debug|AVR.ActiveCfg = Debug|AVR
+		{45A3FCCF-0FB3-4DAA-8900-8B4ADF131542}.Debug|AVR.Build.0 = Debug|AVR
+		{45A3FCCF-0FB3-4DAA-8900-8B4ADF131542}.Release|AVR.ActiveCfg = Release|AVR
+		{45A3FCCF-0FB3-4DAA-8900-8B4ADF131542}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

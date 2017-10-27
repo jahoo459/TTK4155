@@ -37,6 +37,9 @@ void PWM_init()
 
 void PWM_setLevel(uint8_t level)
 {
+	// inversion of level so low value matches movement to the left
+	level = 100-level;
+	
 	if(level <= 100)
 	{
 		OCR1A = level*(SERVO_MAX-SERVO_MIN)/100 + SERVO_MIN;

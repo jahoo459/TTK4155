@@ -67,16 +67,16 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+=  \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ADCLib/Debug/libADCLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/CANLib/Debug/libCANLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/JoystickLib/Debug/libJoystickLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/MCP2515Lib/Debug/libMCP2515Lib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/menuLib/Debug/libmenuLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/oledLib/Debug/liboledLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/SliderLib/Debug/libSliderLib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/SPILib/Debug/libSPILib.a \
-C:/Users/olgakas/Documents/Project/TTK4155/Project/v1/UARTlib/Debug/libUARTlib.a
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ADCLib/Debug/libADCLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/CANLib/Debug/libCANLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/ExtSramLib/Debug/libExtSramLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/JoystickLib/Debug/libJoystickLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/MCP2515Lib/Debug/libMCP2515Lib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/menuLib/Debug/libmenuLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/oledLib/Debug/liboledLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/SliderLib/Debug/libSliderLib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/SPILib/Debug/libSPILib.a \
+C:/Users/lukasah/Documents/embeddedlab/TTK4155/Project/v1/UARTlib/Debug/libUARTlib.a
 
 LINKER_SCRIPT_DEP+= 
 
@@ -117,7 +117,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lCANLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-lMCP2515Lib -Wl,-lmenuLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lSPILib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\ADCLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\CANLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\ExtSramLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\JoystickLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\MCP2515Lib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\menuLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\oledLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\SliderLib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\SPILib\Debug" -Wl,-L"C:\Users\olgakas\Documents\Project\TTK4155\Project\v1\UARTlib\Debug"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="ProjectMain.map" -Wl,--start-group -Wl,-lm -Wl,-lADCLib -Wl,-lCANLib -Wl,-lExtSramLib -Wl,-lJoystickLib -Wl,-lMCP2515Lib -Wl,-lmenuLib -Wl,-loledLib -Wl,-lSliderLib -Wl,-lSPILib -Wl,-lUARTlib  -Wl,--end-group -Wl,-L"../../UARTlib" -Wl,-L"../../ExtSramLib" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ADCLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\CANLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\ExtSramLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\JoystickLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\MCP2515Lib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\menuLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\oledLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\SliderLib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\SPILib\Debug" -Wl,-L"C:\Users\lukasah\Documents\embeddedlab\TTK4155\Project\v1\UARTlib\Debug"  -Wl,--gc-sections -mrelax -mmcu=atmega162  
 	@echo Finished building target: $@
 	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "ProjectMain.elf" "ProjectMain.hex"
 	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "ProjectMain.elf" "ProjectMain.eep" || exit 0

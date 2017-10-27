@@ -5,14 +5,15 @@
  *  Author: olgakas
  */ 
 
-#define NODE2
+//#define NODE2
 
 /*
 =======================INCLUDES=========================
 */
-#include <avr/io.h>
+
 #include <avr/interrupt.h>
 #include "..\PWMLib\PWMLib.h"
+#include "..\ADC2Lib\ADC2Lib.h"
 #include "..\..\..\v1\UARTlib\UARTlib.h"
 #include "..\..\..\v1\SPILib\SPILib.h"
 #include "..\..\..\v1\CANLib\CANLib.h"
@@ -33,6 +34,9 @@ volatile uint8_t SPIreceivedFlag = 0;
 
 //PWM
 volatile uint8_t ServoFlag = 0;
+
+//ADC
+volatile uint8_t ADC2Flag = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -56,15 +60,25 @@ ISR(TIMER1_OVF_vect)
 
 }
 
+ISR(ADC_vect)
+{
+	ADC2_updateValue();
+	printf("IRStatus: %d\n", ADC2_updateValue());
+	set_bit(ADCSRA, ADSC);
+}
+
 void init()
 {
-	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
+	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP=========================\n");
 	SPI_init();
 	MCP2515_init();
 	CAN_init();
 	PWM_init();
+	ADC2_init();
+	
 	
 	sei();
+	set_bit(ADCSRA, ADSC); // start first ADC conversion
 }
 
 int main(void)
@@ -85,13 +99,27 @@ int main(void)
 // 	CAN_sendMessage(&message2send, 0);
 // 	_delay_ms(100);
 	JOY_direction_t currJoyDir;
+	int currJoyPos = 0;
 	
-	uint8_t PWMcounter = 0;
-	uint8_t PWMlevel = 50;
-	uint8_t PWMdirection = 'r';
+// 	uint8_t PWMcounter = 0;
+// 	uint8_t PWMlevel = 50;
+// 	uint8_t PWMdirection = 'r';
+	
+	uint16_t ADCresult = 0;
+		
 	
     while(1)
     {
+		
+		//if(ADC2Flag == 1)
+		//{
+			//ADCresult = ADCH;
+			////ADCresult |= (ADCH<<2);
+			//
+			//printf("ADC result: %d\n", ADCresult);
+			//
+			//ADC2Flag = 0;
+		//}
 		//PWM_setLevel(50);
 		//_delay_ms(1500);
 		//PWM_setLevel(100);
@@ -137,27 +165,30 @@ int main(void)
 			{
 				struct can_message receivedMessage;
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
-
-				currJoyDir = receivedMessage.data[0];
+				//printf("%d\n", receivedMessage.data[0]);
 				
-				switch (currJoyDir)
-				{
-					case CENTRE:
-					PWM_setLevel(50);
-					break;
-					
-					case LEFT:
-					PWM_setLevel(100);
-					break;
-					
-					case RIGHT:
-					PWM_setLevel(0);
-					break;
-				}
+				currJoyPos = receivedMessage.data[0]*100/255;
+				printf("%d\n", currJoyPos);
+				PWM_setLevel(currJoyPos);
+				
+// 				switch (currJoyDir)
+// 				{
+// 					case CENTRE:
+// 					PWM_setLevel(50);
+// 					break;
+// 					
+// 					case LEFT:
+// 					PWM_setLevel(100);
+// 					break;
+// 					
+// 					case RIGHT:
+// 					PWM_setLevel(0);
+// 					break;
+// 				}
 				
 				
 	
-				printf("%d\n", currJoyDir);
+				
 
 				//CAN_printMessage(&receivedMessage);
 				

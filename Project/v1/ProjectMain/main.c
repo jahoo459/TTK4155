@@ -144,7 +144,7 @@ void SRAM_test(void)
 void init()
 {
 	// call initialization subroutines
-	uartInit(BAUDRATE, FOSC, UBRR); //printf("\n======================STARTUP==========================\n");
+	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
 	enableXMEM(1);
 	SLI_init();
 	JOY_init();
@@ -253,41 +253,41 @@ int main(void)
 	OLED_goto(0,0);
 	OLED_printString("I'm alive");
 	
-	struct can_message message2send;
-	//message2send.id = 23;
-	//message2send.length = 8;
-	//message2send.data[0] = '@';
-	//message2send.data[1] = '~';
-	//message2send.data[2] = 'H';
-	//message2send.data[3] = 'l';
-	//message2send.data[4] = '1';
-	//message2send.data[5] = '.';
-	//message2send.data[6] = '/';
-	//message2send.data[7] = '5';
-	//CAN_sendMessage(&message2send, 0);
-	//_delay_ms(100);
-	
-	//struct can_message message3send;
-	//message3send.id = 12;
-	//message3send.length = 2;
-	//message3send.data[0] = 'a';
-	//message3send.data[1] = '+';
+	//for(uint8_t i = 10; i < 64; i+=8)
+	//{
+		//OLED_line(0,i,127,i,1);
+	//}
 	//
-	//uint8_t SPIcount = 0;
-	static JOY_direction_t currDir;
+	//OLED_line(0,1,0,7,1);
+	
+// 	for(uint8_t i = 0; i<128; i+=8)
+// 	{
+// 		if(i<=73)
+// 		{
+// 			OLED_line(i,1,i,7,1);
+// 		}
+// 		else
+// 		{
+// 			OLED_line(i,0,i,7,1);
+// 		}
+// 	}
+	
+	struct can_message message2send;
+	
+	static JOY_position_t currPos;
+	
+	
 	
     while(1)
     {
-		// statusMultifunctionBoard();
-		currDir = JOY_getDirection();
+		currPos = JOY_getPosition();
 		
 		message2send.id = 23;
 		message2send.length = 1;
-		message2send.data[0] = currDir;
-
+		message2send.data[0] = currPos.X_abs;
 		
 		CAN_sendMessage(&message2send, 0);
-		_delay_ms(200);
+		_delay_ms(50);
 
 		if(activateMenuFlag)
 		{
@@ -304,23 +304,10 @@ int main(void)
 				struct can_message receivedMessage;
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
 
-	// 			printf("id: %d, length: %d, data:", receivedMessage.id, receivedMessage.length);
-	// 			for(uint8_t i = 0; i < receivedMessage.length; i++)
-	// 			{
-	// 				printf(" %c", receivedMessage.data[i]);
-	// 			}
-	// 			printf("\n");
-
 				CAN_printMessage(&receivedMessage);
 			
 				SPIreceivedFlag = 0;
 			
-				//if(SPIcount == 0)
-				//{
-					////CAN_sendMessage(&message3send, 0);
-					//_delay_ms(100);
-					//SPIcount = 1;
-				//}
 			}
 		}
     }
