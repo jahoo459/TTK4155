@@ -32,6 +32,7 @@ volatile uint8_t SPI_ReceivedByte;
 volatile uint8_t SPIreceivedFlag = 0;
 
 //PWM
+volatile uint8_t ServoFlag = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -49,9 +50,10 @@ ISR(MCP2515_INT)
 	SPIreceivedFlag = 1;
 }
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER1_OVF_vect)
 {
-	
+	ServoFlag = 1;
+
 }
 
 void init()
@@ -90,14 +92,14 @@ int main(void)
 	
     while(1)
     {
-		PWM_setLevel(50);
-		_delay_ms(1500);
-		PWM_setLevel(100);
-		_delay_ms(1500);
-		PWM_setLevel(50);
-		_delay_ms(1500);
-		PWM_setLevel(0);
-		_delay_ms(1500);
+		//PWM_setLevel(50);
+		//_delay_ms(1500);
+		//PWM_setLevel(100);
+		//_delay_ms(1500);
+		//PWM_setLevel(50);
+		//_delay_ms(1500);
+		//PWM_setLevel(0);
+		//_delay_ms(1500);
 		//PWMcounter++;
 		//if(PWMcounter > 1000)
 		//{
@@ -138,7 +140,24 @@ int main(void)
 
 				currJoyDir = receivedMessage.data[0];
 				
-				//printf("%d\n", currJoyDir);
+				switch (currJoyDir)
+				{
+					case CENTRE:
+					PWM_setLevel(50);
+					break;
+					
+					case LEFT:
+					PWM_setLevel(100);
+					break;
+					
+					case RIGHT:
+					PWM_setLevel(0);
+					break;
+				}
+				
+				
+	
+				printf("%d\n", currJoyDir);
 
 				//CAN_printMessage(&receivedMessage);
 				

@@ -12,8 +12,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define SERVO_MIN 225
-#define SERVO_MAX 525
+#define SERVO_MIN 250
+#define SERVO_MAX 500
 
 void PWM_init()
 {
@@ -25,7 +25,8 @@ void PWM_init()
 	TCCR1B |= (1<<WGM13) | (1<<WGM12) | (1<<CS11) | (1<<CS10);
 	
 	// Overflow Interrupt Enable
-	TIMSK1 |= (1<<OCIE1A);
+	//TIMSK1 |= (1<<OCIE1A);
+	TIMSK1 |= (1<<TOIE1);
 	
 	// 20ms PWM cycle
 	ICR1 = 5000;
