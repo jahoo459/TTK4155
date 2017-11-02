@@ -249,28 +249,14 @@ int main(void)
 {
 	
 	init();
+		
+	OLED_updateScreen();
+	saveToAddress(0x1fff, 0xff);
+	saveToAddress(0x1fc0, 0x99);
+	OLED_updateScreen();
 
 	OLED_goto(0,0);
 	OLED_printString("I'm alive");
-	
-	//for(uint8_t i = 10; i < 64; i+=8)
-	//{
-		//OLED_line(0,i,127,i,1);
-	//}
-	//
-	//OLED_line(0,1,0,7,1);
-	
-// 	for(uint8_t i = 0; i<128; i+=8)
-// 	{
-// 		if(i<=73)
-// 		{
-// 			OLED_line(i,1,i,7,1);
-// 		}
-// 		else
-// 		{
-// 			OLED_line(i,0,i,7,1);
-// 		}
-// 	}
 	
 	struct can_message message2send;
 	

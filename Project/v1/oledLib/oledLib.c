@@ -15,6 +15,10 @@
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
 
+// buffer variables
+volatile char *oled_buffer = (char *) 0x1c00;
+uint16_t oled_buffer_size = 0x400;
+
 // OLED Parameters
 static int height = 8;		//screen height (8 pages) 
 static int width = 128;		//screen width (128 columns)
@@ -40,7 +44,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0x81); // Contrast control
 	OLED_writeByteToOLED(oled_cmd, 0x50); // set contrast
 	OLED_writeByteToOLED(oled_cmd, 0xd9); // Set pre-charge period
-	OLED_writeByteToOLED(oled_cmd, 0x21);
+	OLED_writeByteToOLED(oled_cmd, 0x21); // command to set column address !! two cmd bytes missing !!
 	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
 	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
 	OLED_writeByteToOLED(oled_cmd, 0xdb); // VCOM deselect level mode
@@ -52,7 +56,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	OLED_splashScreen();
+	//OLED_splashScreen();
 	//OLED_flyingArrows();
 }
 
@@ -62,6 +66,13 @@ void OLED_init(void)
 
 void OLED_clear(void)
 {
+	// clear OLED buffer
+	for(uint16_t i = 0; i < oled_buffer_size; i++)
+	{
+		oled_buffer[i] = 0x00;
+	}
+	
+	// todo: remove later
 	for(uint8_t count_row = 0; count_row < height; count_row++)
 	{
 		// move to first column in row
@@ -72,6 +83,31 @@ void OLED_clear(void)
 			OLED_writeByteToOLED(oled_data, 0x00);
 		}
 	}
+}
+
+
+//------------------------------------------------------------------------------
+void OLED_updateScreen(void)
+{
+	// set column address
+// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x21); // command to set column address
+// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x00); // column start address ~ 0d
+// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x7f); // column end address ~ 127d
+	// set horizontal addressing mode
+	OLED_writeByteToOLED(oled_cmd, 0x20); // set memory addressing mode
+	OLED_writeByteToOLED(oled_cmd, 0x00); // set horizontal addressing mode ~ 0d
+	
+	// write OLED buffer to OLED Memory
+	OLED_goto(0,0); // todo: start writing in top left corner (maybe not further needed)
+	for(uint16_t i = 0; i < oled_buffer_size; i++)
+	{
+		OLED_writeByteToOLED(oled_data, oled_buffer[i]);
+	}
+	
+	// todo: remove later
+	// go back to page adressing mode
+	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
+	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
 }
 
 
