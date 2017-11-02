@@ -16,6 +16,7 @@ void OLED_updateScreen(void);
 
 void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data);
 void OLED_goto(int row, int column);
+void OLED_bufferGoto(int row, int column);
 
 void OLED_printCharacter(uint8_t character);
 void OLED_printString(char* msg);

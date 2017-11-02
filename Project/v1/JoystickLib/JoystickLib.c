@@ -56,7 +56,7 @@ void JOY_calibrate()
 	uint8_t temp = 0;
 	
 	OLED_clear();
-	OLED_goto(0,0);
+	OLED_bufferGoto(0,0);
 	OLED_printString("JOY RIGHT");
 	//printf("Move JOY to the right\n");
 	_delay_ms(delay1);
@@ -70,7 +70,7 @@ void JOY_calibrate()
 		if(temp > calR) {calR = temp;}
 	}
 	
-	OLED_goto(1,0);
+	OLED_bufferGoto(1,0);
 	OLED_printString("JOY LEFT");
 	//printf("Move JOY to the left\n");
 	_delay_ms(delay1);
@@ -84,7 +84,7 @@ void JOY_calibrate()
 		if(temp < calL) {calL = temp;}
 	}
 	
-	OLED_goto(2,0);
+	OLED_bufferGoto(2,0);
 	OLED_printString("JOY UP");
 	//printf("Move JOY up\n");
 	_delay_ms(delay1);
@@ -98,7 +98,7 @@ void JOY_calibrate()
 		if(temp > calUp) {calUp = temp;}
 	}
 	
-	OLED_goto(3,0);
+	OLED_bufferGoto(3,0);
 	OLED_printString("JOY DOWN");
 	//printf("Move JOY down\n");
 	_delay_ms(delay1);
@@ -118,7 +118,7 @@ void JOY_calibrate()
 	meanVert = (calUp - calDown)/2;
 	meanHor = (calR - calL)/2;
 	
-	OLED_goto(4,0);
+	OLED_bufferGoto(4,0);
 	OLED_printString("CALIB DONE");
 	//printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
 	_delay_ms(1000);

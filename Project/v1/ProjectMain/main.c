@@ -84,7 +84,10 @@ ISR(MCP2515_INT)
 	SPIreceivedFlag = 1;
 }
 
-
+ISR(TIMER0_COMP_vect)
+{
+	OLED_updateScreen();
+}
 
 
 /*
@@ -144,7 +147,7 @@ void SRAM_test(void)
 void init()
 {
 	// call initialization subroutines
-	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP==========================\n");
+	uartInit(BAUDRATE, FOSC, UBRR); printf("\n=====================STARTUP========================\n");
 	enableXMEM(1);
 	SLI_init();
 	JOY_init();
@@ -249,14 +252,12 @@ int main(void)
 {
 	
 	init();
-		
-	OLED_updateScreen();
-	saveToAddress(0x1fff, 0xff);
-	saveToAddress(0x1fc0, 0x99);
-	OLED_updateScreen();
-
-	OLED_goto(0,0);
+	
+	OLED_bufferGoto(0,0);
 	OLED_printString("I'm alive");
+	
+	saveToAddress(0x1fc0, 0x99);
+	saveToAddress(0x1fff, 0x80);
 	
 	struct can_message message2send;
 	

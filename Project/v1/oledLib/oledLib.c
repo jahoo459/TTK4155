@@ -18,6 +18,8 @@ volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
 // buffer variables
 volatile char *oled_buffer = (char *) 0x1c00;
 uint16_t oled_buffer_size = 0x400;
+volatile char *oled_buffer_position = (char *) 0x1c00;
+//printf("oled_buffer_position = %#x\n", *oled_buffer_position);
 
 // OLED Parameters
 static int height = 8;		//screen height (8 pages) 
@@ -58,6 +60,15 @@ void OLED_init(void)
 	OLED_clear(); // wipe the screen
 	//OLED_splashScreen();
 	//OLED_flyingArrows();
+	
+	// setup 8-bit counter0 without PWM
+	// setting Mode of Operation to CTC and Prescaler to div/1024
+	TCCR0 |= (1<<WGM01) | (1<<CS02) | (1<<CS00);
+	// Output Compare Interrupt Enable
+	TIMSK |= (1<<OCIE0);
+	// 17ms Counter cycle (4800Hz -> 80 cycles)
+	OCR0 = 80;
+	
 }
 
 
@@ -73,16 +84,16 @@ void OLED_clear(void)
 	}
 	
 	// todo: remove later
-	for(uint8_t count_row = 0; count_row < height; count_row++)
-	{
-		// move to first column in row
-		OLED_goto(count_row, 0);
-
-		for(uint8_t count_column = 0; count_column < width; count_column++)
-		{
-			OLED_writeByteToOLED(oled_data, 0x00);
-		}
-	}
+// 	for(uint8_t count_row = 0; count_row < height; count_row++)
+// 	{
+// 		// move to first column in row
+// 		OLED_goto(count_row, 0);
+// 
+// 		for(uint8_t count_column = 0; count_column < width; count_column++)
+// 		{
+// 			OLED_writeByteToOLED(oled_data, 0x00);
+// 		}
+// 	}
 }
 
 
@@ -163,6 +174,13 @@ void OLED_goto(int row, int column)
 	OLED_writeByteToOLED(oled_cmd, hnib);
 }
 
+void OLED_bufferGoto(int row, int column)
+{
+	// change pointer in OLED SRAM buffer
+	oled_buffer_position = oled_buffer + (row * 0x80) + column;
+	//printf("oled_buffer_position = %#x\n", oled_buffer_position);
+}
+
 
 //------------------------------------------------------------------------------
 // This function accesses the font that was saved to the MCU's flash memory and
@@ -178,11 +196,18 @@ void OLED_printCharacter(uint8_t character)
 {
 	character = character-32; // map character to font table
 	
-	// print 8 columns into OLED RAM
+	// print 8 columns into OLED Buffer in SRAM
 	for(uint8_t i = 0; i < 8; i++)
 	{
-		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[character][i]));
+		saveToAddress(oled_buffer_position, pgm_read_byte(&font8[character][i]));
+		oled_buffer_position++;
 	}
+	
+	// print 8 columns into OLED RAM
+// 	for(uint8_t i = 0; i < 8; i++)
+// 	{
+// 		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[character][i]));
+// 	}
 }
 
 
@@ -203,12 +228,23 @@ void OLED_printString(char* msg)
 
 void OLED_printArrow(void)
 {
-	//change the arrow_width as changing the size here
-	OLED_writeByteToOLED(oled_data, 0b00011000);
-	OLED_writeByteToOLED(oled_data, 0b00011000);
-	OLED_writeByteToOLED(oled_data, 0b01111110);
-	OLED_writeByteToOLED(oled_data, 0b00111100);
-	OLED_writeByteToOLED(oled_data, 0b00011000);
+	// write arrow to oled sram buffer
+	saveToAddress(oled_buffer_position, 0b00011000);
+	oled_buffer_position++;
+	saveToAddress(oled_buffer_position, 0b00011000);
+	oled_buffer_position++;
+	saveToAddress(oled_buffer_position, 0b01111110);
+	oled_buffer_position++;
+	saveToAddress(oled_buffer_position, 0b00111100);
+	oled_buffer_position++;
+	saveToAddress(oled_buffer_position, 0b00011000);
+	oled_buffer_position++;
+	
+// 	OLED_writeByteToOLED(oled_data, 0b00011000);
+// 	OLED_writeByteToOLED(oled_data, 0b00011000);
+// 	OLED_writeByteToOLED(oled_data, 0b01111110);
+// 	OLED_writeByteToOLED(oled_data, 0b00111100);
+// 	OLED_writeByteToOLED(oled_data, 0b00011000);
 }
 
 
@@ -218,17 +254,28 @@ void OLED_printArrow(void)
 
 void OLED_clearArrow(void)
 {
-	// the outer loop iterates the display rows
 	for(uint8_t count_row = 0; count_row < height; count_row++)
 	{
-		OLED_goto(count_row,0); // move to first column in row
+		OLED_bufferGoto(count_row,0); // move to first column in row
 
 		// the inner loop iterates the columns of each row
 		for(uint8_t count_column = 0; count_column < arrow_width; count_column++)
 		{
-			OLED_writeByteToOLED(oled_data, 0x00);
+			saveToAddress(oled_buffer_position, 0x00);
+			oled_buffer_position++;
 		}
 	}
+	// the outer loop iterates the display rows
+// 	for(uint8_t count_row = 0; count_row < height; count_row++)
+// 	{
+// 		OLED_goto(count_row,0); // move to first column in row
+// 
+// 		// the inner loop iterates the columns of each row
+// 		for(uint8_t count_column = 0; count_column < arrow_width; count_column++)
+// 		{
+// 			OLED_writeByteToOLED(oled_data, 0x00);
+// 		}
+// 	}
 }
 
 
@@ -239,7 +286,8 @@ void OLED_clearArrow(void)
 void OLED_moveArrow(int joy_counter)
 {
 	OLED_clearArrow(); // clear the arrow space
-	OLED_goto(joy_counter,0); // move cursor to specified row
+	//OLED_goto(joy_counter,0); // move cursor to specified row
+	OLED_bufferGoto(joy_counter, 0);
 	OLED_printArrow(); // print arrow
 }
 

@@ -29,10 +29,10 @@ static int menuFrameOffset = 10; //Columns from left frame border
 void startGame()
 {
 	OLED_clear();
-	OLED_goto(0,0);
+	OLED_bufferGoto(0,0);
 	OLED_printString("START");
 	
-	OLED_goto(3,0);
+	OLED_bufferGoto(3,0);
 	
 	for(int i = 14; i > 0; i--)
 	{
@@ -40,7 +40,7 @@ void startGame()
 		_delay_ms(500);
 	}
 	
-	OLED_goto(5,0);
+	OLED_bufferGoto(5,0);
 	OLED_printString("YUPII :)");
 	_delay_ms(3000);
 }
@@ -117,7 +117,7 @@ void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 {
 	if(item != NULL)
 	{
-		OLED_goto(lineNumber, menuFrameOffset);
+		OLED_bufferGoto(lineNumber, menuFrameOffset);
 		OLED_printString(item->name);
 		//printf("%s\n", item->text);
 	}
