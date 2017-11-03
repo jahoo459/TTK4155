@@ -10,6 +10,7 @@
 
 static uint8_t oldADCvalues[4];
 static uint8_t IRStatus;
+static uint8_t threshold = 20;
 
 void ADC2_init()
 {
@@ -46,5 +47,12 @@ uint8_t ADC2_updateValue()
 		oldADCvalues[3-i] = oldADCvalues[2-i];
 	}
 	
-	return IRStatus;
+	if(IRStatus < threshold)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }

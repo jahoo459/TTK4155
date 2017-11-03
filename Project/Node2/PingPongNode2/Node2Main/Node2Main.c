@@ -38,6 +38,14 @@ volatile uint8_t ServoFlag = 0;
 //ADC
 volatile uint8_t ADC2Flag = 0;
 
+//Game Flags
+uint8_t IR_detection_status = 0;
+volatile uint8_t waitingMode = 0;
+//waiting mode counter 3s
+volatile uint16_t waitingModeTimer = WAITING_TIME;
+volatile uint8_t lifeCounter = 3;
+
+
 /*
 =======================INTERRUPTS=========================
 */
@@ -49,22 +57,56 @@ ISR(USART0_RX_vect)
 	USARTreceivedFlag = 1;		//set the flag to 1
 }
 
-ISR(MCP2515_INT)
+ISR(MCP2515_INT) //CAN message received
 {
 	SPIreceivedFlag = 1;
 }
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_OVF_vect) //PWM
 {
 	ServoFlag = 1;
-
+	
+	//handle the waiting mode timer
+	if(waitingMode)
+	{
+		waitingModeTimer -= 1;
+	}
+	
+	if(waitingModeTimer == 0 && IR_detection_status == 0)
+	{
+		waitingMode = 0;
+		waitingModeTimer = WAITING_TIME;
+		printf("Continue PLEASE! \n");
+	}
+	else
+	{
+		if(waitingModeTimer == 0)
+		{
+			waitingModeTimer = WAITING_TIME;	
+		}
+	}
 }
 
-ISR(ADC_vect)
+ISR(ADC_vect) //IR Diodes - counting points
 {
-	ADC2_updateValue();
-	printf("IRStatus: %d\n", ADC2_updateValue());
+	IR_detection_status = ADC2_updateValue();
 	set_bit(ADCSRA, ADSC);
+	
+	if(waitingMode == 0)
+	{
+		if(IR_detection_status == 1) //ball detected, start the waiting mode
+		{
+			waitingMode = 1;
+			lifeCounter -= 1;
+			printf("Life left: %d\n", lifeCounter);
+			
+			if(lifeCounter == 0)
+			{
+				printf("GAME OVER! \n");
+			}
+		}
+	}
+
 }
 
 void init()

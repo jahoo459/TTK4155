@@ -65,6 +65,10 @@ extern volatile char *adc_ext_ram;
 #define F_CPU FOSC
 #define UBRR FOSC/16/BAUDRATE-1
 
+//waiting mode, waiting time
+//#define WAITING_TIME 150 //150*20ms = 3s
+#define WAITING_TIME 150
+
 //#define uint16_t unsigned int
 
 #include <util/delay.h>
