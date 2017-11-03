@@ -135,6 +135,7 @@ int main(void)
 	
     while(1)
     {
+		
 		if(SPIreceivedFlag)
 		{
 			uint8_t receiveBufferStatus;
@@ -151,6 +152,8 @@ int main(void)
 				Motor_setSpeed(currJoyPos);
 					
 				SPIreceivedFlag = 0;
+				
+				printf("Encoder val: %d \n", Motor_readEncoder());
 			}
 		}
     }
