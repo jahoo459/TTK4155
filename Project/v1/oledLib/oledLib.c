@@ -48,7 +48,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xd9); // Set pre-charge period
 	OLED_writeByteToOLED(oled_cmd, 0x21); // command to set column address !! two cmd bytes missing !!
 	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
-	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
+	OLED_writeByteToOLED(oled_cmd, 0x00); // Page addressing mode (02)
 	OLED_writeByteToOLED(oled_cmd, 0xdb); // VCOM deselect level mode
 	OLED_writeByteToOLED(oled_cmd, 0x30);
 	OLED_writeByteToOLED(oled_cmd, 0xad); // Master configuration
@@ -105,9 +105,9 @@ void OLED_updateScreen(void)
 // 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x00); // column start address ~ 0d
 // 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x7f); // column end address ~ 127d
 	// set horizontal addressing mode
-	OLED_writeByteToOLED(oled_cmd, 0x20); // set memory addressing mode
-	OLED_writeByteToOLED(oled_cmd, 0x00); // set horizontal addressing mode ~ 0d
-	
+// 	OLED_writeByteToOLED(oled_cmd, 0x20); // set memory addressing mode
+// 	OLED_writeByteToOLED(oled_cmd, 0x00); // set horizontal addressing mode ~ 0d
+// 	
 	// write OLED buffer to OLED Memory
 	OLED_goto(0,0); // todo: start writing in top left corner (maybe not further needed)
 	for(uint16_t i = 0; i < oled_buffer_size; i++)
@@ -117,9 +117,9 @@ void OLED_updateScreen(void)
 	
 	// todo: remove later
 	// go back to page adressing mode
-	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
-	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
-}
+// 	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
+// 	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
+ }
 
 
 //------------------------------------------------------------------------------

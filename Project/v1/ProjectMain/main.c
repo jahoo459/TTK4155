@@ -39,6 +39,9 @@ volatile uint8_t JOYcalibFlag = 0;
 volatile uint8_t LeftButtonFlag = 0;
 volatile uint8_t RightButtonFlag = 0;
 
+//OLED
+volatile uint8_t refreshOLEDFlag = 0;
+
 //MENU
 volatile uint8_t activateMenuFlag = 0;
 
@@ -87,6 +90,7 @@ ISR(MCP2515_INT)
 ISR(TIMER0_COMP_vect)
 {
 	OLED_updateScreen();
+	//refreshOLEDFlag = 1;
 }
 
 
@@ -255,9 +259,23 @@ int main(void)
 	
 	OLED_bufferGoto(0,0);
 	OLED_printString("I'm alive");
+	OLED_bufferGoto(1,0);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(2,0);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(3,0);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(4,0);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(5,0);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(6,20);
+	OLED_printString("I'm alive");
+	OLED_bufferGoto(7,30);
+	OLED_printString("I'm alive");
 	
-	saveToAddress(0x1fc0, 0x99);
-	saveToAddress(0x1fff, 0x80);
+// 	saveToAddress(0x1fc0, 0x99);
+// 	saveToAddress(0x1fff, 0x80);
 	
 	struct can_message message2send;
 	
@@ -275,6 +293,11 @@ int main(void)
 		
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);
+
+		if(refreshOLEDFlag)
+		{	
+			OLED_updateScreen();
+		}
 
 		if(activateMenuFlag)
 		{
