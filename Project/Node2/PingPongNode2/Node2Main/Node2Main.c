@@ -46,6 +46,9 @@ volatile uint8_t waitingMode = 0;
 volatile uint16_t waitingModeTimer = WAITING_TIME;
 volatile uint8_t lifeCounter = 3;
 
+//MOTOR CONTROLLER
+uint8_t doPID_Flag = 0;
+
 
 /*
 =======================INTERRUPTS=========================
@@ -63,9 +66,10 @@ ISR(MCP2515_INT) //CAN message received
 	SPIreceivedFlag = 1;
 }
 
-ISR(TIMER1_OVF_vect) //PWM
+ISR(TIMER1_OVF_vect) //20ms timer, used for PWM, IR ball detection and PID
 {
 	ServoFlag = 1;
+	doPID_Flag = 1;
 	
 	//handle the waiting mode timer
 	if(waitingMode)
@@ -138,7 +142,12 @@ int main(void)
     while(1)
     {
 		//printf("Encoder val: %d \n", Motor_readEncoder());
-		
+		if(doPID_Flag)
+		{
+			//printf("Encoder read: %d \t", Motor_readEncoder());
+			Motor_do_PID(SliPos, Motor_readEncoder());
+			doPID_Flag = 0;
+		}
 		if(SPIreceivedFlag)
 		{
 			uint8_t receiveBufferStatus;
@@ -150,16 +159,16 @@ int main(void)
 				//printf("%d\n", receivedMessage.data[0]);
 				
 				JoyPos = receivedMessage.data[0]*100/255;
-				printf("%d \t", JoyPos);
+				//printf("%d \t", JoyPos);
  				//PWM_setLevel(currJoyPos);
- 				//Motor_setSpeed(currJoyPos);
+ 				//Motor_JoySetSpeed(currJoyPos);
 
 				SliPos = receivedMessage.data[1];
-				printf("%d \t", SliPos);
+				//printf("%d \t", SliPos);
 				//Motor_setSpeed(SliPos);	
 				
 				ButtonRight = receivedMessage.data[2];
-				printf("%d \n", ButtonRight);
+				//printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
 				
 				SPIreceivedFlag = 0;
 				
