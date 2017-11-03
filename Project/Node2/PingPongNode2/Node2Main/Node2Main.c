@@ -17,6 +17,7 @@
 #include "..\..\..\v1\UARTlib\UARTlib.h"
 #include "..\..\..\v1\SPILib\SPILib.h"
 #include "..\..\..\v1\CANLib\CANLib.h"
+#include "..\MotorLib\MotorLib.h"
 
 /*
 =======================PROGRAM=========================
@@ -111,13 +112,13 @@ ISR(ADC_vect) //IR Diodes - counting points
 
 void init()
 {
-	uartInit(BAUDRATE, FOSC, UBRR); printf("\n======================STARTUP=========================\n");
+	uartInit(BAUDRATE, FOSC, UBRR); printf("\n====================STARTUP=======================\n");
 	SPI_init();
 	MCP2515_init();
 	CAN_init();
 	PWM_init();
 	ADC2_init();
-	
+	Motor_init();
 	
 	sei();
 	set_bit(ADCSRA, ADSC); // start first ADC conversion
@@ -125,80 +126,15 @@ void init()
 
 int main(void)
 {
-	init();
-	
-// 	struct can_message message2send;
-// 	message2send.id = 23;
-// 	message2send.length = 8;
-// 	message2send.data[0] = '@';
-// 	message2send.data[1] = '~';
-// 	message2send.data[2] = 'H';
-// 	message2send.data[3] = 'l';
-// 	message2send.data[4] = '1';
-// 	message2send.data[5] = '.';
-// 	message2send.data[6] = '/';
-// 	message2send.data[7] = '5';
-// 	CAN_sendMessage(&message2send, 0);
-// 	_delay_ms(100);
+	init();
 	JOY_direction_t currJoyDir;
 	int currJoyPos = 0;
-	
-// 	uint8_t PWMcounter = 0;
-// 	uint8_t PWMlevel = 50;
-// 	uint8_t PWMdirection = 'r';
 	
 	uint16_t ADCresult = 0;
 		
 	
     while(1)
     {
-		
-		//if(ADC2Flag == 1)
-		//{
-			//ADCresult = ADCH;
-			////ADCresult |= (ADCH<<2);
-			//
-			//printf("ADC result: %d\n", ADCresult);
-			//
-			//ADC2Flag = 0;
-		//}
-		//PWM_setLevel(50);
-		//_delay_ms(1500);
-		//PWM_setLevel(100);
-		//_delay_ms(1500);
-		//PWM_setLevel(50);
-		//_delay_ms(1500);
-		//PWM_setLevel(0);
-		//_delay_ms(1500);
-		//PWMcounter++;
-		//if(PWMcounter > 1000)
-		//{
-			//printf("boing!\n");
-			//PWMcounter = 0;
-			//if(PWMdirection == 'r')
-			//{
-				//PWM_setLevel(PWMlevel++);
-				//
-				//if(PWMlevel == 100)
-				//{
-					//PWMdirection = 'l';
-				//}
-			//}
-			//else if (PWMdirection == 'l')
-			//{
-				//PWM_setLevel(PWMlevel--);
-				//
-				//if(PWMlevel == 0)
-				//{
-					//PWMdirection = 'r';
-				//}
-			//}
-			//else
-			//{
-				//printf("unknown value for 'PWMdirection'\n");
-			//}
-		//}
-		
 		if(SPIreceivedFlag)
 		{
 			uint8_t receiveBufferStatus;
@@ -210,33 +146,11 @@ int main(void)
 				//printf("%d\n", receivedMessage.data[0]);
 				
 				currJoyPos = receivedMessage.data[0]*100/255;
-				printf("%d\n", currJoyPos);
+				//printf("%d\n", currJoyPos);
 				PWM_setLevel(currJoyPos);
-				
-// 				switch (currJoyDir)
-// 				{
-// 					case CENTRE:
-// 					PWM_setLevel(50);
-// 					break;
-// 					
-// 					case LEFT:
-// 					PWM_setLevel(100);
-// 					break;
-// 					
-// 					case RIGHT:
-// 					PWM_setLevel(0);
-// 					break;
-// 				}
-				
-				
-	
-				
-
-				//CAN_printMessage(&receivedMessage);
-				
+				Motor_setSpeed(currJoyPos);
+					
 				SPIreceivedFlag = 0;
-				
-				
 			}
 		}
     }
