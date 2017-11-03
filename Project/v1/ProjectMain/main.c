@@ -274,17 +274,29 @@ int main(void)
 	
 	struct can_message message2send;
 	
-	static JOY_position_t currPos;
-	
-	
+	static uint8_t JoyPos;	
+	static uint8_t SliPos;
+	static uint8_t ButtonRight;
 	
     while(1)
     {
-		currPos = JOY_getPosition();
+		JoyPos = JOY_getPosition().X_abs;
+		SliPos = SLI_getPosition().R_per;
+		if((PINE & (1<<PE2)))
+		{
+			ButtonRight = 1;
+		}
+		else
+		{
+			ButtonRight = 0;
+		}
+		printf("%d\n", SliPos);
 		
 		message2send.id = 23;
-		message2send.length = 1;
-		message2send.data[0] = currPos.X_abs;
+		message2send.length = 3;
+		message2send.data[0] = JoyPos;
+		message2send.data[1] = SliPos;
+		message2send.data[2] = ButtonRight;
 		
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);

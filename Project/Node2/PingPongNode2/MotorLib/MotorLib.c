@@ -26,7 +26,7 @@ void Motor_init()
 	clear_bit(MOT_ENC_REG, _ENC_RESET_PIN);
 	_delay_us(20);
 	set_bit(MOT_ENC_REG, _ENC_RESET_PIN);
-	
+
 }
 
 void Motor_setSpeed(uint8_t joystick_position)

@@ -127,14 +127,17 @@ void init()
 int main(void)
 {
 	init();
-	JOY_direction_t currJoyDir;
-	int currJoyPos = 0;
+	//JOY_direction_t currJoyDir;
+	uint8_t JoyPos = 0;
+	uint8_t SliPos = 0;
+	uint8_t ButtonRight = 0;
 	
 	uint16_t ADCresult = 0;
 		
 	
     while(1)
     {
+		//printf("Encoder val: %d \n", Motor_readEncoder());
 		
 		if(SPIreceivedFlag)
 		{
@@ -146,14 +149,20 @@ int main(void)
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
 				//printf("%d\n", receivedMessage.data[0]);
 				
-				currJoyPos = receivedMessage.data[0]*100/255;
-				//printf("%d\n", currJoyPos);
-				PWM_setLevel(currJoyPos);
-				Motor_setSpeed(currJoyPos);
-					
+				JoyPos = receivedMessage.data[0]*100/255;
+				printf("%d \t", JoyPos);
+ 				//PWM_setLevel(currJoyPos);
+ 				//Motor_setSpeed(currJoyPos);
+
+				SliPos = receivedMessage.data[1];
+				printf("%d \t", SliPos);
+				//Motor_setSpeed(SliPos);	
+				
+				ButtonRight = receivedMessage.data[2];
+				printf("%d \n", ButtonRight);
+				
 				SPIreceivedFlag = 0;
 				
-				printf("Encoder val: %d \n", Motor_readEncoder());
 			}
 		}
     }
