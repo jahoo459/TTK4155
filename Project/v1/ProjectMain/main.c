@@ -45,6 +45,9 @@ volatile uint8_t refreshOLEDFlag = 0;
 //MENU
 volatile uint8_t activateMenuFlag = 0;
 
+//ANIMATION
+volatile uint8_t timer0_increment = 0;
+
 //SPI COMMUNICATION
 volatile uint8_t SPI_ReceivedByte;
 volatile uint8_t SPIreceivedFlag = 0;
@@ -90,6 +93,12 @@ ISR(MCP2515_INT)
 ISR(TIMER0_COMP_vect)
 {
 	OLED_updateScreen();
+	timer0_increment++;
+	if(timer0_increment == 12)
+	{
+		OLED_setAnimationTick();
+		timer0_increment = 0;
+	}
 	//refreshOLEDFlag = 1;
 }
 
@@ -269,13 +278,13 @@ int main(void)
 	OLED_printString("I'm alive");
 	OLED_bufferGoto(5,0);
 	OLED_printString("I'm alive");
-	OLED_bufferGoto(6,20);
+	OLED_bufferGoto(6,0);
 	OLED_printString("I'm alive");
-	OLED_bufferGoto(7,30);
+	OLED_bufferGoto(7,0);
 	OLED_printString("I'm alive");
 	
-// 	saveToAddress(0x1fc0, 0x99);
-// 	saveToAddress(0x1fff, 0x80);
+	saveToAddress(0x1fc0, 0x99);
+	saveToAddress(0x1fff, 0x80);
 	
 	struct can_message message2send;
 	

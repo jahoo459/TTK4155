@@ -25,9 +25,13 @@ volatile char *oled_buffer_position = (char *) 0x1c00;
 static int height = 8;		//screen height (8 pages) 
 static int width = 128;		//screen width (128 columns)
 
-// Definition of the Arrow Size - allows easy refreshing of the arrow section
-static int arrow_width = 5;
+// arrow Parameters
+#define ARROW_WIDTH 5 // Definition of the Arrow Size - allows easy refreshing of the arrow section
+static int arrow_position = 0; // arrow Position in menu
+static int arrow_step = 0; // relative arrow Position during Animation
 
+// animation Parameters
+static int animation_tick = 0; // indicates an advance of the animation
 
 //------------------------------------------------------------------------------
 // Default initialization routine of the OLED display.
@@ -259,7 +263,7 @@ void OLED_clearArrow(void)
 		OLED_bufferGoto(count_row,0); // move to first column in row
 
 		// the inner loop iterates the columns of each row
-		for(uint8_t count_column = 0; count_column < arrow_width; count_column++)
+		for(uint8_t count_column = 0; count_column < ARROW_WIDTH; count_column++)
 		{
 			saveToAddress(oled_buffer_position, 0x00);
 			oled_buffer_position++;
@@ -285,10 +289,45 @@ void OLED_clearArrow(void)
 
 void OLED_moveArrow(int joy_counter)
 {
-	OLED_clearArrow(); // clear the arrow space
-	//OLED_goto(joy_counter,0); // move cursor to specified row
-	OLED_bufferGoto(joy_counter, 0);
-	OLED_printArrow(); // print arrow
+	// determine moving direction
+	uint8_t move_up = 0;
+	if(joy_counter == arrow_position)
+	{
+		OLED_clearArrow(); // clear the arrow space
+		//OLED_goto(joy_counter,0); // move cursor to specified row
+		OLED_bufferGoto(joy_counter, 0);
+		OLED_printArrow(); // print arrow
+	}
+	else
+	{
+		//printf("%#x %#x %#x %#x %#x \n", readFromAddress(0x1c00), readFromAddress(0x1c01), readFromAddress(0x1c02), readFromAddress(0x1c03), readFromAddress(0x1c04));
+		uint8_t buffer_dummy[ARROW_WIDTH] = {0x00};
+		uint8_t buffer_current[ARROW_WIDTH] = {0x00};
+		for(uint8_t i = 0; i < 8; i++)
+		{
+			
+			for(uint8_t j = 0; j < ARROW_WIDTH; j++)
+			{
+				OLED_bufferGoto(i, j);
+				buffer_current[j] = readFromAddress(oled_buffer_position); // save state of current row
+			}
+			
+			for(uint8_t k = 0; k < ARROW_WIDTH; k++)
+			{				
+				OLED_bufferGoto(i, k);
+				saveToAddress(oled_buffer_position, buffer_current[k]>>1 | buffer_dummy[k]<<7); // move current row 1 down + combine with lowest from above
+				buffer_dummy[k] = buffer_current[k]; // current row is reference for next row
+			}
+		}
+	}
+	
+	
+	
+}
+
+void OLED_setAnimationTick()
+{
+	animation_tick = 1;
 }
 
 void OLED_setContrast(uint8_t contrast)

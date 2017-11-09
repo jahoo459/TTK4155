@@ -25,6 +25,8 @@ void OLED_printArrow(void);
 void OLED_clearArrow(void);
 void OLED_moveArrow(int joy_counter);
 
+void OLED_setAnimationTick(void);
+
 void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness);
 
 void OLED_splashScreen(void);
