@@ -9,7 +9,7 @@
 #include "MotorLib.h"
 
 // global sum of the errors
-uint16_t sumError = 0;
+int sumError = 0;
 
 void Motor_init()
 {
@@ -84,6 +84,7 @@ int Motor_readEncoder()
 	//set_bit(MOT_ENC_REG, _ENC_RESET_PIN);
 	//Set !OE high to disable output of encoder
 	set_bit(MOT_ENC_REG, _ENC_OE_PIN);
+	//printf("Encoder: %d\n", value);
 	return value;
 }
 
@@ -95,14 +96,14 @@ void Motor_do_PID(int desired_value, int actual_value)
 // 	int desiredVal = step * (100 - desired_value); //desired value in encoder ticks
 	//printf("desired_value: %d\n", desired_value);
 	int error = desired_value - actual_value;
-	if(error > 10)
+	if(abs(error) > 10)
 	{
 		sumError += error;
 	}
 	
 	//int k_i = I_GAIN * TIME_INT / TI;
-	int u = error * P_GAIN + KI*sumError;
-	printf("sumError: %d\n", sumError);
+	int u = P_GAIN * error + I_GAIN * sumError;
+	//printf("sumError: %d \t %d\n", sumError, error);
 	
 	Motor_setSpeed(u);
 }
@@ -121,13 +122,13 @@ void Motor_setSpeed(int speed)
 	
 	printf("speed: %d\n", speed);
 	
-	if(speed < 70 && speed > 5)
+// 	if(speed < 70 && speed > 5)
+// 	{
+// 		speed = 70;
+// 	}
+	if(speed > 120)
 	{
-		speed = 70;
-	}
-	if(speed > 255)
-	{
-		speed = 255;
+		speed = 120;
 	}
 	
 	uint8_t msgSize = 3;

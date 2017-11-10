@@ -16,6 +16,9 @@
 // current position of sliders
 SLI_position_t currentSliPosition;
 
+// startup phase
+uint8_t SLI_startup = 1; 
+
 // set initial values for Position and Buttons
 void SLI_init()
 {
@@ -66,5 +69,7 @@ SLI_position_t SLI_getPosition()
 	SLI_requestCurrentPosition('r');
 	_delay_us(60);
 	SLI_updatePosition('r');
+	
 	return currentSliPosition;
+	
 }

@@ -12,6 +12,7 @@ void Solenoid_init()
 {
 	// set Pin PA1 to Output Mode
 	set_bit(DDRA, DDA1);
+	set_bit(PORTA, PA1);
 }
 
 void Solenoid_TurnOn()

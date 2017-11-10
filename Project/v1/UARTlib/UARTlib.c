@@ -26,7 +26,7 @@ uint8_t uartReceive()
 	while ( !(UCSR0A & (1<<RXC0)) );
 	/* Get and return received data from buffer */
 	uint8_t receivedByte = UDR0;
-	
+		
 	return receivedByte;
 }
 
