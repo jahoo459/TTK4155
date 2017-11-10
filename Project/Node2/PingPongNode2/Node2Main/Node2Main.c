@@ -207,7 +207,8 @@ int main(void)
 					}
 				}
 				
-				printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
+				//printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
+				
 		
 				prevRightButtonState = ButtonRight;
 				SPIreceivedFlag = 0;

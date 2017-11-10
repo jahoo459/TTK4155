@@ -98,4 +98,11 @@ typedef struct can_message{
 	uint8_t data[8];
 } can_message_t;
 
+// UART Message
+typedef struct {
+	uint8_t Motor;
+	uint8_t Servo;
+	uint8_t Button;
+} UART_Message_t;
+
 #endif /* DEFINITIONS_H_ */

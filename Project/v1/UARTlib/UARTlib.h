@@ -9,13 +9,15 @@
 #ifndef UARTLIB_H_
 #define UARTLIB_H_
 
-#define set_bit( reg, bit ) (reg |= (1 << bit))
-#define clear_bit( reg, bit ) (reg &= ~(1 << bit))
-#define test_bit( reg, bit ) (reg & (1 << bit))
+#include "..\ProjectMain\definitions.h"
+
+// #define set_bit( reg, bit ) (reg |= (1 << bit))
+// #define clear_bit( reg, bit ) (reg &= ~(1 << bit))
+// #define test_bit( reg, bit ) (reg & (1 << bit))
 
 
 void uartSend(const char byte2Send);
-uint8_t uartReceive();
+UART_Message_t uartReceive();
 void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr);
 
 

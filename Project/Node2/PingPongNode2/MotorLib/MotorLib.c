@@ -120,7 +120,7 @@ void Motor_setSpeed(int speed)
 		Motor_setDirection(MOTOR_LEFT);
 	}
 	
-	printf("speed: %d\n", speed);
+	//printf("speed: %d\n", speed);
 	
 // 	if(speed < 70 && speed > 5)
 // 	{

@@ -54,6 +54,8 @@ volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
+UART_Message_t uartMessage;
+static char str[3];
 
 /*
 =======================INTERRUPTS=========================
@@ -63,8 +65,24 @@ ISR(USART0_RXC_vect)
 {
 	//interrupt generated after receiving a byte over UART
 	UART_ReceivedByte = UDR0;		//received byte
-	USARTreceivedFlag = 1;		//set the flag to 1
 	
+	uartMessage.Button = 0;
+	uartMessage.Motor = 0;
+	uartMessage.Servo = 0;
+	
+	uartMessage = uartReceive();
+	
+		
+	if(uartMessage.Motor != 0)
+	{
+		//sprintf(str, "%d", JoyPos);
+		OLED_clear();
+		sprintf(str, "%d", uartMessage.Motor);
+		OLED_goto(0,0);
+		OLED_printString(str);
+	}
+	
+	USARTreceivedFlag = 1;		//set the flag to 1
 }
 
 ISR(INT0_vect)
@@ -83,8 +101,6 @@ ISR(MCP2515_INT)
 {
 	SPIreceivedFlag = 1;
 }
-
-
 
 
 /*
@@ -273,13 +289,17 @@ int main(void)
 // 	}
 	
 	struct can_message message2send;
+
 	
 	static uint8_t JoyPos;	
 	static uint8_t SliPos;
 	static uint8_t ButtonRight;
-	
+		
     while(1)
     {
+
+		
+		
 		JoyPos = JOY_getPosition().X_abs;
 		SliPos = SLI_getPosition().R_per;
 		if((PINE & (1<<PE2)))
