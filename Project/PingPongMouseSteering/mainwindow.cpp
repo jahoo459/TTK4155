@@ -67,10 +67,11 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     //qDebug() << "Position " << event->pos();
-    this->mouseX_position = event->pos().x();
+    int currMousePos = event->pos().x();
 
-    if(mouseX_position > 1000) mouseX_position = 1000;
-    if(mouseX_position < 0) mouseX_position = 0;
+    if(currMousePos > 1000) mouseX_position = 1000;
+    else if(currMousePos < 0) mouseX_position = 0;
+    else mouseX_position = (uint16_t)currMousePos;
 
     this->ui->lcdNumber_motor->display(mouseX_position);
     this->ui->horizontalSlider->setValue(this->mouseX_position);
@@ -80,9 +81,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     int delta = event->angleDelta().y();
-    wheelPosition += delta / 4;
-    if(wheelPosition > 1000) wheelPosition = 1000;
-    if(wheelPosition < 0) wheelPosition = 0;
+
+    if(wheelPosition + delta / 4 > 1000) wheelPosition = 1000;
+    else if (wheelPosition + delta / 4 < 0) wheelPosition = 0;
+    else wheelPosition += delta / 4;
 
     this->ui->dial->setValue(wheelPosition);
     this->ui->lcdNumber_Servo->display(wheelPosition);

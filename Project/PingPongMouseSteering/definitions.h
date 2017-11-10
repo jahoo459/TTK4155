@@ -14,9 +14,9 @@ typedef struct{
 }COM_PORT_INFO;
 
 typedef struct{
-    int posX;
-    int wheelPos;
-    int buttonState;
+    uint16_t posX;
+    uint16_t wheelPos;
+    uint16_t buttonState;
 }STEERING_CMD;
 
 #endif // DEFINITIONS_H
