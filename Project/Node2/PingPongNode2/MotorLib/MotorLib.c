@@ -8,6 +8,8 @@
 
 #include "MotorLib.h"
 
+// global sum of the errors
+uint16_t sumError = 0;
 
 void Motor_init()
 {
@@ -26,7 +28,7 @@ void Motor_init()
 	clear_bit(MOT_ENC_REG, _ENC_RESET_PIN);
 	_delay_us(20);
 	set_bit(MOT_ENC_REG, _ENC_RESET_PIN);
-
+	
 }
 
 void Motor_JoySetSpeed(uint8_t joystick_position)
@@ -93,8 +95,14 @@ void Motor_do_PID(int desired_value, int actual_value)
 // 	int desiredVal = step * (100 - desired_value); //desired value in encoder ticks
 	//printf("desired_value: %d\n", desired_value);
 	int error = desired_value - actual_value;
-	int u = error * P_GAIN;
-	//printf("error: %d\n", u);
+	if(error > 10)
+	{
+		sumError += error;
+	}
+	
+	//int k_i = I_GAIN * TIME_INT / TI;
+	int u = error * P_GAIN + KI*sumError;
+	printf("sumError: %d\n", sumError);
 	
 	Motor_setSpeed(u);
 }
@@ -116,6 +124,10 @@ void Motor_setSpeed(int speed)
 	if(speed < 70 && speed > 5)
 	{
 		speed = 70;
+	}
+	if(speed > 255)
+	{
+		speed = 255;
 	}
 	
 	uint8_t msgSize = 3;

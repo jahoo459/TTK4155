@@ -52,6 +52,9 @@ volatile uint8_t lifeCounter = 3;
 //MOTOR CONTROLLER
 uint8_t doPID_Flag = 0;
 
+// Time interval counter (160ms) and flag
+uint8_t timeIntCounter = 0;
+uint8_t timeIntFlag = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -73,7 +76,7 @@ ISR(TIMER1_OVF_vect) //20ms timer, used for PWM, IR ball detection and PID
 {
 	ServoFlag = 1;
 	doPID_Flag = 1;
-	
+		
 	//handle the waiting mode timer
 	if(waitingMode)
 	{
@@ -93,6 +96,15 @@ ISR(TIMER1_OVF_vect) //20ms timer, used for PWM, IR ball detection and PID
 			waitingModeTimer = WAITING_TIME;	
 		}
 	}
+	
+	// set the time interval flag 20*8=160
+	if(timeIntCounter == 8)
+	{
+		timeIntFlag = 1;
+		timeIntCounter = 0;
+	}
+	
+	timeIntCounter += 1;	
 }
 
 ISR(ADC_vect) //IR Diodes - counting points
@@ -115,6 +127,11 @@ ISR(ADC_vect) //IR Diodes - counting points
 		}
 	}
 
+}
+
+ISR(TIMER0_OVF_vect)
+{
+	
 }
 
 void init()
@@ -149,8 +166,13 @@ int main(void)
 		if(doPID_Flag)
 		{
 			//printf("Encoder read: %d \t", Motor_readEncoder());
-			//Motor_do_PID(SliPos, Motor_readEncoder());
-			doPID_Flag = 0;
+			if (timeIntFlag == 1)
+			{
+				Motor_do_PID(SliPos, Motor_readEncoder());
+				doPID_Flag = 0;
+				timeIntFlag = 0;
+			}
+						
 		}
 		if(SPIreceivedFlag)
 		{
@@ -165,11 +187,10 @@ int main(void)
 				JoyPos = receivedMessage.data[0]*100/255;
 				//printf("%d \t", JoyPos);
  				PWM_setLevel(JoyPos);
- 				Motor_JoySetSpeed(JoyPos);
+ 				//Motor_JoySetSpeed(JoyPos);
 
 				SliPos = receivedMessage.data[1];
-				//printf("%d \t", SliPos);
-				//Motor_setSpeed(SliPos);	
+				//printf("%d \t", SliPos);	
 				
 				ButtonRight = receivedMessage.data[2];	
 				
