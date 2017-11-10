@@ -46,7 +46,7 @@ void PWM_setLevel(uint8_t level)
 	}
 	else
 	{
-		printf("servo level over 100% - set to 100%\n");
+		//printf("servo level over 100% - set to 100%\n");
 		OCR1A = SERVO_MAX;
 		
 	}

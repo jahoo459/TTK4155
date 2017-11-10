@@ -9,6 +9,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ADC2Lib", "ADC2Lib\ADC2Lib.
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "MotorLib", "MotorLib\MotorLib.cproj", "{950DB859-6355-468F-AB8A-B57A535A3C00}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SolenoidLib", "SolenoidLib\SolenoidLib.cproj", "{9E3FAA48-7E2D-4D3D-87DB-B0B54B8DBA10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -31,6 +33,10 @@ Global
 		{950DB859-6355-468F-AB8A-B57A535A3C00}.Debug|AVR.Build.0 = Debug|AVR
 		{950DB859-6355-468F-AB8A-B57A535A3C00}.Release|AVR.ActiveCfg = Release|AVR
 		{950DB859-6355-468F-AB8A-B57A535A3C00}.Release|AVR.Build.0 = Release|AVR
+		{9E3FAA48-7E2D-4D3D-87DB-B0B54B8DBA10}.Debug|AVR.ActiveCfg = Debug|AVR
+		{9E3FAA48-7E2D-4D3D-87DB-B0B54B8DBA10}.Debug|AVR.Build.0 = Debug|AVR
+		{9E3FAA48-7E2D-4D3D-87DB-B0B54B8DBA10}.Release|AVR.ActiveCfg = Release|AVR
+		{9E3FAA48-7E2D-4D3D-87DB-B0B54B8DBA10}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

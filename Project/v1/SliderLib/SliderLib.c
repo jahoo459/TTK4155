@@ -56,7 +56,7 @@ void SLI_updatePosition(uint8_t side)
 	{
 		currentSliPosition.R_abs = ADC_read(adc_ext_ram);
 		currentSliPosition.R_per = currentSliPosition.R_abs * 100 / 256;
-		printf("CurrSliPos_L: %d, CurrSliPos_R: %d\n", currentSliPosition.L_per, currentSliPosition.R_per);
+		//printf("CurrSliPos_L: %d, CurrSliPos_R: %d\n", currentSliPosition.L_per, currentSliPosition.R_per);
 	}
 }
 

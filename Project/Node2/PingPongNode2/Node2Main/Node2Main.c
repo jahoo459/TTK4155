@@ -18,6 +18,7 @@
 #include "..\..\..\v1\SPILib\SPILib.h"
 #include "..\..\..\v1\CANLib\CANLib.h"
 #include "..\MotorLib\MotorLib.h"
+#include "..\SolenoidLib\SolenoidLib.h"
 
 /*
 =======================PROGRAM=========================
@@ -42,6 +43,8 @@ volatile uint8_t ADC2Flag = 0;
 //Game Flags
 uint8_t IR_detection_status = 0;
 volatile uint8_t waitingMode = 0;
+volatile uint8_t prevRightButtonState = 0;
+
 //waiting mode counter 3s
 volatile uint16_t waitingModeTimer = WAITING_TIME;
 volatile uint8_t lifeCounter = 3;
@@ -123,6 +126,7 @@ void init()
 	PWM_init();
 	ADC2_init();
 	Motor_init();
+	Solenoid_init();
 	
 	sei();
 	set_bit(ADCSRA, ADSC); // start first ADC conversion
@@ -145,7 +149,7 @@ int main(void)
 		if(doPID_Flag)
 		{
 			//printf("Encoder read: %d \t", Motor_readEncoder());
-			Motor_do_PID(SliPos, Motor_readEncoder());
+			//Motor_do_PID(SliPos, Motor_readEncoder());
 			doPID_Flag = 0;
 		}
 		if(SPIreceivedFlag)
@@ -160,16 +164,31 @@ int main(void)
 				
 				JoyPos = receivedMessage.data[0]*100/255;
 				//printf("%d \t", JoyPos);
- 				//PWM_setLevel(currJoyPos);
- 				//Motor_JoySetSpeed(currJoyPos);
+ 				PWM_setLevel(JoyPos);
+ 				Motor_JoySetSpeed(JoyPos);
 
 				SliPos = receivedMessage.data[1];
 				//printf("%d \t", SliPos);
 				//Motor_setSpeed(SliPos);	
 				
-				ButtonRight = receivedMessage.data[2];
-				//printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
+				ButtonRight = receivedMessage.data[2];	
 				
+				// use solenoid
+				if(ButtonRight != prevRightButtonState)
+				{
+					if(ButtonRight == 1)
+					{
+						Solenoid_TurnOn();
+					}
+					else
+					{
+						Solenoid_TurnOff();
+					}
+				}
+				
+				// printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
+		
+				prevRightButtonState = ButtonRight;
 				SPIreceivedFlag = 0;
 				
 			}

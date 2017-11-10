@@ -12,5 +12,6 @@
 
 void PWM_init(void);
 void PWM_setLevel(uint8_t level);
+void Solenoid_on(void);
 
 #endif /* PWMLIB_H_ */
