@@ -10,17 +10,17 @@ PosMsg::~PosMsg()
     closeConnection();
 }
 
-int PosMsg::getPosX()
+uint16_t PosMsg::getPosX()
 {
     return this->posX;
 }
 
-int PosMsg::getButtonState()
+uint16_t PosMsg::getButtonState()
 {
     return this->buttonState;
 }
 
-int PosMsg::getPosWheel()
+uint16_t PosMsg::getPosWheel()
 {
     return this->posWheel;
 }

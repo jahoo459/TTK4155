@@ -29,9 +29,9 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QList<COM_PORT_INFO> com_ports_list;
-    int wheelPosition;
-    int mouseX_position;
-    int buttonState;
+    uint16_t wheelPosition;
+    uint16_t mouseX_position;
+    uint16_t buttonState;
 
 signals:
     void comPortSelected(QString portNo);

@@ -10,9 +10,9 @@ class PosMsg : public QObject
 public:
     PosMsg();
     ~PosMsg();
-    int getPosX();
-    int getButtonState();
-    int getPosWheel();
+    uint16_t getPosX();
+    uint16_t getButtonState();
+    uint16_t getPosWheel();
 
     QList<COM_PORT_INFO> listSerialPorts()
     {
@@ -33,9 +33,9 @@ public:
     }
 
 private:
-    int posX;
-    bool buttonState;
-    int posWheel;
+    uint16_t posX;
+    uint16_t buttonState;
+    uint16_t posWheel;
     QSerialPort serial;
     void openConnection(QString portName);
     void closeConnection();
