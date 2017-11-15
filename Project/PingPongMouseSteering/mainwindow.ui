@@ -70,7 +70,7 @@
      <rect>
       <x>20</x>
       <y>340</y>
-      <width>121</width>
+      <width>411</width>
       <height>16</height>
      </rect>
     </property>
@@ -120,7 +120,7 @@
      <string>FIRE</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>810</x>

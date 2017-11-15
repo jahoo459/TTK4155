@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(&w, &MainWindow::comPortSelected, &newMsg, &PosMsg::updatePortNumber);
     QObject::connect(&newMsg, &PosMsg::connStatusChanged, &w, &MainWindow::updateConnStatus);
+    QObject::connect(&newMsg, &PosMsg::log, &w, &MainWindow::logInfo);
     QObject::connect(&w, &MainWindow::gameStateChanged, &newMsg, &PosMsg::sendMessage);
 
     QList<COM_PORT_INFO> com_port_info_list = newMsg.listSerialPorts();

@@ -25,13 +25,14 @@ private slots:
 
 public slots:
     void updateConnStatus(QString msg);
+    void logInfo(QString msg);
 
 private:
     Ui::MainWindow *ui;
     QList<COM_PORT_INFO> com_ports_list;
-    uint16_t wheelPosition;
-    uint16_t mouseX_position;
-    uint16_t buttonState;
+    uint8_t wheelPosition;
+    uint8_t mouseX_position;
+    uint8_t buttonState;
 
 signals:
     void comPortSelected(QString portNo);

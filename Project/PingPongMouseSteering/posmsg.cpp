@@ -10,17 +10,17 @@ PosMsg::~PosMsg()
     closeConnection();
 }
 
-uint16_t PosMsg::getPosX()
+uint8_t PosMsg::getPosX()
 {
     return this->posX;
 }
 
-uint16_t PosMsg::getButtonState()
+uint8_t PosMsg::getButtonState()
 {
     return this->buttonState;
 }
 
-uint16_t PosMsg::getPosWheel()
+uint8_t PosMsg::getPosWheel()
 {
     return this->posWheel;
 }
@@ -55,16 +55,17 @@ void PosMsg::sendData(QByteArray data)
     serial.write(data);
 }
 
-QByteArray PosMsg::receiveData()
+uint8_t PosMsg::receiveData()
 {
     QByteArray data = serial.readAll();
-    return data;
+    return data.at(0);
 }
 
 void PosMsg::updatePortNumber(QString portName)
 {
     qDebug() << "Connecting...." << portName;
     emit connStatusChanged("Connecting....");
+    closeConnection();
     openConnection(portName);
 }
 
@@ -73,7 +74,7 @@ void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
 {
     STEERING_CMD command;
 
-    int identifier = 0xffff;
+    uint8_t identifier = 0xff;
     command.posX = mouseXpos;
     command.wheelPos = wheelPos;
     command.buttonState = buttonState;
@@ -83,17 +84,32 @@ void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
     //QDataStream streamIn(&msg, QIODevice::QIODevice::ReadWrite);
 
     streamOut << identifier;
-    streamOut << command.posX;
-    streamOut << command.wheelPos;
-    streamOut << command.buttonState;
-
+    msg.clear();
     this->serial.write(msg);
-//    int a,b,c;
-//    streamIn >> a;
-//    streamIn >> b;
-//    streamIn >> c;
+    while(receiveData() == 0);
 
-//    qDebug() << "After Ser: " << a << " " << b << " " << c ;
+    streamOut << command.posX;
+    msg.clear();
+    this->serial.write(msg);
+    while(receiveData() == 0);
+
+    streamOut << command.wheelPos;
+    msg.clear();
+    this->serial.write(msg);
+    while(receiveData() == 0);
+
+    streamOut << command.buttonState;
+    msg.clear();
+    this->serial.write(msg);
+    while(receiveData() == 0);
+
+
+//    if(sizeof (msg) == 4)
+//    {
+//        this->serial.write(msg);
+//        //log(msg);
+//        cout << (uint8_t)msg.at(0) << " " << (uint8_t)msg.at(1) << " " << (uint8_t)msg.at(2) << " " << (uint8_t)msg.at(3) << endl;
+//    }
 }
 
 
