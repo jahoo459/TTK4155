@@ -62,7 +62,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	//OLED_splashScreen();
+	OLED_splashScreen();
 	//OLED_flyingArrows();
 	
 	// setup 8-bit counter0 without PWM
@@ -301,7 +301,6 @@ void OLED_clearArrow(void)
 //------------------------------------------------------------------------------
 // This function can be used to remove the arrow from its old row and move
 // it to a new one.
-
 void OLED_moveArrow(int joy_counter)
 {
 	// reset animation tick
@@ -374,6 +373,9 @@ void OLED_moveArrow(int joy_counter)
 	
 }
 
+
+//------------------------------------------------------------------------------
+//
 void OLED_resetArrow()
 {
 	OLED_clearArrow();
@@ -382,27 +384,182 @@ void OLED_resetArrow()
 	arrow_position = 0;
 }
 
+
+//------------------------------------------------------------------------------
+//
 void OLED_setAnimationTick()
 {
 		animation_tick = 1;
 }
 
-void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness)
+
+//------------------------------------------------------------------------------
+//
+void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
-	// calculate euclidean line parameters
-	uint8_t m = (y1-y0)/(x1-x0);
-	uint8_t c = y0 - m*x0;
-	
-	for(uint8_t u = x0; u <= x1; u++)
+	if(x0 == x1)
 	{
 		for(uint8_t v = y0; v <= y1; v++)
 		{
-			if((v-u*m-c) == 0)
-			{
-				OLED_writePixelToOLED(u, v);
-			}
+			OLED_writePixelToOLED(x0, v);
 		}
 	}
+	else
+	{	
+		if(y0 < y1)
+		{
+ 			float m = 0.5;
+			float c;
+ 			
+			if(y0 == 14)
+			{
+				c = -7.5;
+			}
+			else if(y0 == 39)
+			{
+				c = 17.5;
+			}
+			else
+			{
+				c = -27.5;
+			}
+						
+			for(uint8_t u = x0; u <= x1; u++)
+			{
+				for(uint8_t v = y0; v <= y1; v++)
+				{
+					if((v-u*m-c) == 0)
+					{
+						OLED_writePixelToOLED(u, v);
+					}
+				}
+			}
+		}
+		else
+		{
+			float m = -0.5;
+			float c;
+			
+			if(y0 == 14)
+			{
+				c = 35.5;
+			}
+			else if(y0 == 24)
+			{
+				c = 55.5;
+			}
+			else
+			{
+				c = 80.5;
+			}
+						
+			for(uint8_t u = x0; u <= x1; u++)
+			{
+				for(uint8_t v = y1; v <= y0; v++)
+				{
+					if((v-u*m-c) == 0)
+					{
+						OLED_writePixelToOLED(u, v);
+					}
+				}
+			}
+		}
+		
+		// calculate euclidean line parameters
+		//float m = (y1-y0)/(x1-x0);
+		//float c = y0 - m*x0;
+			//
+		//printf("m*2: %d, c*2: %d\n", (int)m*2, (int)c*2);
+		//
+ 		//for(uint8_t u = x0; u <= x1; u++)
+ 		//{
+			//if(y0 < y1)
+			//{
+				//for(uint8_t v = y0; v <= y1; v++)
+	 			//{
+		 			//if((v-u*m-c) == 0)
+		 			//{
+			 			//OLED_writePixelToOLED(u, v);
+		 			//}
+	 			//}
+			//}
+			//else
+			//{
+				//for(uint8_t v = y1; v <= y0; v++)
+				//{
+					//if(abs(v-u*m-c) <= 1.0)
+					//{
+						//OLED_writePixelToOLED(u, v);
+					//}
+				//}
+			//}
+ 		//}
+	}
+}
+
+
+//------------------------------------------------------------------------------
+//
+void OLED_logo()
+{
+	// define cube parameters
+// 	uint8_t ver_padding = 10;
+// 	uint8_t hor_padding = 32;
+// 	uint8_t ver_axis = width/2;
+// 	uint8_t Ay = ver_padding+ver_axis-hor_padding;
+	
+	// draw cube top
+	// vertical lines
+	OLED_line(43, 14, 43, 39);
+	OLED_line(83, 14, 83, 39);
+	OLED_line(63, 24, 63, 49);
+	// diagonal lines
+	// left half
+ 	OLED_line(43, 14, 63, 4);
+ 	OLED_line(43, 14, 63, 24);
+	OLED_line(43, 39, 63, 49);
+	// right half
+	OLED_line(63, 4, 83, 14);
+	OLED_line(63, 4, 83, 14);
+	OLED_line(63, 24, 83, 14);
+	OLED_line(63, 49, 83, 39);
+	
+	// letters
+	OLED_bufferGoto(1, 59);
+	OLED_printCharacter('G');
+	OLED_bufferGoto(4, 49);
+	OLED_printCharacter('4');
+	OLED_bufferGoto(4, 69);
+	OLED_printCharacter('6');
+}
+
+
+//------------------------------------------------------------------------------
+//
+void OLED_table()
+{
+	// horizontal lines
+	OLED_line(30, 34, 96, 34); // top
+	OLED_line(30, 40, 96, 40); // bottom
+	// vertical lines
+ 	OLED_line(63, 28, 63, 40); // net
+ 	OLED_line(35, 40, 35, 48); // left leg
+ 	OLED_line(91, 40, 91, 48); // right leg
+	OLED_line(30, 34, 30, 40); // left edge
+	OLED_line(96, 34, 96, 40); // right edge
+}
+
+//------------------------------------------------------------------------------
+//
+void OLED_splashScreen()
+{
+	printf("run splash screen...\n");
+	OLED_logo();
+ 	OLED_bufferGoto(7,12);
+ 	OLED_printString("Group 46 Soft");
+	//OLED_table();
+	//OLED_bufferGoto(7,28);
+	//OLED_printString("Ping-Pong");
 }
 
 // void OLED_setContrast(uint8_t contrast)

@@ -261,31 +261,7 @@ int main(void)
 {
 	
 	init();
-	
-// 	OLED_writePixelToOLED(127, 0);
-// 	
-// 	OLED_bufferGoto(0,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(1,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(2,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(3,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(4,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(5,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(6,0);
-// 	OLED_printString("I'm alive");
-// 	OLED_bufferGoto(7,0);
-// 	OLED_printString("I'm alive");
-// 	
-// 	saveToAddress(0x1fc0, 0x99);
-// 	saveToAddress(0x1fff, 0x80);
-	
-	OLED_line(0, 2, 100, 2, 4);
-	
+
 	struct can_message message2send;
 	
 	static JOY_position_t currPos;

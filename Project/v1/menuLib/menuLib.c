@@ -174,7 +174,7 @@ void MENU_waitForInput()
 			MENU_moveDown();
 			break;
 		}
-		_delay_ms(300);
+		//_delay_ms(300);
 
 	}
 }
@@ -204,6 +204,7 @@ void MENU_moveDown()
 		currItem = currentMenu->children[currentPosition];
 		//OLED_moveArrow(currentPosition);
 		OLED_resetArrow();
+		_delay_ms(200);
 	}
 }
 
