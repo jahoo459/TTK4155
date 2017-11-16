@@ -24,6 +24,7 @@ void OLED_printString(char* msg);
 void OLED_printArrow(void);
 void OLED_clearArrow(void);
 void OLED_moveArrow(int joy_counter);
+void OLED_resetArrow(void);
 
 void OLED_setAnimationTick(void);
 

@@ -289,8 +289,9 @@ void OLED_clearArrow(void)
 
 void OLED_moveArrow(int joy_counter)
 {
-	// determine moving direction
-	uint8_t move_up = 0;
+	// reset animation tick
+	animation_tick = 0;
+	
 	if(joy_counter == arrow_position)
 	{
 		OLED_clearArrow(); // clear the arrow space
@@ -298,41 +299,82 @@ void OLED_moveArrow(int joy_counter)
 		OLED_bufferGoto(joy_counter, 0);
 		OLED_printArrow(); // print arrow
 	}
-	else
-	{
+	else if(joy_counter > arrow_position)
+	{		
 		//printf("%#x %#x %#x %#x %#x \n", readFromAddress(0x1c00), readFromAddress(0x1c01), readFromAddress(0x1c02), readFromAddress(0x1c03), readFromAddress(0x1c04));
 		uint8_t buffer_dummy[ARROW_WIDTH] = {0x00};
 		uint8_t buffer_current[ARROW_WIDTH] = {0x00};
-		for(uint8_t i = 0; i < 8; i++)
+			
+		for(uint8_t step = 0; step < 8; step++)
 		{
-			
-			for(uint8_t j = 0; j < ARROW_WIDTH; j++)
+			for(uint8_t i = 0; i < height; i++)
 			{
-				OLED_bufferGoto(i, j);
-				buffer_current[j] = readFromAddress(oled_buffer_position); // save state of current row
+				for(uint8_t j = 0; j < ARROW_WIDTH; j++)
+				{
+					OLED_bufferGoto(i, j);
+					buffer_current[j] = readFromAddress(oled_buffer_position); // save state of current row
+				}
+			
+				for(uint8_t k = 0; k < ARROW_WIDTH; k++)
+				{				
+					OLED_bufferGoto(i, k);
+					saveToAddress(oled_buffer_position, buffer_current[k]<<1 | buffer_dummy[k]>>7); // move current row 1 down + combine with lowest from above
+					buffer_dummy[k] = buffer_current[k]; // current row is reference for next row
+				}
 			}
 			
-			for(uint8_t k = 0; k < ARROW_WIDTH; k++)
-			{				
-				OLED_bufferGoto(i, k);
-				saveToAddress(oled_buffer_position, buffer_current[k]>>1 | buffer_dummy[k]<<7); // move current row 1 down + combine with lowest from above
-				buffer_dummy[k] = buffer_current[k]; // current row is reference for next row
-			}
+			while(animation_tick != 1){_delay_us(1);};
+			animation_tick = 0;
 		}
+		arrow_position++;
+	}
+	else
+	{
+		uint8_t buffer_dummy[ARROW_WIDTH] = {0x00};
+		uint8_t buffer_current[ARROW_WIDTH] = {0x00};
+		
+		for(uint8_t step = 0; step < 8; step++)
+		{
+			for(uint8_t i = 0; i < height; i++)
+			{
+				for(uint8_t j = 0; j < ARROW_WIDTH; j++)
+				{
+					OLED_bufferGoto(height-1-i, j);
+					buffer_current[j] = readFromAddress(oled_buffer_position); // save state of current row
+				}
+				
+				for(uint8_t k = 0; k < ARROW_WIDTH; k++)
+				{
+					OLED_bufferGoto(height-1-i, k);
+					saveToAddress(oled_buffer_position, buffer_current[k]>>1 | buffer_dummy[k]<<7); // move current row 1 up + combine with highest from below
+					buffer_dummy[k] = buffer_current[k]; // current row is reference for next row
+				}
+			}
+			
+			while(animation_tick != 1){_delay_us(1);};
+			animation_tick = 0;
+		}
+		arrow_position--;
 	}
 	
-	
-	
+}
+
+void OLED_resetArrow()
+{
+	OLED_clearArrow();
+	OLED_bufferGoto(0,0);
+	OLED_printArrow();
+	arrow_position = 0;
 }
 
 void OLED_setAnimationTick()
 {
-	animation_tick = 1;
+		animation_tick = 1;
 }
 
 void OLED_setContrast(uint8_t contrast)
 {
-	// activate contrast contol
+	// activate contrast control
 	OLED_writeByteToOLED(oled_cmd, 0x81);
 	// set contrast to provided value
 	OLED_writeByteToOLED(oled_cmd, contrast);

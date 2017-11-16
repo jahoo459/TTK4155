@@ -39,9 +39,6 @@ volatile uint8_t JOYcalibFlag = 0;
 volatile uint8_t LeftButtonFlag = 0;
 volatile uint8_t RightButtonFlag = 0;
 
-//OLED
-volatile uint8_t refreshOLEDFlag = 0;
-
 //MENU
 volatile uint8_t activateMenuFlag = 0;
 
@@ -94,12 +91,11 @@ ISR(TIMER0_COMP_vect)
 {
 	OLED_updateScreen();
 	timer0_increment++;
-	if(timer0_increment == 12)
+	if(timer0_increment == 2)
 	{
 		OLED_setAnimationTick();
 		timer0_increment = 0;
 	}
-	//refreshOLEDFlag = 1;
 }
 
 
@@ -302,11 +298,6 @@ int main(void)
 		
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);
-
-		if(refreshOLEDFlag)
-		{	
-			OLED_updateScreen();
-		}
 
 		if(activateMenuFlag)
 		{

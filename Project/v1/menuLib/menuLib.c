@@ -132,7 +132,10 @@ void MENU_printMenu(menuNode_t* menu, int noElements)
 	//clear the OLED display
 	OLED_clear();
 	//print arrow
-	OLED_moveArrow(0);
+	OLED_resetArrow();
+// 	OLED_bufferGoto(0,0);
+// 	OLED_printArrow();
+	//OLED_moveArrow(0);
 	
 	for(int i = 0; i < noElements; i++)
 	{
@@ -199,7 +202,8 @@ void MENU_moveDown()
 		//go back to first item
 		currentPosition = 0;
 		currItem = currentMenu->children[currentPosition];
-		OLED_moveArrow(currentPosition);
+		//OLED_moveArrow(currentPosition);
+		OLED_resetArrow();
 	}
 }
 
