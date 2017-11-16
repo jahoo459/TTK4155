@@ -62,7 +62,7 @@ void OLED_init(void)
 	OLED_writeByteToOLED(oled_cmd, 0xaf); // Display on
 	
 	OLED_clear(); // wipe the screen
-	OLED_splashScreen();
+	//OLED_splashScreen();
 	//OLED_flyingArrows();
 	
 	// setup 8-bit counter0 without PWM
@@ -464,36 +464,27 @@ void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 				}
 			}
 		}
-		
-		// calculate euclidean line parameters
-		//float m = (y1-y0)/(x1-x0);
-		//float c = y0 - m*x0;
-			//
-		//printf("m*2: %d, c*2: %d\n", (int)m*2, (int)c*2);
-		//
- 		//for(uint8_t u = x0; u <= x1; u++)
- 		//{
-			//if(y0 < y1)
-			//{
-				//for(uint8_t v = y0; v <= y1; v++)
-	 			//{
-		 			//if((v-u*m-c) == 0)
-		 			//{
-			 			//OLED_writePixelToOLED(u, v);
-		 			//}
-	 			//}
-			//}
-			//else
-			//{
-				//for(uint8_t v = y1; v <= y0; v++)
-				//{
-					//if(abs(v-u*m-c) <= 1.0)
-					//{
-						//OLED_writePixelToOLED(u, v);
-					//}
-				//}
-			//}
- 		//}
+	}
+}
+
+
+//------------------------------------------------------------------------------
+//
+void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r)
+{
+	OLED_writePixelToOLED(x0, y0);
+	
+	float f;
+	for(uint8_t v = 0; v < height; v++)
+	{
+		for(uint8_t u = 0; u < width; u++)
+		{
+			f = (u-x0)^2 + (v-y0)^2 - r;
+			if(f < 0.5)
+			{
+				OLED_writePixelToOLED(u, v);
+			}
+		}
 	}
 }
 

@@ -30,7 +30,7 @@ void OLED_resetArrow(void);
 void OLED_setAnimationTick(void);
 
 void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
-void OLED_circle();
+void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r);
 
 void OLED_logo(void);
 void OLED_table(void);

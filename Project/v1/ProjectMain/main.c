@@ -262,6 +262,8 @@ int main(void)
 	
 	init();
 
+	OLED_circle(63, 31, 5);
+	
 	struct can_message message2send;
 	
 	static JOY_position_t currPos;
