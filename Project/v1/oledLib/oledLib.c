@@ -136,6 +136,21 @@ void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data)
 
 
 //------------------------------------------------------------------------------
+//
+void OLED_writePixelToOLED(uint8_t u, uint8_t v)
+{
+	// determine relevant row
+	uint8_t row = v/8;
+	// buffer old column
+	OLED_bufferGoto(row, u);
+	uint8_t buffer_column = readFromAddress(oled_buffer_position);
+	// create new column
+	buffer_column |= (1<<(v%8));
+	OLED_writeByteToOLED(oled_buffer_position, buffer_column);
+}
+
+
+//------------------------------------------------------------------------------
 // This Function allows to set the starting position on the OLED screen.
 //
 // _row specifies the page start address
@@ -372,178 +387,196 @@ void OLED_setAnimationTick()
 		animation_tick = 1;
 }
 
-void OLED_setContrast(uint8_t contrast)
-{
-	// activate contrast control
-	OLED_writeByteToOLED(oled_cmd, 0x81);
-	// set contrast to provided value
-	OLED_writeByteToOLED(oled_cmd, contrast);
-}
-
-void OLED_fadeIn(void)
-{
-	// gradually increase contrast
-	for(uint8_t i = 0; i < 255; i++)
-	{
-		OLED_setContrast(i);
-		_delay_ms(4);
-	}
-}
-
-void OLED_fadeOut(void)
-{
-	// gradually decrease contrast
-	for(uint8_t i = 0; i < 255; i++)
-	{
-		OLED_setContrast(255-i);
-		_delay_ms(4);
-	}
-}
-
 void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness)
 {
-	uint8_t lineSegment = 0;
-	if(y0 == y1)
+	// calculate euclidean line parameters
+	uint8_t m = (y1-y0)/(x1-x0);
+	uint8_t c = y0 - m*x0;
+	
+	for(uint8_t u = x0; u <= x1; u++)
 	{
-		lineSegment = (1<<y0/8);
-		OLED_goto(y0/8,x0);
-		for(uint8_t i = x0; i <= x1; i++)
+		for(uint8_t v = y0; v <= y1; v++)
 		{
-			OLED_writeByteToOLED(oled_data, lineSegment);
-		}
-	}
-	
-	// page addressing is wrong - should use all possible lines
-	// memory buffer should be used!
-	if(x0 == x1)
-	{
-		lineSegment = 0xff;
-		
-		for(uint8_t i = 0; i<8; i++)
-		{
-			OLED_goto(i,x0);
-			OLED_writeByteToOLED(oled_data, lineSegment);
-		}
-	}
-}
-
-void OLED_splashScreen(void)
-{
-	printf("run splash screen...\n");
-	
-	OLED_setContrast(0);
-	
-	_delay_ms(500);
-	OLED_goto(2,4);
-	OLED_printString("Group 46 Soft");
-	OLED_fadeIn();
-	_delay_ms(500);
-	
- 	OLED_clear();
- 	OLED_setContrast(0);
- 	
- 	_delay_ms(200);
- 	OLED_goto(3,28);
- 	OLED_printString("proudly");
- 	OLED_goto(4,24);	
- 	OLED_printString("presents");
- 	OLED_fadeIn();
- 	_delay_ms(500);
- 	
- 	OLED_clear();
- 	OLED_setContrast(0);
- 	
- 	_delay_ms(200);
- 	OLED_goto(3, 28);
- 	OLED_printString("FIFA 18");
- 	OLED_fadeIn();
- 	_delay_ms(1000);
-	
-	// clean up
-	OLED_clear();
-	OLED_setContrast(0x50); // back to standard contrast
-	
-	printf("splash screen done...\n");
-}
-
-void OLED_flyingArrows()
-{
-	printf("let the arrows fly...\n");
-	
-	// setup fosc
-	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
-	OLED_writeByteToOLED(oled_cmd, 0xf0); // default value is 0x80
-	
-	// setup scrolling
-	OLED_writeByteToOLED(oled_cmd, 0x26); // set right horizontal scroll
-	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
-	OLED_writeByteToOLED(oled_cmd, 0x00); // start page address
-	OLED_writeByteToOLED(oled_cmd, 0x07); // time interval between scroll steps (2 frames)
-	OLED_writeByteToOLED(oled_cmd, 0x07); // end page address
-	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
-	OLED_writeByteToOLED(oled_cmd, 0xff); // dummy byte 0xff
-	
-	for(uint8_t i = 0; i < 9; i++)
-	{
-		for(uint8_t count_row = 0; count_row < height; count_row++)
-		{
-			OLED_goto(count_row,117); // move to first column in row
-			
-			// the inner loop iterates the columns of each row
-			for(uint8_t count_column = 117; count_column < width; count_column++)
+			if((v-u*m-c) == 0)
 			{
-				OLED_writeByteToOLED(oled_data, 0x00);
+				OLED_writePixelToOLED(u, v);
 			}
 		}
-		
-		OLED_goto(0,0);
-		OLED_printArrow();
-		OLED_goto(2,0);
-		OLED_printArrow();
-		OLED_goto(4,0);
-		OLED_printArrow();
-		OLED_goto(6,0);
-		OLED_printArrow();
-	
- 		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling 
- 		_delay_ms(75);
- 		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling 
- 	
- 		OLED_goto(1,0);
- 		OLED_printArrow();
- 		OLED_goto(3,0);
- 		OLED_printArrow();
- 		OLED_goto(5,0);
- 		OLED_printArrow();
- 		OLED_goto(7,0);
- 		OLED_printArrow();
- 	
- 		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
- 		_delay_ms(75);
- 		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
 	}
-	
-  	for(uint8_t i = 0; i < 18; i++)
-  	{
-  		for(uint8_t count_row = 0; count_row < height; count_row++)
-  		{
-  			OLED_goto(count_row,122); // move to first column in row
-  
-  			// the inner loop iterates the columns of each row
-  			for(uint8_t count_column = 122; count_column < width; count_column++)
-  			{
-  				OLED_writeByteToOLED(oled_data, 0x00);
-  			}
-  		}
-  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
-  		_delay_ms(75);
-  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
-  	}
-
-	printf("arrows are done...\n");
-	OLED_clear();
-	
-	// reset fosc
-	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
-	OLED_writeByteToOLED(oled_cmd, 0x80); // default value is 0x80
 }
+
+// void OLED_setContrast(uint8_t contrast)
+// {
+// 	// activate contrast control
+// 	OLED_writeByteToOLED(oled_cmd, 0x81);
+// 	// set contrast to provided value
+// 	OLED_writeByteToOLED(oled_cmd, contrast);
+// }
+// 
+// void OLED_fadeIn(void)
+// {
+// 	// gradually increase contrast
+// 	for(uint8_t i = 0; i < 255; i++)
+// 	{
+// 		OLED_setContrast(i);
+// 		_delay_ms(4);
+// 	}
+// }
+// 
+// void OLED_fadeOut(void)
+// {
+// 	// gradually decrease contrast
+// 	for(uint8_t i = 0; i < 255; i++)
+// 	{
+// 		OLED_setContrast(255-i);
+// 		_delay_ms(4);
+// 	}
+// }
+// 
+// void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness)
+// {
+// 	uint8_t lineSegment = 0;
+// 	if(y0 == y1)
+// 	{
+// 		lineSegment = (1<<y0/8);
+// 		OLED_goto(y0/8,x0);
+// 		for(uint8_t i = x0; i <= x1; i++)
+// 		{
+// 			OLED_writeByteToOLED(oled_data, lineSegment);
+// 		}
+// 	}
+// 	
+// 	// page addressing is wrong - should use all possible lines
+// 	// memory buffer should be used!
+// 	if(x0 == x1)
+// 	{
+// 		lineSegment = 0xff;
+// 		
+// 		for(uint8_t i = 0; i<8; i++)
+// 		{
+// 			OLED_goto(i,x0);
+// 			OLED_writeByteToOLED(oled_data, lineSegment);
+// 		}
+// 	}
+// }
+// 
+// void OLED_splashScreen(void)
+// {
+// 	printf("run splash screen...\n");
+// 	
+// 	OLED_setContrast(0);
+// 	
+// 	_delay_ms(500);
+// 	OLED_goto(2,4);
+// 	OLED_printString("Group 46 Soft");
+// 	OLED_fadeIn();
+// 	_delay_ms(500);
+// 	
+//  	OLED_clear();
+//  	OLED_setContrast(0);
+//  	
+//  	_delay_ms(200);
+//  	OLED_goto(3,28);
+//  	OLED_printString("proudly");
+//  	OLED_goto(4,24);	
+//  	OLED_printString("presents");
+//  	OLED_fadeIn();
+//  	_delay_ms(500);
+//  	
+//  	OLED_clear();
+//  	OLED_setContrast(0);
+//  	
+//  	_delay_ms(200);
+//  	OLED_goto(3, 28);
+//  	OLED_printString("FIFA 18");
+//  	OLED_fadeIn();
+//  	_delay_ms(1000);
+// 	
+// 	// clean up
+// 	OLED_clear();
+// 	OLED_setContrast(0x50); // back to standard contrast
+// 	
+// 	printf("splash screen done...\n");
+// }
+// 
+// void OLED_flyingArrows()
+// {
+// 	printf("let the arrows fly...\n");
+// 	
+// 	// setup fosc
+// 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
+// 	OLED_writeByteToOLED(oled_cmd, 0xf0); // default value is 0x80
+// 	
+// 	// setup scrolling
+// 	OLED_writeByteToOLED(oled_cmd, 0x26); // set right horizontal scroll
+// 	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
+// 	OLED_writeByteToOLED(oled_cmd, 0x00); // start page address
+// 	OLED_writeByteToOLED(oled_cmd, 0x07); // time interval between scroll steps (2 frames)
+// 	OLED_writeByteToOLED(oled_cmd, 0x07); // end page address
+// 	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
+// 	OLED_writeByteToOLED(oled_cmd, 0xff); // dummy byte 0xff
+// 	
+// 	for(uint8_t i = 0; i < 9; i++)
+// 	{
+// 		for(uint8_t count_row = 0; count_row < height; count_row++)
+// 		{
+// 			OLED_goto(count_row,117); // move to first column in row
+// 			
+// 			// the inner loop iterates the columns of each row
+// 			for(uint8_t count_column = 117; count_column < width; count_column++)
+// 			{
+// 				OLED_writeByteToOLED(oled_data, 0x00);
+// 			}
+// 		}
+// 		
+// 		OLED_goto(0,0);
+// 		OLED_printArrow();
+// 		OLED_goto(2,0);
+// 		OLED_printArrow();
+// 		OLED_goto(4,0);
+// 		OLED_printArrow();
+// 		OLED_goto(6,0);
+// 		OLED_printArrow();
+// 	
+//  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling 
+//  		_delay_ms(75);
+//  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling 
+//  	
+//  		OLED_goto(1,0);
+//  		OLED_printArrow();
+//  		OLED_goto(3,0);
+//  		OLED_printArrow();
+//  		OLED_goto(5,0);
+//  		OLED_printArrow();
+//  		OLED_goto(7,0);
+//  		OLED_printArrow();
+//  	
+//  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
+//  		_delay_ms(75);
+//  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
+// 	}
+// 	
+//   	for(uint8_t i = 0; i < 18; i++)
+//   	{
+//   		for(uint8_t count_row = 0; count_row < height; count_row++)
+//   		{
+//   			OLED_goto(count_row,122); // move to first column in row
+//   
+//   			// the inner loop iterates the columns of each row
+//   			for(uint8_t count_column = 122; count_column < width; count_column++)
+//   			{
+//   				OLED_writeByteToOLED(oled_data, 0x00);
+//   			}
+//   		}
+//   		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
+//   		_delay_ms(75);
+//   		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
+//   	}
+// 
+// 	printf("arrows are done...\n");
+// 	OLED_clear();
+// 	
+// 	// reset fosc
+// 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
+// 	OLED_writeByteToOLED(oled_cmd, 0x80); // default value is 0x80
+// }

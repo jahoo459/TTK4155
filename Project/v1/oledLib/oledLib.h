@@ -15,6 +15,7 @@ void OLED_clear(void);
 void OLED_updateScreen(void);
 
 void OLED_writeByteToOLED(volatile uint8_t *address, uint8_t data);
+void OLED_writePixelToOLED(uint8_t u, uint8_t v);
 void OLED_goto(int row, int column);
 void OLED_bufferGoto(int row, int column);
 
@@ -30,8 +31,8 @@ void OLED_setAnimationTick(void);
 
 void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness);
 
-void OLED_splashScreen(void);
-void OLED_flyingArrows(void);
+// void OLED_splashScreen(void);
+// void OLED_flyingArrows(void);
 
 //void OLED_reset();
 //void OLED_home();
