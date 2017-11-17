@@ -18,6 +18,7 @@ static uint16_t score;
 static uint8_t lives;
 
 struct can_message message2send;
+struct can_message message3send;
 static uint8_t JoyPos;
 static uint8_t SliPos;
 static uint8_t ButtonRight;
@@ -79,23 +80,23 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 			ButtonRight = 0;
 		}
 		
-		if(updateCmdDispFlag)
-		{
-		 	OLED_clear();
-		 	sprintf(str, "%d", uartMouseSteeringMessage->Motor);
-		 	OLED_goto(0,0);
-		 	OLED_printString(str);
-		
-		 	sprintf(str, "%d", uartMouseSteeringMessage->Servo);
-		 	OLED_goto(1,0);
-		 	OLED_printString(str);
-		
-		 	sprintf(str, "%d", uartMouseSteeringMessage->Button);
-		 	OLED_goto(2,0);
-		 	OLED_printString(str);
-		
-		 	*updateCmdDispFlag = 0;
-		}
+		//if(updateCmdDispFlag)
+		//{
+ 		 	//OLED_clear();
+ 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Motor);
+ 		 	//OLED_goto(0,0);
+ 		 	//OLED_printString(str);
+ 		 	//
+ 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Servo);
+ 		 	//OLED_goto(1,0);
+ 		 	//OLED_printString(str);
+ 		 	//
+ 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Button);
+ 		 	//OLED_goto(2,0);
+ 		 	//OLED_printString(str);
+		//
+		 	//*updateCmdDispFlag = 0;
+		//}
 
 		// send Positions to Node 2
 		message2send.id = 23;
@@ -106,7 +107,23 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 		message2send.data[3] = uartMouseSteeringMessage->Motor;
 		message2send.data[4] = uartMouseSteeringMessage->Servo;
 		message2send.data[5] = uartMouseSteeringMessage->Button;
-		message2send.data[6] = inputMode;
+		message2send.data[6] = *inputMode;
+		
+// 		message3send.id = 2;
+// 		message3send.length = 1;
+// 		if(*inputMode == SLIDER)
+// 		{
+// 			message3send.data[0] = 0;
+// 		}
+// 		if(*inputMode == JOYSTICK)
+// 		{
+// 			message3send.data[0] = 1;
+// 		}	
+// 		if(*inputMode == PC)
+// 		{
+// 			message3send.data[0] = 2;
+// 		}
+// 		
 		
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);
