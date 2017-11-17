@@ -67,7 +67,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     //qDebug() << "Position " << event->pos();
     int currMousePos = event->pos().x();
 
-    if(currMousePos > 1000) mouseX_position = 254;
+    if(currMousePos > 1000) mouseX_position = 250;
     else if(currMousePos < 0) mouseX_position = 0;
     else mouseX_position = (uint8_t)(currMousePos/4);
 
@@ -81,7 +81,7 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     int delta = event->angleDelta().y();
     int currWheelPos = wheelPosition;
 
-    if(currWheelPos + delta / 4 > 255) currWheelPos = 254;
+    if(currWheelPos + delta / 4 > 250) currWheelPos = 250;
     else if (currWheelPos + delta / 4 < 0) currWheelPos = 0;
     else currWheelPos += delta / 4;
 
