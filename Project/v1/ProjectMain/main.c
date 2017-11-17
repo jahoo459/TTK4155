@@ -68,6 +68,7 @@ volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
 //ANIMATION
 volatile uint8_t timer0_increment = 0;
+volatile uint8_t timer1_increment = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -146,11 +147,17 @@ ISR(TIMER0_COMP_vect)
 {
 	OLED_updateScreen();
 	timer0_increment++;
+	timer1_increment++;
 	if(timer0_increment == 2)
 	{
 		OLED_setAnimationTick();
 		timer0_increment = 0;
 	}
+	
+// 	if(timer1_increment == 20 && activeState == GAME)
+// 	{
+// 		Game_updateScore();
+// 	}
 }
 
 /*
@@ -438,6 +445,7 @@ int main(void)
 		if(activeState == GAME)
 		{
 			Game_init();
+			
 			Game_play(&SPIreceivedFlag, &updateCmdDispFlag, &uartMouseSteeringMessage, &inputMode);
 			activeState = IDLE;
 		}

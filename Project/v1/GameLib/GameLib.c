@@ -11,11 +11,12 @@
 #include "..\CANLib\CANLib.h"
 
 #define LIVES_POS 35
-#define SCORE_POS 90
+#define SCORE_POS 84
 
 static char str[3];
 static uint16_t score;
 static uint8_t lives;
+static uint8_t updateScoreFlag = 1;
 
 struct can_message message2send;
 struct can_message message3send;
@@ -39,7 +40,7 @@ void Game_init()
 	// write to Screen
 	OLED_bufferGoto(3,LIVES_POS-16);
 	OLED_printString("Lives");
-	OLED_bufferGoto(3,SCORE_POS-16);
+	OLED_bufferGoto(3,SCORE_POS-8);
 	OLED_printString("Score");
 		
 	// write Numbers
@@ -60,12 +61,27 @@ void Game_updateLives()
 	
 	OLED_bufferGoto(7, 48);
 	OLED_printString("Wait");
+	updateScoreFlag = 0;
+}
+
+void Game_updateScore()
+{
+	score++;
+	OLED_bufferGoto(5, SCORE_POS);
+	sprintf(str, "%d", score);
+	OLED_printString(str);
 }
 
 void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Message_t* uartMouseSteeringMessage, INPUT_MODE* inputMode)
 {
 	while(lives > 0)
 	{
+		if(updateScoreFlag)
+		{
+			Game_updateScore();
+		}
+		
+		
 		// call for Joystick and Slider positions
 		JoyPos = JOY_getPosition().X_abs;
 		SliPos = SLI_getPosition().R_per;
@@ -150,6 +166,7 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 				{
 					OLED_bufferGoto(7, 48);
 					OLED_printString("    ");
+					updateScoreFlag = 1;
 				}
 		
 		 		*SPIreceivedFlag = 0;
@@ -162,7 +179,7 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 	OLED_printString("GAME OVER");
 	OLED_bufferGoto(4,44);
 	OLED_printString("SCORE");
-	OLED_bufferGoto(5,60);
+	OLED_bufferGoto(5,52);
 	sprintf(str, "%d", score);
 	OLED_printString(str);
 	
