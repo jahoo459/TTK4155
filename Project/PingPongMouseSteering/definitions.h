@@ -10,6 +10,10 @@
 #include <iostream>
 #include <windows.h>
 
+#define MOTOR_ID 0xff
+#define SERVO_ID 0xfe
+#define SOLENOID_ID 0xfd
+
 using namespace std;
 
 typedef struct{
