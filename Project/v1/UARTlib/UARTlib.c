@@ -20,38 +20,41 @@ void uartSend(const char byte2Send)
 	UDR0 = byte2Send;
 }
 
-UART_Message_t uartReceive()
+//UART_Message_t uartReceive()
+uint8_t uartReceive()
 {
 
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC0)) );
 	/* Get and return received data from buffer */
 	uint8_t receivedByte = UDR0;
-	//uartSend(10);
+	
 		
-	if(receivedByte == 0xff)
-	{
-		UART_Message_t message;
-		/* Wait for data to be received */
-		while ( !(UCSR0A & (1<<RXC0)) );
-		/* Get and return received data from buffer */
-		message.Motor = UDR0;
-		//uartSend(10);
-		/* Wait for data to be received */
-		while ( !(UCSR0A & (1<<RXC0)) );
-		/* Get and return received data from buffer */
-		message.Servo = UDR0;
-		//uartSend(10);
-		/* Wait for data to be received */
-		while ( !(UCSR0A & (1<<RXC0)) );
-		/* Get and return received data from buffer */
-		message.Button = UDR0;
-		//uartSend(10);
-		
-		//printf("motor: %#x \t servo: %#x \t button: %#x\n", message.Motor, message.Servo, message.Button);
-		
-		return message;
-	}
+	//if(receivedByte == 0xff)
+	//{
+		//UART_Message_t message;
+		///* Wait for data to be received */
+		//while ( !(UCSR0A & (1<<RXC0)) );
+		///* Get and return received data from buffer */
+		//message.Motor = UDR0;
+		////uartSend(10);
+		///* Wait for data to be received */
+		//while ( !(UCSR0A & (1<<RXC0)) );
+		///* Get and return received data from buffer */
+		//message.Servo = UDR0;
+		////uartSend(10);
+		///* Wait for data to be received */
+		//while ( !(UCSR0A & (1<<RXC0)) );
+		///* Get and return received data from buffer */
+		//message.Button = UDR0;
+		////uartSend(10);
+		//
+		////printf("motor: %#x \t servo: %#x \t button: %#x\n", message.Motor, message.Servo, message.Button);
+		//
+		////return message;
+	//}
+	
+	return receivedByte;
 
 }
 

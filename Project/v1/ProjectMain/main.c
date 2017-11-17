@@ -32,6 +32,8 @@
 //UART COMMUNICATION
 volatile char UART_ReceivedByte;
 volatile uint8_t USARTreceivedFlag = 0;
+volatile uint8_t waitForNextMessageFlag = 0;
+volatile uint8_t UARTrowCounter = 0;
 
 //INPUT MULTIFANCTION BOARD
 volatile uint8_t ADCconversionCompletedFlag = 0;
@@ -54,8 +56,11 @@ volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
-UART_Message_t uartMessage;
+UART_Message_t uartMouseSteeringMessage;
+uint8_t uartMsg;
 static char str[3];
+
+uint8_t updateCmdDispFlag = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -64,22 +69,35 @@ static char str[3];
 ISR(USART0_RXC_vect)
 {
 	//interrupt generated after receiving a byte over UART
-	UART_ReceivedByte = UDR0;		//received byte
+	//UART_ReceivedByte = UDR0;	
 	
-	uartMessage.Button = 0;
-	uartMessage.Motor = 0;
-	uartMessage.Servo = 0;
-	
-	uartMessage = uartReceive();
-	
-		
-	if(uartMessage.Motor != 0)
+	uartMsg = uartReceive();	//received byte
+
+	if(waitForNextMessageFlag)
 	{
-		//sprintf(str, "%d", JoyPos);
-		OLED_clear();
-		sprintf(str, "%d", uartMessage.Motor);
-		OLED_goto(0,0);
-		OLED_printString(str);
+		switch(UARTrowCounter)
+		{
+			case 0:
+				uartMouseSteeringMessage.Motor = uartMsg;
+				break;
+			
+			case 1:
+				uartMouseSteeringMessage.Servo = uartMsg;
+				break;
+			
+			case 2:
+				uartMouseSteeringMessage.Button = uartMsg;
+				waitForNextMessageFlag = 0;
+				updateCmdDispFlag = 1;
+				break;
+		}
+		UARTrowCounter++;
+	}
+			
+	if(uartMsg == 0xff) //Mouse steering command received
+	{
+		waitForNextMessageFlag = 1; //wait for 3 steering command bytes	
+		UARTrowCounter = 0;
 	}
 	
 	USARTreceivedFlag = 1;		//set the flag to 1
@@ -266,8 +284,6 @@ int main(void)
 	
 	init();
 
-	OLED_goto(0,0);
-	OLED_printString("I'm alive");
 	
 	//for(uint8_t i = 10; i < 64; i+=8)
 	//{
@@ -294,12 +310,20 @@ int main(void)
 	static uint8_t JoyPos;	
 	static uint8_t SliPos;
 	static uint8_t ButtonRight;
+	
+	//activateMenuFlag = 1; // display the main menu
 		
+	OLED_goto(5,0);
+	OLED_printString("I am alive!");
+
+	uartMsg = 0;
+	uartMouseSteeringMessage.Motor = 0;
+	uartMouseSteeringMessage.Servo = 0;
+	uartMouseSteeringMessage.Button = 0;
+	
     while(1)
     {
 
-		
-		
 		JoyPos = JOY_getPosition().X_abs;
 		SliPos = SLI_getPosition().R_per;
 		if((PINE & (1<<PE2)))
@@ -310,7 +334,7 @@ int main(void)
 		{
 			ButtonRight = 0;
 		}
-		printf("%d\n", SliPos);
+		//printf("%d\n", SliPos);
 		
 		message2send.id = 23;
 		message2send.length = 3;
@@ -342,5 +366,24 @@ int main(void)
 			
 			}
 		}
+		
+		if(updateCmdDispFlag)
+		{
+			OLED_clear();
+			sprintf(str, "%d", uartMouseSteeringMessage.Motor);
+			OLED_goto(0,0);
+			OLED_printString(str);
+			
+			sprintf(str, "%d", uartMouseSteeringMessage.Servo);
+			OLED_goto(1,0);
+			OLED_printString(str);
+			
+			sprintf(str, "%d", uartMouseSteeringMessage.Button);
+			OLED_goto(2,0);
+			OLED_printString(str);
+				
+			updateCmdDispFlag = 0;
+		}
     }
 }
+  
