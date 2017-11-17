@@ -10,7 +10,8 @@
 #define GAMELIB_H_
 
 
-void Game_runGame(void);
-
+void Game_init(void);
+void Game_updateLives(void);
+void Game_play(uint8_t* SPIreceivedFlag);
 
 #endif /* GAMELIB_H_ */

@@ -34,14 +34,15 @@ void startGame()
 	OLED_goto(0,0);
 	OLED_printString("START");
 	
-	OLED_goto(3,0);
-	
-	for(int i = 14; i > 0; i--)
-	{
-		OLED_printString("*");
-		_delay_ms(500);
-	}
-	
+// 	OLED_goto(3,0);
+// 	
+// 	for(int i = 14; i > 0; i--)
+// 	{
+// 		OLED_printString("*");
+// 		_delay_ms(500);
+// 	}
+
+	_delay_ms(500);
 	OLED_goto(5,0);
 	OLED_printString("YUPII :)");
 	_delay_ms(3000);
@@ -172,6 +173,8 @@ void MENU_waitForInput()
 			case DOWN:
 			MENU_moveDown();
 			break;
+			
+			
 		}
 		_delay_ms(300);
 
@@ -233,6 +236,8 @@ void MENU_activate(OP_STATE* state)
 	MENU_buildMenus();
 	MENU_printMenu(mainMenu, mainMenu->noChilds);
 	MENU_waitForInput();
+	
+	//MENU_clearMemory();
 }
 
 void MENU_reactivate()
@@ -242,7 +247,53 @@ void MENU_reactivate()
 }
 
 
-
+void MENU_clearMemory()
+{
+	//remove difficulty menu
+	currentMenu = difficultyMenu;
+	currItem = difficultyMenu->children[0];
+	menuItemNode_t *temp;
+	
+	for(int i = 0; i < difficultyMenu->noChilds; i++)
+	{
+		temp = currItem;
+		if(temp->next != NULL)
+		{
+			currItem = temp->next;
+			free(temp);
+			currItem = temp;
+		}
+		else
+		{
+			free(currItem);
+		}
+	}
+	
+	free(currentMenu);
+	
+	//remove main menu
+	currentMenu = mainMenu;
+	currItem = mainMenu->children[0];
+	
+	for(int i = 0; i < mainMenu->noChilds; i++)
+	{
+		temp = currItem;
+		if(temp->next != NULL)
+		{
+			currItem = temp->next;
+			free(temp);
+			currItem = temp;
+		}
+		else
+		{
+			free(currItem);
+		}
+	}
+	
+	free(currentMenu);
+	currentMenu = NULL;
+	currItem = NULL;
+}
 
 
 

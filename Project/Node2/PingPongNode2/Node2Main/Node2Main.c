@@ -87,7 +87,13 @@ ISR(TIMER1_OVF_vect) //20ms timer, used for PWM, IR ball detection and PID
 	{
 		waitingMode = 0;
 		waitingModeTimer = WAITING_TIME;
-		printf("Continue PLEASE! \n");
+		
+		// sending message to resume playing
+		struct can_message resumePlaying;
+		resumePlaying.id = 13;
+		resumePlaying.length = 1;
+		resumePlaying.data[0] = 1;
+		CAN_sendMessage(&resumePlaying, 0);
 	}
 	else
 	{
@@ -207,7 +213,7 @@ int main(void)
 					}
 				}
 				
-				//printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
+				printf("%d \t %d \t %d \n", JoyPos, SliPos, ButtonRight);
 				
 		
 				prevRightButtonState = ButtonRight;

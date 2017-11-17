@@ -10,8 +10,8 @@
 */
 #include <avr/interrupt.h>
 //#include "definitions.h"
-#include "..\JoystickLib\JoystickLib.h"
-#include "..\SliderLib\SliderLib.h"
+// #include "..\JoystickLib\JoystickLib.h"
+// #include "..\SliderLib\SliderLib.h"
 #include "..\ExtSramLib\ExtSramLib.h"
 #include "..\oledLib\oledLib.h"
 #include "..\menuLib\menuLib.h"
@@ -51,6 +51,7 @@ volatile uint8_t RightButtonFlag = 0;
 //MENU
 volatile uint8_t activateMenuFlag = 0;
 volatile OP_STATE activeState = IDLE;
+volatile menuAlreadyBuiltFlag = 0;
 
 //SPI COMMUNICATION
 volatile uint8_t SPI_ReceivedByte;
@@ -222,60 +223,60 @@ void init()
 }
 
 // print status variables of Multifunction Board
-void statusMultifunctionBoard(){
-	JOY_position_t currentJoyPosition;
-	currentJoyPosition = JOY_getPosition();
-
-	JOY_direction_t currentJoyDirection;
-	currentJoyDirection = JOY_getDirection();
-
-	SLI_position_t currentSliPosition;
-	currentSliPosition = SLI_getPosition();
-
-	uint8_t leftButton = 0;
-	uint8_t rightButton = 0;
-
-	//char directions[] = {'C', 'U', 'D', 'R', 'L'};
-	char* dir;
-
-	if((PINB & (1<<PB0)))
-		{
-			//printf("Left button clicked ");
-			leftButton = 1;
-		}
-		else if((PINE & (1<<PE2)))
-		{
-			//printf("Right button clicked ");
-			rightButton = 1;
-		}
-
-	switch(currentJoyDirection)
-	{
-		case 0:
-
-		dir = "CENTER";
-		break;
-
-		case 1:
-		dir = "UP";
-		break;
-
-		case 2:
-		dir = "DOWN";
-		break;
-
-		case 3:
-		dir = "RIGHT";
-		break;
-
-		case 4:
-		dir = "LEFT";
-		break;
-	}
-
-	//printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
-	//printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
-}
+//void statusMultifunctionBoard(){
+	//JOY_position_t currentJoyPosition;
+	//currentJoyPosition = JOY_getPosition();
+//
+	//JOY_direction_t currentJoyDirection;
+	//currentJoyDirection = JOY_getDirection();
+//
+	//SLI_position_t currentSliPosition;
+	//currentSliPosition = SLI_getPosition();
+//
+	//uint8_t leftButton = 0;
+	//uint8_t rightButton = 0;
+//
+	////char directions[] = {'C', 'U', 'D', 'R', 'L'};
+	//char* dir;
+//
+	//if((PINB & (1<<PB0)))
+		//{
+			////printf("Left button clicked ");
+			//leftButton = 1;
+		//}
+		//else if((PINE & (1<<PE2)))
+		//{
+			////printf("Right button clicked ");
+			//rightButton = 1;
+		//}
+//
+	//switch(currentJoyDirection)
+	//{
+		//case 0:
+//
+		//dir = "CENTER";
+		//break;
+//
+		//case 1:
+		//dir = "UP";
+		//break;
+//
+		//case 2:
+		//dir = "DOWN";
+		//break;
+//
+		//case 3:
+		//dir = "RIGHT";
+		//break;
+//
+		//case 4:
+		//dir = "LEFT";
+		//break;
+	//}
+//
+	////printf("JOY: %s, X:%d, Y: %d \t\t SLI_l:%d, SLI_r:%d \t l_Btn: %d, r_Btn: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per, currentSliPosition.L_per, currentSliPosition.R_per, leftButton, rightButton);
+	////printf("JOY: %s, X:%d, Y: %d\n", dir, currentJoyPosition.X_per, currentJoyPosition.Y_per);
+//}
 
 
 
@@ -308,17 +309,17 @@ int main(void)
 // 		}
 // 	}
 	
-	struct can_message message2send;
-
-	
-	static uint8_t JoyPos;	
-	static uint8_t SliPos;
-	static uint8_t ButtonRight;
+// 	struct can_message message2send;
+// 
+// 	
+// 	static uint8_t JoyPos;	
+// 	static uint8_t SliPos;
+// 	static uint8_t ButtonRight;
 	
 	//activateMenuFlag = 1; // display the main menu
 		
 	
-	Game_runGame();
+	
 
 	uartMsg = 0;
 	uartMouseSteeringMessage.Motor = 0;
@@ -328,52 +329,65 @@ int main(void)
     while(1)
     {
 
-		JoyPos = JOY_getPosition().X_abs;
-		SliPos = SLI_getPosition().R_per;
-		if((PINE & (1<<PE2)))
-		{
-			ButtonRight = 1;
-		}
-		else
-		{
-			ButtonRight = 0;
-		}
+// 		JoyPos = JOY_getPosition().X_abs;
+// 		SliPos = SLI_getPosition().R_per;
+// 		if((PINE & (1<<PE2)))
+// 		{
+// 			ButtonRight = 1;
+// 		}
+// 		else
+// 		{
+// 			ButtonRight = 0;
+// 		}
 		//printf("%d\n", SliPos);
 		
-		message2send.id = 23;
-		message2send.length = 3;
-		message2send.data[0] = JoyPos;
-		message2send.data[1] = SliPos;
-		message2send.data[2] = ButtonRight;
-		
-		CAN_sendMessage(&message2send, 0);
-		_delay_ms(50);
+// 		message2send.id = 23;
+// 		message2send.length = 3;
+// 		message2send.data[0] = JoyPos;
+// 		message2send.data[1] = SliPos;
+// 		message2send.data[2] = ButtonRight;
+// 		
+// 		CAN_sendMessage(&message2send, 0);
+// 		_delay_ms(50);
 
-		if(activateMenuFlag)
+		if(activateMenuFlag && menuAlreadyBuiltFlag == 0)
 		{
 			activeState = MENU;
 			MENU_activate(&activeState);
+
+			menuAlreadyBuiltFlag = 1;
+			activateMenuFlag = 0;
 		}
 
-		if(SPIreceivedFlag)
+		if(activateMenuFlag && menuAlreadyBuiltFlag == 1)
 		{
-			
-			uint8_t receiveBufferStatus;
-			// check for message reception
-			if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))
-			{
-				struct can_message receivedMessage;
-				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
-
-				CAN_printMessage(&receivedMessage);
-				
-				
-				
-			
-				SPIreceivedFlag = 0;
-			
-			}
+			activeState = MENU;
+			MENU_reactivate();	
+			activateMenuFlag = 0;
 		}
+		
+// 		if(SPIreceivedFlag)
+// 		{
+// 			
+// 			uint8_t receiveBufferStatus;
+// 			// check for message reception
+// 			if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))
+// 			{
+// 				struct can_message receivedMessage;
+// 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
+// 
+// 				CAN_printMessage(&receivedMessage);
+// 				
+// 				if(receivedMessage.id == 21)
+// 				{
+// 					Game_updateLives();
+// 				}
+// 				
+// 			
+// 				SPIreceivedFlag = 0;
+// 			
+// 			}
+// 		}
 		
 		if(updateCmdDispFlag)
 		{
@@ -395,9 +409,9 @@ int main(void)
 		
 		if(activeState == GAME)
 		{
-			OLED_clear();
-			OLED_goto(0,0);
-			OLED_printString("Hui");
+			Game_init();
+			Game_play(&SPIreceivedFlag);
+			activeState = IDLE;
 		}
     }
 }
