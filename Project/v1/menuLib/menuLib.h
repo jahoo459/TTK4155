@@ -11,6 +11,8 @@
 #ifndef MENULIB_H_
 #define MENULIB_H_
 
+#include "..\JoystickLib\JoystickLib.h"
+
 #define MAX_MENU_SIZE 8
 //struct that defines menu item
 typedef struct menuNode
@@ -44,7 +46,7 @@ void MENU_moveRight();
 void MENU_moveLeft();
 void MENU_waitForInput();
 
-void MENU_activate();
+void MENU_activate(OP_STATE* state);
 
 
 

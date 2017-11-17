@@ -170,6 +170,11 @@
       <Project>{6d83be5a-9d59-4a17-a83c-c6e2eb982770}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\GameLib\GameLib.cproj">
+      <Name>GameLib</Name>
+      <Project>{4feb39ce-c1e4-4a9f-aca9-413f93eebad5}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\JoystickLib\JoystickLib.cproj">
       <Name>JoystickLib</Name>
       <Project>{451b9df4-52c1-458b-938b-6731abcc07c1}</Project>

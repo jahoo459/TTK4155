@@ -105,4 +105,6 @@ typedef struct {
 	uint8_t Button;
 } UART_Message_t;
 
+typedef enum {GAME, MENU, IDLE} OP_STATE;
+
 #endif /* DEFINITIONS_H_ */

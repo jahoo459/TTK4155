@@ -10,7 +10,6 @@
 #include <stddef.h>
 
 #include "menuLib.h"
-#include "..\JoystickLib\JoystickLib.h"
 #include "..\oledLib\oledLib.h"
 
 //******************************************************************************************
@@ -24,10 +23,13 @@ static uint8_t menuActiveFlag = 0; //When this flag gets 0 waitForInput function
 static int currentPosition = 0; //Current menu position read from the Joystick
 
 static int menuFrameOffset = 10; //Columns from left frame border
+
+static OP_STATE* actualState;
 //******************************************************************************************
 
 void startGame()
 {
+	*actualState = GAME;
 	OLED_clear();
 	OLED_goto(0,0);
 	OLED_printString("START");
@@ -151,7 +153,7 @@ void MENU_waitForInput()
 	OLED_moveArrow(currentPosition);
 	JOY_direction_t currDir;
 	
-	while(menuActiveFlag)
+	while(menuActiveFlag && *actualState == MENU)
 	{
 		currDir = JOY_getDirection();
 		switch(currDir){
@@ -223,8 +225,9 @@ void MENU_moveLeft()
 	}
 }
 
-void MENU_activate()
+void MENU_activate(OP_STATE* state)
 {
+	actualState = state;
 	menuActiveFlag = 1;
 	//mainMenu = malloc(sizeof(menuItemNode_t));
 	MENU_buildMenus();

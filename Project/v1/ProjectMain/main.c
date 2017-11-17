@@ -18,6 +18,7 @@
 #include "..\SPILib\SPILib.h"
 #include "..\MCP2515Lib\MCP2515Lib.h"
 #include "..\CANLib\CANLib.h"
+#include "..\GameLib\GameLib.h"
 #include <UARTlib.h>
 
 
@@ -49,7 +50,7 @@ volatile uint8_t RightButtonFlag = 0;
 
 //MENU
 volatile uint8_t activateMenuFlag = 0;
-volatile uint8_t activeModeFlag = 0;
+volatile OP_STATE activeState = IDLE;
 
 //SPI COMMUNICATION
 volatile uint8_t SPI_ReceivedByte;
@@ -316,8 +317,8 @@ int main(void)
 	
 	//activateMenuFlag = 1; // display the main menu
 		
-	OLED_goto(5,0);
-	OLED_printString("I am alive!");
+	
+	Game_runGame();
 
 	uartMsg = 0;
 	uartMouseSteeringMessage.Motor = 0;
@@ -350,7 +351,8 @@ int main(void)
 
 		if(activateMenuFlag)
 		{
-			MENU_activate();
+			activeState = MENU;
+			MENU_activate(&activeState);
 		}
 
 		if(SPIreceivedFlag)
@@ -364,6 +366,9 @@ int main(void)
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
 
 				CAN_printMessage(&receivedMessage);
+				
+				
+				
 			
 				SPIreceivedFlag = 0;
 			
@@ -386,6 +391,13 @@ int main(void)
 			OLED_printString(str);
 				
 			updateCmdDispFlag = 0;
+		}
+		
+		if(activeState == GAME)
+		{
+			OLED_clear();
+			OLED_goto(0,0);
+			OLED_printString("Hui");
 		}
     }
 }
