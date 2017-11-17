@@ -1,4 +1,5 @@
 #include "posmsg.h"
+#include <windows.h>
 
 PosMsg::PosMsg()
 {
@@ -10,17 +11,17 @@ PosMsg::~PosMsg()
     closeConnection();
 }
 
-uint16_t PosMsg::getPosX()
+uint8_t PosMsg::getPosX()
 {
     return this->posX;
 }
 
-uint16_t PosMsg::getButtonState()
+uint8_t PosMsg::getButtonState()
 {
     return this->buttonState;
 }
 
-uint16_t PosMsg::getPosWheel()
+uint8_t PosMsg::getPosWheel()
 {
     return this->posWheel;
 }
@@ -52,48 +53,75 @@ void PosMsg::closeConnection()
 
 void PosMsg::sendData(QByteArray data)
 {
+    qDebug() << "Sending Data";
     serial.write(data);
 }
 
-QByteArray PosMsg::receiveData()
+uint8_t PosMsg::receiveData()
 {
     QByteArray data = serial.readAll();
-    return data;
+    return data.at(0);
 }
 
 void PosMsg::updatePortNumber(QString portName)
 {
     qDebug() << "Connecting...." << portName;
     emit connStatusChanged("Connecting....");
+    closeConnection();
     openConnection(portName);
 }
 
 
-void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
+void PosMsg::sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonState)
 {
     STEERING_CMD command;
+    qDebug() << "Sending Message...";
 
-    int identifier = 0xffff;
+    uint8_t identifier = 0xff;
     command.posX = mouseXpos;
     command.wheelPos = wheelPos;
     command.buttonState = buttonState;
 
+    qDebug() << "ID: " << identifier;
+    qDebug() << "Motor: " << mouseXpos;
+    qDebug() << "Servo: " << wheelPos;
+    qDebug() << "Button: " << buttonState;
+
     QByteArray msg;
     QDataStream streamOut(&msg, QIODevice::WriteOnly);
-    //QDataStream streamIn(&msg, QIODevice::QIODevice::ReadWrite);
+    uint8_t delay_ms = 1;
 
     streamOut << identifier;
-    streamOut << command.posX;
-    streamOut << command.wheelPos;
-    streamOut << command.buttonState;
-
     this->serial.write(msg);
-//    int a,b,c;
-//    streamIn >> a;
-//    streamIn >> b;
-//    streamIn >> c;
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
+    msg.clear();
 
-//    qDebug() << "After Ser: " << a << " " << b << " " << c ;
+    streamOut << command.posX;
+    this->serial.write(msg);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
+    msg.clear();
+
+    streamOut << command.wheelPos;
+    this->serial.write(msg);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
+    msg.clear();
+
+    streamOut << command.buttonState;
+    this->serial.write(msg);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
+    msg.clear();
+
+
+//    if(sizeof (msg) == 4)
+//    {
+//        this->serial.write(msg);
+//        //log(msg);
+//        cout << (uint8_t)msg.at(0) << " " << (uint8_t)msg.at(1) << " " << (uint8_t)msg.at(2) << " " << (uint8_t)msg.at(3) << endl;
+//    }
 }
 
 

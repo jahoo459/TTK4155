@@ -7,6 +7,10 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 #include <QByteArray>
+#include <iostream>
+#include <windows.h>
+
+using namespace std;
 
 typedef struct{
     QString name;
@@ -14,9 +18,9 @@ typedef struct{
 }COM_PORT_INFO;
 
 typedef struct{
-    uint16_t posX;
-    uint16_t wheelPos;
-    uint16_t buttonState;
+    uint8_t posX;
+    uint8_t wheelPos;
+    uint8_t buttonState;
 }STEERING_CMD;
 
 #endif // DEFINITIONS_H

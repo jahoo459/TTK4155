@@ -70,7 +70,7 @@
      <rect>
       <x>20</x>
       <y>340</y>
-      <width>121</width>
+      <width>411</width>
       <height>16</height>
      </rect>
     </property>
@@ -106,21 +106,44 @@
       <height>171</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton_fire">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>110</y>
-      <width>91</width>
-      <height>81</height>
+      <x>550</x>
+      <y>90</y>
+      <width>221</width>
+      <height>121</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>59</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="tabletTracking">
+     <bool>false</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.495 rgba(255, 255, 255, 255), stop:0.505 rgba(255, 0, 0, 255), stop:1 rgba(255, 0, 0, 255));
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
      <string>FIRE</string>
     </property>
+    <property name="shortcut">
+     <string>Space</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>810</x>
@@ -197,5 +220,38 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>lcdNumber_motor</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>676</x>
+     <y>306</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>901</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dial</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>lcdNumber_Servo</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>412</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>894</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
