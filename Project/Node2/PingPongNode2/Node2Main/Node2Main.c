@@ -162,28 +162,85 @@ int main(void)
 	uint8_t JoyPos = 0;
 	uint8_t SliPos = 100;
 	uint8_t ButtonRight = 0;
-	uint8_t Motor = 100;
-	uint8_t Servo = 0;
-	uint8_t Solenoid = 0;
-	uint8_t inputMode = 0;
+	uint8_t PC_Motor = 100;
+	uint8_t PC_Servo = 0;
+	uint8_t PC_Solenoid = 0;
+	uint8_t inputMode = 4;
 	
 	uint16_t ADCresult = 0;
 		
 	
     while(1)
     {
-		//printf("Encoder val: %d \n", Motor_readEncoder());
-		if(doPID_Flag)
+		if(inputMode == 0) //SLIDER MODE
 		{
-			//printf("Encoder read: %d \t", Motor_readEncoder());
-			if (timeIntFlag == 1)
+			PWM_setLevel(JoyPos);
+			
+			if(doPID_Flag && timeIntFlag)
 			{
 				Motor_do_PID(SliPos, Motor_readEncoder());
 				doPID_Flag = 0;
 				timeIntFlag = 0;
 			}
-						
+			
+			// use solenoid
+			if(ButtonRight != prevRightButtonState)
+			{
+				if(ButtonRight == 1)
+				{
+					Solenoid_TurnOn();
+				}
+				else
+				{
+					Solenoid_TurnOff();
+				}
+			}
+			
+			prevRightButtonState = ButtonRight;
 		}
+		
+		else if(inputMode == 1) // JOY MODE
+		{
+			PWM_setLevel(JoyPos);
+			Motor_JoySetSpeed(JoyPos);
+			// use solenoid
+			if(ButtonRight != prevRightButtonState)
+			{
+				if(ButtonRight == 1)
+				{
+					Solenoid_TurnOn();
+				}
+				else
+				{
+					Solenoid_TurnOff();
+				}
+			}
+			
+			prevRightButtonState = ButtonRight;
+		}
+		
+		else if(inputMode == 2) // PC MODE
+		{
+			PWM_setLevel(PC_Servo);
+			
+			if(doPID_Flag && timeIntFlag)
+			{
+				Motor_do_PID(PC_Motor, Motor_readEncoder());
+				doPID_Flag = 0;
+				timeIntFlag = 0;
+			}
+			
+			if(PC_Solenoid)
+			{
+				Solenoid_TurnOn();
+			}
+			else
+			{
+				Solenoid_TurnOff();
+			}
+		}
+		
+		
 		if(SPIreceivedFlag)
 		{
 			uint8_t receiveBufferStatus;
@@ -192,40 +249,20 @@ int main(void)
 			{
 				struct can_message receivedMessage;
 				receivedMessage = CAN_receiveMessage(receiveBufferStatus);
-				//printf("%d\n", receivedMessage.data[0]);
+
 				if(receivedMessage.id == 23)
 				{
 					JoyPos = receivedMessage.data[0]*100/255;
- 					PWM_setLevel(JoyPos);
 					SliPos = receivedMessage.data[1];
 					ButtonRight = receivedMessage.data[2];	
-					Motor = receivedMessage.data[3];
-					Servo = receivedMessage.data[4];
-					Solenoid = receivedMessage.data[5];
+					PC_Motor = receivedMessage.data[3];
+					PC_Servo = receivedMessage.data[4];
+					PC_Solenoid = receivedMessage.data[5];
 					inputMode = receivedMessage.data[6];
-				
-					// use solenoid
-					if(ButtonRight != prevRightButtonState)
-					{
-						if(ButtonRight == 1)
-						{
-							Solenoid_TurnOn();
-						}
-						else
-						{
-							Solenoid_TurnOff();
-						}
-					}
-				
-					printf("%d \t %d \t %d \t %d \t %d \t %d \t %d\n", JoyPos, SliPos, ButtonRight, Motor, Servo, Solenoid, inputMode);
-				
-		
-					prevRightButtonState = ButtonRight;
+
+					printf("%d \t %d \t %d \t %d \t %d \t %d \t %d\n", JoyPos, SliPos, ButtonRight, PC_Motor, PC_Servo, PC_Solenoid, inputMode);
+			
 				}
-// 				if(receivedMessage.id == 2)
-// 				{
-// 					printf("%d\n", receivedMessage.data[0]);
-// 				}
 				
 				SPIreceivedFlag = 0;
 				
