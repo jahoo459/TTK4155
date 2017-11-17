@@ -119,6 +119,9 @@
     <property name="text">
      <string>FIRE</string>
     </property>
+    <property name="shortcut">
+     <string>Space</string>
+    </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
@@ -197,5 +200,38 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>lcdNumber_motor</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>676</x>
+     <y>306</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>901</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dial</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>lcdNumber_Servo</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>412</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>894</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -23,6 +23,9 @@ private slots:
 
     void on_comboBox_port_select_currentIndexChanged(int index);
 
+    void on_pushButton_fire_clicked();
+
+
 public slots:
     void updateConnStatus(QString msg);
     void logInfo(QString msg);

@@ -1,4 +1,5 @@
 #include "posmsg.h"
+#include <windows.h>
 
 PosMsg::PosMsg()
 {
@@ -52,6 +53,7 @@ void PosMsg::closeConnection()
 
 void PosMsg::sendData(QByteArray data)
 {
+    qDebug() << "Sending Data";
     serial.write(data);
 }
 
@@ -73,6 +75,7 @@ void PosMsg::updatePortNumber(QString portName)
 void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
 {
     STEERING_CMD command;
+    qDebug() << "Sending Message...";
 
     uint8_t identifier = 0xff;
     command.posX = mouseXpos;
@@ -81,27 +84,26 @@ void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
 
     QByteArray msg;
     QDataStream streamOut(&msg, QIODevice::WriteOnly);
-    //QDataStream streamIn(&msg, QIODevice::QIODevice::ReadWrite);
 
     streamOut << identifier;
-    msg.clear();
     this->serial.write(msg);
-    while(receiveData() == 0);
+    Sleep(1);
+    msg.clear();
 
     streamOut << command.posX;
-    msg.clear();
     this->serial.write(msg);
-    while(receiveData() == 0);
+    Sleep(1);
+    msg.clear();
 
     streamOut << command.wheelPos;
-    msg.clear();
     this->serial.write(msg);
-    while(receiveData() == 0);
+    Sleep(1);
+    msg.clear();
 
     streamOut << command.buttonState;
-    msg.clear();
     this->serial.write(msg);
-    while(receiveData() == 0);
+    Sleep(1);
+    msg.clear();
 
 
 //    if(sizeof (msg) == 4)

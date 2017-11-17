@@ -52,21 +52,14 @@ void MainWindow::logInfo(QString msg)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    //qDebug() << "Button clicked!";
-    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(255,125,100) }");
-    this->buttonState = 0;
-    this->ui->lcdNumber_Solenoid->display(buttonState);
-    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    //this->ui->lcdNumber_Solenoid->display(buttonState);
+    //emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    //qDebug() << "Button clicked!";
-    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(125,255,100) }");
-    this->buttonState = 1;
-
-    this->ui->lcdNumber_Solenoid->display(buttonState);
-    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    //this->ui->lcdNumber_Solenoid->display(buttonState);
+   // emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
@@ -97,3 +90,15 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
 }
 
+
+void MainWindow::on_pushButton_fire_clicked()
+{
+    qDebug() << "Button clicked!";
+    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(125,255,100) }");
+    this->buttonState = 1;
+    //this->ui->lcdNumber_Solenoid->display(buttonState);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(125,125,125) }");
+    this->buttonState = 0;
+    //this->ui->lcdNumber_Solenoid->display(buttonState);
+}
