@@ -48,8 +48,9 @@ void MENU_waitForInput();
 void MENU_clearMemory();
 void MENU_reactivate();
 void MENU_printInfo();
+void MENU_updateState();
 
-void MENU_activate(OP_STATE* state);
+void MENU_activate(OP_STATE* state, INPUT_MODE* inputMode);
 
 
 

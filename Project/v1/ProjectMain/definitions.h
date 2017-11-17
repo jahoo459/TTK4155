@@ -106,5 +106,6 @@ typedef struct {
 } UART_Message_t;
 
 typedef enum {GAME, MENU, IDLE} OP_STATE;
+typedef enum {SLIDER, JOYSTICK, PC} INPUT_MODE;
 
 #endif /* DEFINITIONS_H_ */

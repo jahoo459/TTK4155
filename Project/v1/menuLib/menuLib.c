@@ -25,6 +25,7 @@ static int currentPosition = 0; //Current menu position read from the Joystick
 static int menuFrameOffset = 10; //Columns from left frame border
 
 static OP_STATE* actualState;
+static INPUT_MODE* actualInputMode;
 //******************************************************************************************
 
 void startGame()
@@ -85,12 +86,15 @@ void MENU_buildMenus()
 	
 	MENU_addMenuItem("Slider", modeMenu, NULL, 0);
 	modeMenu->children[0] = currItem;
+	modeMenu->children[0]->functionPtr = &MENU_updateState;
 	
 	MENU_addMenuItem("Joystick", modeMenu, NULL, 0);
 	modeMenu->children[1] = currItem;
+	modeMenu->children[1]->functionPtr = &MENU_updateState;
 	
 	MENU_addMenuItem("PC", modeMenu, NULL, 0);
 	modeMenu->children[2] = currItem;
+	modeMenu->children[2]->functionPtr = &MENU_updateState;
 }
 
 void MENU_addMenuItem(char* name, menuNode_t* parentMenu, menuNode_t* childMenu, int hasChildMenu)
@@ -229,9 +233,10 @@ void MENU_moveLeft()
 	}
 }
 
-void MENU_activate(OP_STATE* state)
+void MENU_activate(OP_STATE* state, INPUT_MODE* inputMode)
 {
 	actualState = state;
+	actualInputMode = inputMode;
 	menuActiveFlag = 1;
 	//mainMenu = malloc(sizeof(menuItemNode_t));
 	MENU_buildMenus();
@@ -301,11 +306,11 @@ void MENU_printInfo()
 	OLED_clear();
 	OLED_goto(0,0);
 	OLED_printString("GROUP 46");
-	OLED_goto(1,0);
-	OLED_printString("O.Kasperek");
 	OLED_goto(2,0);
-	OLED_printString("L.Hagele");
+	OLED_printString("O.Kasperek");
 	OLED_goto(3,0);
+	OLED_printString("L.Hagele");
+	OLED_goto(4,0);
 	OLED_printString("J.Haberny");
 	
 	_delay_ms(3000);
@@ -313,7 +318,34 @@ void MENU_printInfo()
 }
 
 
-
+void MENU_updateState()
+{
+	uint8_t newState = currentPosition;
+	OLED_clear();
+	OLED_goto(0,0);
+	OLED_printString("INPUT:");
+	OLED_goto(1,0);
+	switch (newState)
+	{
+		case 0:
+			*actualInputMode = SLIDER;
+			OLED_printString("SLIDER");
+			break;
+		
+		case 1:
+			*actualInputMode = JOYSTICK;
+			OLED_printString("JOYSTICK");
+			break;
+		
+		case 2:
+			*actualInputMode = PC;
+			OLED_printString("PC");
+			break;
+		
+	}
+	_delay_ms(1000);
+	MENU_reactivate();
+}
 
 
 

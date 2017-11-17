@@ -22,6 +22,8 @@ static uint8_t JoyPos;
 static uint8_t SliPos;
 static uint8_t ButtonRight;
 
+//UART_Message_t uartMouseSteeringMessage;
+
 void Game_init()
 {
 	// declare score and lives
@@ -59,7 +61,7 @@ void Game_updateLives()
 	OLED_printString("Wait");
 }
 
-void Game_play(uint8_t* SPIreceivedFlag)
+void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Message_t* uartMouseSteeringMessage, INPUT_MODE* inputMode)
 {
 	while(lives > 0)
 	{
@@ -77,12 +79,34 @@ void Game_play(uint8_t* SPIreceivedFlag)
 			ButtonRight = 0;
 		}
 		
+		if(updateCmdDispFlag)
+		{
+		 	OLED_clear();
+		 	sprintf(str, "%d", uartMouseSteeringMessage->Motor);
+		 	OLED_goto(0,0);
+		 	OLED_printString(str);
+		
+		 	sprintf(str, "%d", uartMouseSteeringMessage->Servo);
+		 	OLED_goto(1,0);
+		 	OLED_printString(str);
+		
+		 	sprintf(str, "%d", uartMouseSteeringMessage->Button);
+		 	OLED_goto(2,0);
+		 	OLED_printString(str);
+		
+		 	*updateCmdDispFlag = 0;
+		}
+
 		// send Positions to Node 2
 		message2send.id = 23;
-		message2send.length = 3;
+		message2send.length = 7;
 		message2send.data[0] = JoyPos;
 		message2send.data[1] = SliPos;
 		message2send.data[2] = ButtonRight;
+		message2send.data[3] = uartMouseSteeringMessage->Motor;
+		message2send.data[4] = uartMouseSteeringMessage->Servo;
+		message2send.data[5] = uartMouseSteeringMessage->Button;
+		message2send.data[6] = inputMode;
 		
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);

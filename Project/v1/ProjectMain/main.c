@@ -34,7 +34,7 @@
 volatile char UART_ReceivedByte;
 volatile uint8_t USARTreceivedFlag = 0;
 volatile uint8_t waitForNextMessageFlag = 0;
-volatile uint8_t UARTrowCounter = 0;
+volatile uint8_t pcCmdType = 0;
 
 //PC Input
 UART_Message_t uartMouseSteeringMessage;
@@ -51,6 +51,7 @@ volatile uint8_t RightButtonFlag = 0;
 //MENU
 volatile uint8_t activateMenuFlag = 0;
 volatile OP_STATE activeState = IDLE;
+volatile INPUT_MODE inputMode = SLIDER;
 volatile menuAlreadyBuiltFlag = 0;
 
 //SPI COMMUNICATION
@@ -80,29 +81,44 @@ ISR(USART0_RXC_vect)
 
 	if(waitForNextMessageFlag)
 	{
-		switch(UARTrowCounter)
+		switch(pcCmdType)
 		{
-			case 0:
+			case 0: //motor
 				uartMouseSteeringMessage.Motor = uartMsg;
+				waitForNextMessageFlag = 0;
+				updateCmdDispFlag = 1;
 				break;
 			
-			case 1:
+			case 1: //servo
 				uartMouseSteeringMessage.Servo = uartMsg;
+				waitForNextMessageFlag = 0;
+				updateCmdDispFlag = 1;
 				break;
 			
-			case 2:
+			case 2: //solenoid
 				uartMouseSteeringMessage.Button = uartMsg;
 				waitForNextMessageFlag = 0;
 				updateCmdDispFlag = 1;
 				break;
 		}
-		UARTrowCounter++;
 	}
 			
-	if(uartMsg == 0xff) //Mouse steering command received
+	if(uartMsg == 0xff) //Motor steering command received
 	{
 		waitForNextMessageFlag = 1; //wait for 3 steering command bytes	
-		UARTrowCounter = 0;
+		pcCmdType = 0;
+	}
+	
+	if(uartMsg == 0xfe) //Servo steering command received
+	{
+		waitForNextMessageFlag = 1; //wait for 3 steering command bytes
+		pcCmdType = 1;
+	}
+	
+	if(uartMsg == 0xfd) //Solenoid steering command received
+	{
+		waitForNextMessageFlag = 1; //wait for 3 steering command bytes
+		pcCmdType = 2;
 	}
 	
 	USARTreceivedFlag = 1;		//set the flag to 1
@@ -353,7 +369,7 @@ int main(void)
 		if(activateMenuFlag && menuAlreadyBuiltFlag == 0)
 		{
 			activeState = MENU;
-			MENU_activate(&activeState);
+			MENU_activate(&activeState, &inputMode);
 
 			menuAlreadyBuiltFlag = 1;
 			activateMenuFlag = 0;
@@ -389,28 +405,28 @@ int main(void)
 // 			}
 // 		}
 		
-		if(updateCmdDispFlag)
-		{
-			OLED_clear();
-			sprintf(str, "%d", uartMouseSteeringMessage.Motor);
-			OLED_goto(0,0);
-			OLED_printString(str);
-			
-			sprintf(str, "%d", uartMouseSteeringMessage.Servo);
-			OLED_goto(1,0);
-			OLED_printString(str);
-			
-			sprintf(str, "%d", uartMouseSteeringMessage.Button);
-			OLED_goto(2,0);
-			OLED_printString(str);
-				
-			updateCmdDispFlag = 0;
-		}
+// 		if(updateCmdDispFlag)
+// 		{
+// 			OLED_clear();
+// 			sprintf(str, "%d", uartMouseSteeringMessage.Motor);
+// 			OLED_goto(0,0);
+// 			OLED_printString(str);
+// 			
+// 			sprintf(str, "%d", uartMouseSteeringMessage.Servo);
+// 			OLED_goto(1,0);
+// 			OLED_printString(str);
+// 			
+// 			sprintf(str, "%d", uartMouseSteeringMessage.Button);
+// 			OLED_goto(2,0);
+// 			OLED_printString(str);
+// 				
+// 			updateCmdDispFlag = 0;
+// 		}
 		
 		if(activeState == GAME)
 		{
 			Game_init();
-			Game_play(&SPIreceivedFlag);
+			Game_play(&SPIreceivedFlag, &updateCmdDispFlag, &uartMouseSteeringMessage, &inputMode);
 			activeState = IDLE;
 		}
     }
