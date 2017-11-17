@@ -11,7 +11,6 @@
 
 #include "..\ADCLib\ADCLib.h"
 
-
 void JOY_init();
 void JOY_calibrate();
 void JOY_requestCurrentPosition(char axis);

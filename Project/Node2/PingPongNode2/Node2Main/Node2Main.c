@@ -168,7 +168,6 @@ int main(void)
 	uint8_t inputMode = 4;
 	
 	uint16_t ADCresult = 0;
-		
 	
     while(1)
     {
@@ -261,11 +260,9 @@ int main(void)
 					inputMode = receivedMessage.data[6];
 
 					printf("%d \t %d \t %d \t %d \t %d \t %d \t %d\n", JoyPos, SliPos, ButtonRight, PC_Motor, PC_Servo, PC_Solenoid, inputMode);
-			
 				}
 				
 				SPIreceivedFlag = 0;
-				
 			}
 		}
     }

@@ -24,8 +24,6 @@ static uint8_t JoyPos;
 static uint8_t SliPos;
 static uint8_t ButtonRight;
 
-//UART_Message_t uartMouseSteeringMessage;
-
 void Game_init()
 {
 	// declare score and lives
@@ -80,8 +78,7 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 		{
 			Game_updateScore();
 		}
-		
-		
+				
 		// call for Joystick and Slider positions
 		JoyPos = JOY_getPosition().X_abs;
 		SliPos = SLI_getPosition().R_per;
@@ -96,24 +93,6 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 			ButtonRight = 0;
 		}
 		
-		//if(updateCmdDispFlag)
-		//{
- 		 	//OLED_clear();
- 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Motor);
- 		 	//OLED_goto(0,0);
- 		 	//OLED_printString(str);
- 		 	//
- 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Servo);
- 		 	//OLED_goto(1,0);
- 		 	//OLED_printString(str);
- 		 	//
- 		 	//sprintf(str, "%d", uartMouseSteeringMessage->Button);
- 		 	//OLED_goto(2,0);
- 		 	//OLED_printString(str);
-		//
-		 	//*updateCmdDispFlag = 0;
-		//}
-
 		// send Positions to Node 2
 		message2send.id = 23;
 		message2send.length = 7;
@@ -124,30 +103,13 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 		message2send.data[4] = uartMouseSteeringMessage->Servo;
 		message2send.data[5] = uartMouseSteeringMessage->Button;
 		message2send.data[6] = *inputMode;
-		
-// 		message3send.id = 2;
-// 		message3send.length = 1;
-// 		if(*inputMode == SLIDER)
-// 		{
-// 			message3send.data[0] = 0;
-// 		}
-// 		if(*inputMode == JOYSTICK)
-// 		{
-// 			message3send.data[0] = 1;
-// 		}	
-// 		if(*inputMode == PC)
-// 		{
-// 			message3send.data[0] = 2;
-// 		}
-// 		
-		
+
 		CAN_sendMessage(&message2send, 0);
 		_delay_ms(50);
 		
 		// CAN reception
 		if(*SPIreceivedFlag)
 		{
-		
 		 	uint8_t receiveBufferStatus;
 		 	// check for message reception
 		 	if(receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF))

@@ -36,7 +36,6 @@ typedef struct menuItemNode
 void MENU_buildMenus();
 void MENU_addMenuItem(char* name, menuNode_t* parentMenu, menuNode_t* childMenu, int hasChildMenu);
 
-//void MENU_removeMenuItem(menuItemNode_t* item);
 void MENU_printMenuItem(menuItemNode_t* item, int lineNumber);
 void MENU_printMenu(menuNode_t* menu, int noElements);
 
@@ -51,7 +50,5 @@ void MENU_printInfo();
 void MENU_updateState();
 
 void MENU_activate(OP_STATE* state, INPUT_MODE* inputMode);
-
-
 
 #endif /* MENULIB_H_ */

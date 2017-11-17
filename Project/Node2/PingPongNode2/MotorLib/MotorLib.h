@@ -22,7 +22,6 @@
 #define MOT_ENC_REG PORTH
 
 // PID controller
-//#define P_GAIN 0.031
 #define P_GAIN 0.031
 #define I_GAIN 0.005
 #define MAX_ENC_LEFT 8870

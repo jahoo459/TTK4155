@@ -25,7 +25,6 @@ void PWM_init()
 	TCCR1B |= (1<<WGM13) | (1<<WGM12) | (1<<CS11) | (1<<CS10);
 	
 	// Overflow Interrupt Enable
-	//TIMSK1 |= (1<<OCIE1A);
 	TIMSK1 |= (1<<TOIE1);
 	
 	// 20ms PWM cycle
@@ -46,8 +45,6 @@ void PWM_setLevel(uint8_t level)
 	}
 	else
 	{
-		//printf("servo level over 100% - set to 100%\n");
-		OCR1A = SERVO_MAX;
-		
+		OCR1A = SERVO_MAX;		
 	}
 }

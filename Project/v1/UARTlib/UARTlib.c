@@ -30,7 +30,6 @@ uint8_t uartReceive()
 	uint8_t receivedByte = UDR0;
 	
 	return receivedByte;
-
 }
 
 void uartInit(uint32_t baud, uint32_t fosc, uint32_t ubrr)

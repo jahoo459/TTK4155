@@ -16,20 +16,9 @@ void CAN_init()
 	// SETUP FILTERS    
     // set both buffers to accept all messages
     MCP2515_write(SS_CAN_CONTROLLER, MCP_RXB0CTRL, (1<<MCP_RXM1)|(1<<MCP_RXM0) );
-   
-    // delete all bits from reception mask -> accept all messages
-    //mcp2515_write_register( RXM0SIDH, 0 );
-    //mcp2515_write_register( RXM0SIDL, 0 );
-    //mcp2515_write_register( RXM0EID8, 0 );
-    //mcp2515_write_register( RXM0EID0, 0 );
-   
-    // switch to loopback mode
-    //MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0xc0, 0x40);
 	
 	// switch to normal mode
-	//printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
 	MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_CANCTRL, 0x80, 0x00);
-	//printf("CANSTAT: %#x\n", MCP2515_read(SS_CAN_CONTROLLER, MCP_CANSTAT));
 }
 
 void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
@@ -42,8 +31,6 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 		{
 			// register TXB0CTRL (30h)
 			// configuration of flags and buffer priority
-			//MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL,);
-			//MCP2515_bitModify(SS_CAN_CONTROLLER, MCP_TXB0CTRL, );
 			
 			// write ID to TXB0SIDH and TXB0SIDL
 			unsigned int canID;
@@ -52,7 +39,6 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0SIDH, canID>>3); // write first 8 bits to TXB0SIDH Register		
 			
 			// write Data length to TXB0DLC Register
-			// TODO: only modify the lowest 4 bits
 			MCP2515_write(SS_CAN_CONTROLLER, MCP_TXB0DLC, msg->length);
 			
 			uint8_t dataRegister = MCP_TXB0D0;
@@ -73,9 +59,6 @@ void CAN_sendMessage(can_message_t* msg, uint8_t transmitBufferNumber)
 	
 can_message_t CAN_receiveMessage(uint8_t receiveBufferStatus)
 {
-	// check flag register CANINTF about source of interrupt
-	//uint8_t receiveBufferStatus = 0x03 & MCP2515_read(SS_CAN_CONTROLLER, MCP_CANINTF);
-	
 	// auxiliary variables for the following switch case
 	struct can_message receivedMessage;
 	uint8_t dataRegister;

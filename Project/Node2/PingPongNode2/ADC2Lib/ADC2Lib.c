@@ -23,7 +23,6 @@ void ADC2_init()
 
 	ADCSRA |= (1 << ADIE);  // Set ADC to Free-Running Mode
 	ADCSRA |= (1 << ADEN);  // Enable ADC
-	//ADCSRA |= (1 << ADSC);  // Start A2D Conversions
 	
 	for(uint8_t i = 0; i < 4; i++)
 	{

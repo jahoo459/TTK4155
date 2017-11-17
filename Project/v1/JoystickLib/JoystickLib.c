@@ -9,7 +9,6 @@
 
 #include "JoystickLib.h"
 #include "..\ADCLib\ADCLib.h"
-//#include <util/delay.h>
 #include <string.h>
 
 // current position and direction of the joystick
@@ -21,7 +20,6 @@ static JOY_direction_t currentDirection;
 #define X_channel 2
 
 // delay in us after which the AD conversion should be finished
-// todo: handle conversion with interrupts
 #define delayConversion 60
 
 // variables needed for joystick calibration
@@ -58,7 +56,6 @@ void JOY_calibrate()
 	OLED_clear();
 	OLED_bufferGoto(0,0);
 	OLED_printString("JOY RIGHT");
-	//printf("Move JOY to the right\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -72,7 +69,6 @@ void JOY_calibrate()
 	
 	OLED_bufferGoto(1,0);
 	OLED_printString("JOY LEFT");
-	//printf("Move JOY to the left\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -86,7 +82,6 @@ void JOY_calibrate()
 	
 	OLED_bufferGoto(2,0);
 	OLED_printString("JOY UP");
-	//printf("Move JOY up\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -100,7 +95,6 @@ void JOY_calibrate()
 	
 	OLED_bufferGoto(3,0);
 	OLED_printString("JOY DOWN");
-	//printf("Move JOY down\n");
 	_delay_ms(delay1);
 	
 	for(int i = 0; i < 20; i++)
@@ -112,15 +106,11 @@ void JOY_calibrate()
 		if(temp < calDown) {calDown = temp;}
 	}
 	
-	
-	//printf("calR: %d, calL: %d, calUp:%d, calDown:%d\n", calR, calL, calUp, calDown);
-	
 	meanVert = (calUp - calDown)/2;
 	meanHor = (calR - calL)/2;
 	
 	OLED_bufferGoto(4,0);
 	OLED_printString("CALIB DONE");
-	//printf("Calibration done.. new VM: %d HM:%d\n", meanVert, meanHor);
 	_delay_ms(1000);
 }
 
@@ -210,35 +200,3 @@ JOY_direction_t JOY_getDirection()
 	
 	return currentDirection;
 }
-
-// old AD conversion handling in the main method
-/*
-if(ADCconversionCompletedFlag)
-{
-	switch(currentChannel){
-		case 1:	//X axis
-			JOY_updatePosition('x');
-			JOY_requestCurrentPosition('y');
-			currentChannel++;
-		break;	
-				
-		case 2:	//Y_axis
-			JOY_updatePosition('y');
-			SLI_requestCurrentPosition('l');
-			currentChannel++;
-		break;
-				
-		case 3: //slider_left
-			SLI_updatePosition('l');
-			SLI_requestCurrentPosition('r');
-			currentChannel++;
-		break;
-				
-		case 4:	//slider_right
-			SLI_updatePosition('r');
-			JOY_requestCurrentPosition('x');
-			currentChannel = 1;
-		break;
-	}
-}
-*/

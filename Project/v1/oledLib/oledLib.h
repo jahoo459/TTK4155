@@ -35,14 +35,5 @@ void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r);
 void OLED_logo(void);
 void OLED_table(void);
 void OLED_splashScreen(void);
-// void OLED_flyingArrows(void);
-
-//void OLED_reset();
-//void OLED_home();
-//void OLED_goto_line(int line);
-//void OLED_clear_line(int line);
-//void OLED_pos(int row, int column);
-//void OLED_print(char* text);
-//void OLED_set_brightness(int lvl);
 
 #endif /* OLEDLIB_H_ */

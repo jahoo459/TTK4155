@@ -13,8 +13,8 @@
 #include "..\oledLib\oledLib.h"
 
 //******************************************************************************************
-menuNode_t *mainMenu = NULL; //pointer pointing to main menu
-menuNode_t *modeMenu = NULL; //pointer pointing to difficulty menu 
+menuNode_t *mainMenu = NULL;	//pointer pointing to main menu
+menuNode_t *modeMenu = NULL;	//pointer pointing to difficulty menu 
 menuNode_t *currentMenu = NULL;	//pointer pointing to currently displayed menu - for navigation
 menuItemNode_t *currItem = NULL; //current item, at the beginning will point at the first item (mainMenu)
 
@@ -71,9 +71,6 @@ void MENU_buildMenus()
 	MENU_addMenuItem("Mode", mainMenu, modeMenu, 1);
 	mainMenu->children[1] = currItem;
 	
-	//MENU_addMenuItem("Highscores", mainMenu, NULL, 0);
-	//mainMenu->children[2] = currItem;
-	
 	MENU_addMenuItem("Joy Calib", mainMenu, NULL, 0);
 	mainMenu->children[2] = currItem;
 	mainMenu->children[2]->functionPtr = &JOY_calibrate; //assign function to this item
@@ -127,7 +124,6 @@ void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 	{
 		OLED_bufferGoto(lineNumber, menuFrameOffset);
 		OLED_printString(item->name);
-		//printf("%s\n", item->text);
 	}
 	else
 	{
@@ -140,7 +136,6 @@ void MENU_printMenu(menuNode_t* menu, int noElements)
 	//clear the OLED display
 	OLED_clear();
 	//print arrow
-	//OLED_moveArrow(0);
 	OLED_resetArrow();
 	
 	for(int i = 0; i < noElements; i++)
@@ -178,12 +173,8 @@ void MENU_waitForInput()
 			
 			case DOWN:
 			MENU_moveDown();
-			break;
-			
-			
+			break;			
 		}
-		//_delay_ms(300);
-
 	}
 }
 
@@ -210,7 +201,6 @@ void MENU_moveDown()
 		//go back to first item
 		currentPosition = 0;
 		currItem = currentMenu->children[currentPosition];
-		//OLED_moveArrow(currentPosition);
 		OLED_resetArrow();
 		_delay_ms(200);
 	}
@@ -242,12 +232,9 @@ void MENU_activate(OP_STATE* state, INPUT_MODE* inputMode)
 	actualState = state;
 	actualInputMode = inputMode;
 	menuActiveFlag = 1;
-	//mainMenu = malloc(sizeof(menuItemNode_t));
 	MENU_buildMenus();
 	MENU_printMenu(mainMenu, mainMenu->noChilds);
 	MENU_waitForInput();
-	
-	//MENU_clearMemory();
 }
 
 void MENU_reactivate()

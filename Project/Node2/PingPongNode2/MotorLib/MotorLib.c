@@ -39,14 +39,11 @@ void Motor_JoySetSpeed(uint8_t joystick_position)
 	//set the direction
 	if(joystick_position >= 50) //right
 	{
-		//set_bit(PORTH, MOTOR_DIR_PIN);
 		Motor_setDirection(MOTOR_RIGHT);
-		//step = 255/50 assume 5
 		speed = (joystick_position - 50) * step;
 	}
 	else
 	{
-		//clear_bit(PORTH, MOTOR_DIR_PIN);
 		Motor_setDirection(MOTOR_LEFT);
 		speed = (50 - joystick_position) * step;
 	}
@@ -78,13 +75,8 @@ int Motor_readEncoder()
 	_delay_us(50);
 	//Read LSB
 	value |= PINK;
-	//Toggle !RST to reset encoder
-	//clear_bit(MOT_ENC_REG, _ENC_RESET_PIN);
-	//_delay_us(20);
-	//set_bit(MOT_ENC_REG, _ENC_RESET_PIN);
 	//Set !OE high to disable output of encoder
 	set_bit(MOT_ENC_REG, _ENC_OE_PIN);
-	//printf("Encoder: %d\n", value);
 	return value;
 }
 
@@ -92,19 +84,14 @@ void Motor_do_PID(int desired_value, int actual_value)
 {
 	//first map the slider position (0-100%) to MAX encoder values
 	desired_value = (LIMIT_ENC_RIGHT - LIMIT_ENC_LEFT)/100 * desired_value + LIMIT_ENC_LEFT;
-// 	int step = (MAX_ENC_LEFT - MAX_ENC_RIGHT) / 100;
-// 	int desiredVal = step * (100 - desired_value); //desired value in encoder ticks
-	//printf("desired_value: %d\n", desired_value);
 	int error = desired_value - actual_value;
 	if(abs(error) > 10)
 	{
 		sumError += error;
 	}
 	
-	//int k_i = I_GAIN * TIME_INT / TI;
 	int u = P_GAIN * error + I_GAIN * sumError;
-	//printf("sumError: %d \t %d\n", sumError, error);
-	
+
 	Motor_setSpeed(u);
 }
 
@@ -120,12 +107,6 @@ void Motor_setSpeed(int speed)
 		Motor_setDirection(MOTOR_LEFT);
 	}
 	
-	//printf("speed: %d\n", speed);
-	
-// 	if(speed < 70 && speed > 5)
-// 	{
-// 		speed = 70;
-// 	}
 	if(speed > 120)
 	{
 		speed = 120;

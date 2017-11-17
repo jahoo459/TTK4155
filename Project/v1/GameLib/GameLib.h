@@ -9,7 +9,6 @@
 #ifndef GAMELIB_H_
 #define GAMELIB_H_
 
-
 void Game_init(void);
 void Game_updateLives(void);
 void Game_updateScore(void);

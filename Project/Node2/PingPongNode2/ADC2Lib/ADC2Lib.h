@@ -14,5 +14,4 @@
 void ADC2_init(void);
 uint8_t ADC2_updateValue(void);
 
-
 #endif /* ADC2LIB_H_ */

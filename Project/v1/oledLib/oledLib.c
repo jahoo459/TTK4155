@@ -198,7 +198,6 @@ void OLED_bufferGoto(int row, int column)
 {
 	// change pointer in OLED SRAM buffer
 	oled_buffer_position = oled_buffer + (row * 0x80) + column;
-	//printf("oled_buffer_position = %#x\n", oled_buffer_position);
 }
 
 
@@ -222,12 +221,6 @@ void OLED_printCharacter(uint8_t character)
 		saveToAddress(oled_buffer_position, pgm_read_byte(&font8[character][i]));
 		oled_buffer_position++;
 	}
-	
-	// print 8 columns into OLED RAM
-// 	for(uint8_t i = 0; i < 8; i++)
-// 	{
-// 		OLED_writeByteToOLED(oled_data, pgm_read_byte(&font8[character][i]));
-// 	}
 }
 
 
@@ -241,7 +234,6 @@ void OLED_printString(char* msg)
 		OLED_printCharacter(msg[i]);
 	}
 }
-
 
 //------------------------------------------------------------------------------
 // This function prints an arrow to the OLED display
@@ -259,14 +251,7 @@ void OLED_printArrow(void)
 	oled_buffer_position++;
 	saveToAddress(oled_buffer_position, 0b00011000);
 	oled_buffer_position++;
-	
-// 	OLED_writeByteToOLED(oled_data, 0b00011000);
-// 	OLED_writeByteToOLED(oled_data, 0b00011000);
-// 	OLED_writeByteToOLED(oled_data, 0b01111110);
-// 	OLED_writeByteToOLED(oled_data, 0b00111100);
-// 	OLED_writeByteToOLED(oled_data, 0b00011000);
 }
-
 
 //------------------------------------------------------------------------------
 // This function clears the first columns in the size of the arrow from the 
@@ -285,17 +270,6 @@ void OLED_clearArrow(void)
 			oled_buffer_position++;
 		}
 	}
-	// the outer loop iterates the display rows
-// 	for(uint8_t count_row = 0; count_row < height; count_row++)
-// 	{
-// 		OLED_goto(count_row,0); // move to first column in row
-// 
-// 		// the inner loop iterates the columns of each row
-// 		for(uint8_t count_column = 0; count_column < arrow_width; count_column++)
-// 		{
-// 			OLED_writeByteToOLED(oled_data, 0x00);
-// 		}
-// 	}
 }
 
 
@@ -310,13 +284,11 @@ void OLED_moveArrow(int joy_counter)
 	if(joy_counter == arrow_position)
 	{
 		OLED_clearArrow(); // clear the arrow space
-		//OLED_goto(joy_counter,0); // move cursor to specified row
 		OLED_bufferGoto(joy_counter, 0);
 		OLED_printArrow(); // print arrow
 	}
 	else if(joy_counter > arrow_position)
 	{		
-		//printf("%#x %#x %#x %#x %#x \n", readFromAddress(0x1c00), readFromAddress(0x1c01), readFromAddress(0x1c02), readFromAddress(0x1c03), readFromAddress(0x1c04));
 		uint8_t buffer_dummy[ARROW_WIDTH] = {0x00};
 		uint8_t buffer_current[ARROW_WIDTH] = {0x00};
 			
@@ -498,12 +470,6 @@ void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r)
 //
 void OLED_logo()
 {
-	// define cube parameters
-// 	uint8_t ver_padding = 10;
-// 	uint8_t hor_padding = 32;
-// 	uint8_t ver_axis = width/2;
-// 	uint8_t Ay = ver_padding+ver_axis-hor_padding;
-	
 	// draw cube top
 	// vertical lines
 	OLED_line(43, 14, 43, 39);
@@ -527,6 +493,9 @@ void OLED_logo()
 	OLED_printCharacter('4');
 	OLED_bufferGoto(4, 69);
 	OLED_printCharacter('6');
+	
+	// draw circle
+	OLED_circle(63, 31, 10);
 }
 
 
@@ -557,179 +526,3 @@ void OLED_splashScreen()
 	//OLED_bufferGoto(7,28);
 	//OLED_printString("Ping-Pong");
 }
-
-// void OLED_setContrast(uint8_t contrast)
-// {
-// 	// activate contrast control
-// 	OLED_writeByteToOLED(oled_cmd, 0x81);
-// 	// set contrast to provided value
-// 	OLED_writeByteToOLED(oled_cmd, contrast);
-// }
-// 
-// void OLED_fadeIn(void)
-// {
-// 	// gradually increase contrast
-// 	for(uint8_t i = 0; i < 255; i++)
-// 	{
-// 		OLED_setContrast(i);
-// 		_delay_ms(4);
-// 	}
-// }
-// 
-// void OLED_fadeOut(void)
-// {
-// 	// gradually decrease contrast
-// 	for(uint8_t i = 0; i < 255; i++)
-// 	{
-// 		OLED_setContrast(255-i);
-// 		_delay_ms(4);
-// 	}
-// }
-// 
-// void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t thickness)
-// {
-// 	uint8_t lineSegment = 0;
-// 	if(y0 == y1)
-// 	{
-// 		lineSegment = (1<<y0/8);
-// 		OLED_goto(y0/8,x0);
-// 		for(uint8_t i = x0; i <= x1; i++)
-// 		{
-// 			OLED_writeByteToOLED(oled_data, lineSegment);
-// 		}
-// 	}
-// 	
-// 	// page addressing is wrong - should use all possible lines
-// 	// memory buffer should be used!
-// 	if(x0 == x1)
-// 	{
-// 		lineSegment = 0xff;
-// 		
-// 		for(uint8_t i = 0; i<8; i++)
-// 		{
-// 			OLED_goto(i,x0);
-// 			OLED_writeByteToOLED(oled_data, lineSegment);
-// 		}
-// 	}
-// }
-// 
-// void OLED_splashScreen(void)
-// {
-// 	printf("run splash screen...\n");
-// 	
-// 	OLED_setContrast(0);
-// 	
-// 	_delay_ms(500);
-// 	OLED_goto(2,4);
-// 	OLED_printString("Group 46 Soft");
-// 	OLED_fadeIn();
-// 	_delay_ms(500);
-// 	
-//  	OLED_clear();
-//  	OLED_setContrast(0);
-//  	
-//  	_delay_ms(200);
-//  	OLED_goto(3,28);
-//  	OLED_printString("proudly");
-//  	OLED_goto(4,24);	
-//  	OLED_printString("presents");
-//  	OLED_fadeIn();
-//  	_delay_ms(500);
-//  	
-//  	OLED_clear();
-//  	OLED_setContrast(0);
-//  	
-//  	_delay_ms(200);
-//  	OLED_goto(3, 28);
-//  	OLED_printString("FIFA 18");
-//  	OLED_fadeIn();
-//  	_delay_ms(1000);
-// 	
-// 	// clean up
-// 	OLED_clear();
-// 	OLED_setContrast(0x50); // back to standard contrast
-// 	
-// 	printf("splash screen done...\n");
-// }
-// 
-// void OLED_flyingArrows()
-// {
-// 	printf("let the arrows fly...\n");
-// 	
-// 	// setup fosc
-// 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
-// 	OLED_writeByteToOLED(oled_cmd, 0xf0); // default value is 0x80
-// 	
-// 	// setup scrolling
-// 	OLED_writeByteToOLED(oled_cmd, 0x26); // set right horizontal scroll
-// 	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
-// 	OLED_writeByteToOLED(oled_cmd, 0x00); // start page address
-// 	OLED_writeByteToOLED(oled_cmd, 0x07); // time interval between scroll steps (2 frames)
-// 	OLED_writeByteToOLED(oled_cmd, 0x07); // end page address
-// 	OLED_writeByteToOLED(oled_cmd, 0x00); // dummy byte 0x00
-// 	OLED_writeByteToOLED(oled_cmd, 0xff); // dummy byte 0xff
-// 	
-// 	for(uint8_t i = 0; i < 9; i++)
-// 	{
-// 		for(uint8_t count_row = 0; count_row < height; count_row++)
-// 		{
-// 			OLED_goto(count_row,117); // move to first column in row
-// 			
-// 			// the inner loop iterates the columns of each row
-// 			for(uint8_t count_column = 117; count_column < width; count_column++)
-// 			{
-// 				OLED_writeByteToOLED(oled_data, 0x00);
-// 			}
-// 		}
-// 		
-// 		OLED_goto(0,0);
-// 		OLED_printArrow();
-// 		OLED_goto(2,0);
-// 		OLED_printArrow();
-// 		OLED_goto(4,0);
-// 		OLED_printArrow();
-// 		OLED_goto(6,0);
-// 		OLED_printArrow();
-// 	
-//  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling 
-//  		_delay_ms(75);
-//  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling 
-//  	
-//  		OLED_goto(1,0);
-//  		OLED_printArrow();
-//  		OLED_goto(3,0);
-//  		OLED_printArrow();
-//  		OLED_goto(5,0);
-//  		OLED_printArrow();
-//  		OLED_goto(7,0);
-//  		OLED_printArrow();
-//  	
-//  		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
-//  		_delay_ms(75);
-//  		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
-// 	}
-// 	
-//   	for(uint8_t i = 0; i < 18; i++)
-//   	{
-//   		for(uint8_t count_row = 0; count_row < height; count_row++)
-//   		{
-//   			OLED_goto(count_row,122); // move to first column in row
-//   
-//   			// the inner loop iterates the columns of each row
-//   			for(uint8_t count_column = 122; count_column < width; count_column++)
-//   			{
-//   				OLED_writeByteToOLED(oled_data, 0x00);
-//   			}
-//   		}
-//   		OLED_writeByteToOLED(oled_cmd, 0x2f); // activate scrolling
-//   		_delay_ms(75);
-//   		OLED_writeByteToOLED(oled_cmd, 0x2e); // deactivate scrolling
-//   	}
-// 
-// 	printf("arrows are done...\n");
-// 	OLED_clear();
-// 	
-// 	// reset fosc
-// 	OLED_writeByteToOLED(oled_cmd, 0xd5); // Display divide ratio/osc. freq. mode
-// 	OLED_writeByteToOLED(oled_cmd, 0x80); // default value is 0x80
-// }

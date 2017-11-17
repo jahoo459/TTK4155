@@ -16,6 +16,4 @@ uint8_t readFromAddress(volatile char* ptr);
 void saveToAddress(volatile char* ptr, uint8_t data);
 void disableXMEM();
 
-
-
 #endif /* EXTSRAMLIB_H_ */

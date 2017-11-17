@@ -9,7 +9,6 @@
 #ifndef PWMLIB_H_
 #define PWMLIB_H_
 
-
 void PWM_init(void);
 void PWM_setLevel(uint8_t level);
 void Solenoid_on(void);

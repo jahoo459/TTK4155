@@ -11,10 +11,6 @@
 
 #include "..\ExtSramLib\ExtSramLib.h"
 
-//#define set_bit( reg, bit ) (reg |= (1 << bit))
-//#define clear_bit( reg, bit ) (reg &= ~(1 << bit))
-//#define test_bit( reg, bit ) (reg & (1 << bit))
-
 void ADC_init();
 void ADC_request(uint8_t channel, volatile char *ADC_ADDRESS);
 uint8_t ADC_read(volatile char *ADC_ADDRESS);

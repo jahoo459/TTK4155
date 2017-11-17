@@ -33,8 +33,6 @@ void SPI_init()
 		DDR_SPI |= (1<<DDB0) | (1<<SS_CAN_CONTROLLER_PIN_MODE) | (1<<MOSI_PIN) | (1<<SCK_PIN);
 	#endif
 	
-	
-
 	// Enable SPI, Master, set clock rate fck/4
 	SPCR = (1<<SPE) | (1<<MSTR);
 	
