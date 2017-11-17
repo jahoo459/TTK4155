@@ -88,42 +88,19 @@ void OLED_clear(void)
 		oled_buffer[i] = 0x00;
 	}
 	
-	// todo: remove later
-// 	for(uint8_t count_row = 0; count_row < height; count_row++)
-// 	{
-// 		// move to first column in row
-// 		OLED_goto(count_row, 0);
-// 
-// 		for(uint8_t count_column = 0; count_column < width; count_column++)
-// 		{
-// 			OLED_writeByteToOLED(oled_data, 0x00);
-// 		}
-// 	}
 }
 
 
 //------------------------------------------------------------------------------
 void OLED_updateScreen(void)
 {
-	// set column address
-// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x21); // command to set column address
-// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x00); // column start address ~ 0d
-// 	OLED_writeByteToOLED(oled_cmd_ext_ram, 0x7f); // column end address ~ 127d
-	// set horizontal addressing mode
-// 	OLED_writeByteToOLED(oled_cmd, 0x20); // set memory addressing mode
-// 	OLED_writeByteToOLED(oled_cmd, 0x00); // set horizontal addressing mode ~ 0d
-// 	
+	
 	// write OLED buffer to OLED Memory
-	OLED_goto(0,0); // todo: start writing in top left corner (maybe not further needed)
+	OLED_goto(0,0); 
 	for(uint16_t i = 0; i < oled_buffer_size; i++)
 	{
 		OLED_writeByteToOLED(oled_data, oled_buffer[i]);
 	}
-	
-	// todo: remove later
-	// go back to page adressing mode
-// 	OLED_writeByteToOLED(oled_cmd, 0x20); // Set Memory Addressing Mode
-// 	OLED_writeByteToOLED(oled_cmd, 0x02); // Page addressing mode
  }
 
 
@@ -379,6 +356,13 @@ void OLED_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 	}
 	else
 	{	
+		if(y0 == y1)
+		{
+			for(uint8_t u = x0; u < x1; u++)
+			{
+				OLED_writePixelToOLED(u, y0);
+			}
+		}
 		if(y0 < y1)
 		{
  			float m = 0.5;
@@ -458,10 +442,6 @@ void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r)
 		OLED_writePixelToOLED(u, 2*y0-v);
  		OLED_writePixelToOLED(2*x0-u, v);
  		OLED_writePixelToOLED(2*x0-u, 2*y0-v);
-// 		OLED_writePixelToOLED(u, v);
-// 		OLED_writePixelToOLED(u, v);
-// 		OLED_writePixelToOLED(u, v);
-// 		OLED_writePixelToOLED(u, v);
 	}
 }
 
@@ -495,7 +475,7 @@ void OLED_logo()
 	OLED_printCharacter('6');
 	
 	// draw circle
-	OLED_circle(63, 31, 10);
+	OLED_circle(63, 24, 10);
 }
 
 
@@ -518,11 +498,10 @@ void OLED_table()
 //
 void OLED_splashScreen()
 {
+	uint8_t waitingTime = 0;
 	printf("run splash screen...\n");
-	OLED_logo();
- 	OLED_bufferGoto(7,12);
- 	OLED_printString("Group 46 Soft");
-	//OLED_table();
-	//OLED_bufferGoto(7,28);
-	//OLED_printString("Ping-Pong");
+	
+ 	OLED_logo();
+  	OLED_bufferGoto(7,12);
+  	OLED_printString("Group 46 Soft");	
 }
