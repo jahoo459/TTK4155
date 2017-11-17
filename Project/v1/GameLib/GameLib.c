@@ -10,8 +10,8 @@
 #include "..\SliderLib\SliderLib.h"
 #include "..\CANLib\CANLib.h"
 
-#define LIVES_POS 36
-#define SCORE_POS 75
+#define LIVES_POS 35
+#define SCORE_POS 90
 
 static char str[3];
 static uint16_t score;
@@ -33,20 +33,20 @@ void Game_init()
 	
 	// write Title to Screen
 	OLED_clear();
-	OLED_goto(0,4);
+	OLED_bufferGoto(0,4);
 	OLED_printString("** Ping-Pong **");
 		
 	// write to Screen
-	OLED_goto(3,LIVES_POS-16);
+	OLED_bufferGoto(3,LIVES_POS-16);
 	OLED_printString("Lives");
-	OLED_goto(3,SCORE_POS-16);
+	OLED_bufferGoto(3,SCORE_POS-16);
 	OLED_printString("Score");
 		
 	// write Numbers
-	OLED_goto(4, LIVES_POS);
+	OLED_bufferGoto(5, LIVES_POS);
 	sprintf(str, "%d", lives);
 	OLED_printString(str);
-	OLED_goto(4, SCORE_POS);
+	OLED_bufferGoto(5, SCORE_POS);
 	sprintf(str, "%d", score);
 	OLED_printString(str);	
 }
@@ -54,11 +54,11 @@ void Game_init()
 void Game_updateLives()
 {
 	lives--;
-	OLED_goto(4, LIVES_POS);
+	OLED_bufferGoto(5, LIVES_POS);
 	sprintf(str, "%d", lives);
 	OLED_printString(str);
 	
-	OLED_goto(7, 30);
+	OLED_bufferGoto(7, 48);
 	OLED_printString("Wait");
 }
 
@@ -148,7 +148,7 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 				 
 				if(receivedMessage.id == 13)
 				{
-					OLED_goto(7, 30);
+					OLED_bufferGoto(7, 48);
 					OLED_printString("    ");
 				}
 		
@@ -158,9 +158,11 @@ void Game_play(uint8_t* SPIreceivedFlag, uint8_t* updateCmdDispFlag, UART_Messag
 	}
 	
 	OLED_clear();
-	OLED_goto(3,5);
+	OLED_bufferGoto(2,28);
 	OLED_printString("GAME OVER");
-	OLED_goto(5,5);
+	OLED_bufferGoto(4,44);
+	OLED_printString("SCORE");
+	OLED_bufferGoto(5,60);
 	sprintf(str, "%d", score);
 	OLED_printString(str);
 	

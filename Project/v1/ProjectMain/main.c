@@ -66,7 +66,8 @@ volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
-
+//ANIMATION
+volatile uint8_t timer0_increment = 0;
 
 /*
 =======================INTERRUPTS=========================
@@ -141,6 +142,16 @@ ISR(MCP2515_INT)
 	SPIreceivedFlag = 1;
 }
 
+ISR(TIMER0_COMP_vect)
+{
+	OLED_updateScreen();
+	timer0_increment++;
+	if(timer0_increment == 2)
+	{
+		OLED_setAnimationTick();
+		timer0_increment = 0;
+	}
+}
 
 /*
 =======================FUNCTION DEFINITIONS=========================
@@ -305,6 +316,7 @@ int main(void)
 	
 	init();
 
+	OLED_circle(63, 31, 10);
 	
 	//for(uint8_t i = 10; i < 64; i+=8)
 	//{

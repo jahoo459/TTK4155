@@ -32,21 +32,21 @@ void startGame()
 {
 	*actualState = GAME;
 	OLED_clear();
-	OLED_goto(0,0);
+	OLED_bufferGoto(0,44);
 	OLED_printString("START");
 	
-// 	OLED_goto(3,0);
-// 	
-// 	for(int i = 14; i > 0; i--)
-// 	{
-// 		OLED_printString("*");
-// 		_delay_ms(500);
-// 	}
+ 	OLED_bufferGoto(3,0);
+ 	
+ 	for(int i = 16; i > 0; i--)
+ 	{
+	 	OLED_printString("*");
+	 	_delay_ms(50);
+ 	}
 
 	_delay_ms(500);
-	OLED_goto(5,0);
-	OLED_printString("YUPII :)");
-	_delay_ms(3000);
+	OLED_bufferGoto(6,28);
+	OLED_printString("GOOD LUCK");
+	_delay_ms(2000);
 }
 
 void MENU_buildMenus()
@@ -125,7 +125,7 @@ void MENU_printMenuItem(menuItemNode_t* item, int lineNumber)
 {
 	if(item != NULL)
 	{
-		OLED_goto(lineNumber, menuFrameOffset);
+		OLED_bufferGoto(lineNumber, menuFrameOffset);
 		OLED_printString(item->name);
 		//printf("%s\n", item->text);
 	}
@@ -140,7 +140,8 @@ void MENU_printMenu(menuNode_t* menu, int noElements)
 	//clear the OLED display
 	OLED_clear();
 	//print arrow
-	OLED_moveArrow(0);
+	//OLED_moveArrow(0);
+	OLED_resetArrow();
 	
 	for(int i = 0; i < noElements; i++)
 	{
@@ -181,7 +182,7 @@ void MENU_waitForInput()
 			
 			
 		}
-		_delay_ms(300);
+		//_delay_ms(300);
 
 	}
 }
@@ -209,7 +210,9 @@ void MENU_moveDown()
 		//go back to first item
 		currentPosition = 0;
 		currItem = currentMenu->children[currentPosition];
-		OLED_moveArrow(currentPosition);
+		//OLED_moveArrow(currentPosition);
+		OLED_resetArrow();
+		_delay_ms(200);
 	}
 }
 
@@ -223,6 +226,7 @@ void MENU_moveRight()
 		currItem->functionPtr();
 		MENU_reactivate();
 	}
+	_delay_ms(200);
 }
 
 void MENU_moveLeft()
@@ -304,13 +308,13 @@ void MENU_clearMemory()
 void MENU_printInfo()
 {
 	OLED_clear();
-	OLED_goto(0,0);
+	OLED_bufferGoto(0,0);
 	OLED_printString("GROUP 46");
-	OLED_goto(2,0);
+	OLED_bufferGoto(2,0);
 	OLED_printString("O.Kasperek");
-	OLED_goto(3,0);
+	OLED_bufferGoto(3,0);
 	OLED_printString("L.Hagele");
-	OLED_goto(4,0);
+	OLED_bufferGoto(4,0);
 	OLED_printString("J.Haberny");
 	
 	_delay_ms(3000);
@@ -322,9 +326,9 @@ void MENU_updateState()
 {
 	uint8_t newState = currentPosition;
 	OLED_clear();
-	OLED_goto(0,0);
+	OLED_bufferGoto(0,0);
 	OLED_printString("INPUT:");
-	OLED_goto(1,0);
+	OLED_bufferGoto(1,0);
 	switch (newState)
 	{
 		case 0:
