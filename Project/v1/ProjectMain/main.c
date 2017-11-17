@@ -262,7 +262,7 @@ int main(void)
 	
 	init();
 
-	OLED_circle(63, 31, 5);
+	OLED_circle(63, 31, 10);
 	
 	struct can_message message2send;
 	

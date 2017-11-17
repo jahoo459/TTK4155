@@ -11,6 +11,7 @@
 #include "oledLib.h"
 #include "..\fonts\fonts.h"
 #include <util/delay.h>
+#include <math.h>
 
 volatile uint8_t *oled_cmd = (volatile uint8_t*)0x1000;
 volatile uint8_t *oled_data = (volatile uint8_t*)0x1200;
@@ -474,17 +475,21 @@ void OLED_circle(uint8_t x0, uint8_t y0, uint8_t r)
 {
 	OLED_writePixelToOLED(x0, y0);
 	
-	float f;
-	for(uint8_t v = 0; v < height; v++)
+	float step = 2*M_PI_4/7;
+	uint8_t u, v;
+	
+	for(float theta = 0; theta < 2*M_PI/4; theta += step)
 	{
-		for(uint8_t u = 0; u < width; u++)
-		{
-			f = (u-x0)^2 + (v-y0)^2 - r;
-			if(f < 0.5)
-			{
-				OLED_writePixelToOLED(u, v);
-			}
-		}
+		u = x0 + (int)(r*cos(theta));
+		v = y0 + (int)(r*sin(theta));
+		OLED_writePixelToOLED(u, v);
+		OLED_writePixelToOLED(u, 2*y0-v);
+ 		OLED_writePixelToOLED(2*x0-u, v);
+ 		OLED_writePixelToOLED(2*x0-u, 2*y0-v);
+ 		OLED_writePixelToOLED(u, v);
+// 		OLED_writePixelToOLED(u, v);
+// 		OLED_writePixelToOLED(u, v);
+// 		OLED_writePixelToOLED(u, v);
 	}
 }
 
