@@ -8,10 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->ui->horizontalSlider->setMinimum(0);
-    this->ui->horizontalSlider->setMaximum(255);
+    this->ui->horizontalSlider->setMaximum(100);
 
     this->ui->dial->setMinimum(0);
-    this->ui->dial->setMaximum(255);
+    this->ui->dial->setMaximum(100);
 
     this->wheelPosition = 0;
 }
@@ -50,30 +50,18 @@ void MainWindow::logInfo(QString msg)
     this->ui->label_status->setText(msg);
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent *event)
-{
-    //this->ui->lcdNumber_Solenoid->display(buttonState);
-    //emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *event)
-{
-    //this->ui->lcdNumber_Solenoid->display(buttonState);
-   // emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
-}
-
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     //qDebug() << "Position " << event->pos();
     int currMousePos = event->pos().x();
 
-    if(currMousePos > 1000) mouseX_position = 250;
+    if(currMousePos > 1000) mouseX_position = 100;
     else if(currMousePos < 0) mouseX_position = 0;
-    else mouseX_position = (uint8_t)(currMousePos/4);
+    else mouseX_position = (uint8_t)(currMousePos/10);
 
     this->ui->lcdNumber_motor->display(mouseX_position);
     this->ui->horizontalSlider->setValue(this->mouseX_position);
-    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, MOTOR_ID);
 }
 
 void MainWindow::wheelEvent(QWheelEvent *event)
@@ -81,7 +69,7 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     int delta = event->angleDelta().y();
     int currWheelPos = wheelPosition;
 
-    if(currWheelPos + delta / 4 > 250) currWheelPos = 250;
+    if(currWheelPos + delta / 4 > 100) currWheelPos = 100;
     else if (currWheelPos + delta / 4 < 0) currWheelPos = 0;
     else currWheelPos += delta / 4;
 
@@ -90,16 +78,16 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     this->ui->dial->setValue(wheelPosition);
     this->ui->lcdNumber_Servo->display(wheelPosition);
     //qDebug() << "Wheel: " << wheelPosition;
-    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, SERVO_ID);
 }
 
 
-void MainWindow::on_pushButton_fire_clicked()
+void MainWindow::on_pushButton_fire_pressed()
 {
     qDebug() << "Button clicked!";
     this->buttonState = 1;
     //this->ui->lcdNumber_Solenoid->display(buttonState);
-    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, SOLENOID_ID);
     this->buttonState = 0;
 
     if(flagPL)
@@ -116,5 +104,21 @@ void MainWindow::on_pushButton_fire_clicked()
 
 void MainWindow::on_horizontalSlider_sliderMoved(int position)
 {
+    this->mouseX_position = (uint8_t)position;
     this->ui->lcdNumber_motor->display(position);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, MOTOR_ID);
+}
+
+void MainWindow::on_dial_sliderMoved(int position)
+{
+    this->wheelPosition = (uint8_t)position;
+    this->ui->lcdNumber_Servo->display(position);
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, SERVO_ID);
+}
+
+void MainWindow::on_pushButton_fire_released()
+{
+    qDebug() << "Button released";
+    this->buttonState = 0;
+    emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState, SOLENOID_ID);
 }

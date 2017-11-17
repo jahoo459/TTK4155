@@ -23,10 +23,13 @@ private slots:
 
     void on_comboBox_port_select_currentIndexChanged(int index);
 
-    void on_pushButton_fire_clicked();
-
+    void on_pushButton_fire_pressed();
 
     void on_horizontalSlider_sliderMoved(int position);
+
+    void on_dial_sliderMoved(int position);
+
+    void on_pushButton_fire_released();
 
 public slots:
     void updateConnStatus(QString msg);
@@ -42,11 +45,9 @@ private:
 
 signals:
     void comPortSelected(QString portNo);
-    void gameStateChanged(int mouseXpos, int wheelPos, int buttonState);
+    void gameStateChanged(int mouseXpos, int wheelPos, int buttonState, uint8_t identifier);
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 };

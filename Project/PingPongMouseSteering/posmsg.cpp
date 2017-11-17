@@ -72,20 +72,30 @@ void PosMsg::updatePortNumber(QString portName)
 }
 
 
-void PosMsg::sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonState)
+void PosMsg::sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonState, uint8_t identifier)
 {
     STEERING_CMD command;
     qDebug() << "Sending Message...";
 
-    uint8_t identifier = 0xff;
-    command.posX = mouseXpos;
-    command.wheelPos = wheelPos;
-    command.buttonState = buttonState;
+    uint8_t data2Send = 0;
+
+    if(identifier == MOTOR_ID)
+    {
+        data2Send = mouseXpos;
+    }
+    else if(identifier == SERVO_ID)
+    {
+        data2Send = wheelPos;
+    }
+    if(identifier == SOLENOID_ID)
+    {
+        data2Send = buttonState;
+    }
+
 
     qDebug() << "ID: " << identifier;
-    qDebug() << "Motor: " << mouseXpos;
-    qDebug() << "Servo: " << wheelPos;
-    qDebug() << "Button: " << buttonState;
+    qDebug() << "Data: " << data2Send;
+
 
     QByteArray msg;
     QDataStream streamOut(&msg, QIODevice::WriteOnly);
@@ -97,23 +107,23 @@ void PosMsg::sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonStat
     Sleep(delay_ms);
     msg.clear();
 
-    streamOut << command.posX;
+    streamOut << data2Send;
     this->serial.write(msg);
     serial.waitForBytesWritten();
     Sleep(delay_ms);
     msg.clear();
 
-    streamOut << command.wheelPos;
-    this->serial.write(msg);
-    serial.waitForBytesWritten();
-    Sleep(delay_ms);
-    msg.clear();
+//    streamOut << command.wheelPos;
+//    this->serial.write(msg);
+//    serial.waitForBytesWritten();
+//    Sleep(delay_ms);
+//    msg.clear();
 
-    streamOut << command.buttonState;
-    this->serial.write(msg);
-    serial.waitForBytesWritten();
-    Sleep(delay_ms);
-    msg.clear();
+//    streamOut << command.buttonState;
+//    this->serial.write(msg);
+//    serial.waitForBytesWritten();
+//    Sleep(delay_ms);
+//    msg.clear();
 
 
 //    if(sizeof (msg) == 4)

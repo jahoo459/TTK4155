@@ -51,7 +51,7 @@ private:
 
 public slots:
     void updatePortNumber(QString portName);
-    void sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonSTate);
+    void sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonSTate, uint8_t identifier);
 
 signals:
     void connStatusChanged(QString msg);
