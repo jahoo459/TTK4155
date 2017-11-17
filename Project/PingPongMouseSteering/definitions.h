@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QByteArray>
 #include <iostream>
+#include <windows.h>
 
 using namespace std;
 

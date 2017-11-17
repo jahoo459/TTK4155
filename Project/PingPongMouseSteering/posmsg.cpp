@@ -72,7 +72,7 @@ void PosMsg::updatePortNumber(QString portName)
 }
 
 
-void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
+void PosMsg::sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonState)
 {
     STEERING_CMD command;
     qDebug() << "Sending Message...";
@@ -82,27 +82,37 @@ void PosMsg::sendMessage(int mouseXpos, int wheelPos, int buttonState)
     command.wheelPos = wheelPos;
     command.buttonState = buttonState;
 
+    qDebug() << "ID: " << identifier;
+    qDebug() << "Motor: " << mouseXpos;
+    qDebug() << "Servo: " << wheelPos;
+    qDebug() << "Button: " << buttonState;
+
     QByteArray msg;
     QDataStream streamOut(&msg, QIODevice::WriteOnly);
+    uint8_t delay_ms = 1;
 
     streamOut << identifier;
     this->serial.write(msg);
-    Sleep(1);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
     msg.clear();
 
     streamOut << command.posX;
     this->serial.write(msg);
-    Sleep(1);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
     msg.clear();
 
     streamOut << command.wheelPos;
     this->serial.write(msg);
-    Sleep(1);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
     msg.clear();
 
     streamOut << command.buttonState;
     this->serial.write(msg);
-    Sleep(1);
+    serial.waitForBytesWritten();
+    Sleep(delay_ms);
     msg.clear();
 
 

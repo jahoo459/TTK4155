@@ -44,14 +44,14 @@ private:
 
     typedef struct
     {
-        uint8_t motorPos;
-        uint8_t servoPos;
-        uint8_t solenoidState;
+        uint8_t motorPos = 0;
+        uint8_t servoPos = 0;
+        uint8_t solenoidState = 0;
     } S_PosMsg;
 
 public slots:
     void updatePortNumber(QString portName);
-    void sendMessage(int mouseXpos, int wheelPos, int buttonSTate);
+    void sendMessage(uint8_t mouseXpos, uint8_t wheelPos, uint8_t buttonSTate);
 
 signals:
     void connStatusChanged(QString msg);

@@ -67,9 +67,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     //qDebug() << "Position " << event->pos();
     int currMousePos = event->pos().x();
 
-    if(currMousePos > 255) mouseX_position = 255;
+    if(currMousePos > 1000) mouseX_position = 254;
     else if(currMousePos < 0) mouseX_position = 0;
-    else mouseX_position = (uint8_t)currMousePos;
+    else mouseX_position = (uint8_t)(currMousePos/4);
 
     this->ui->lcdNumber_motor->display(mouseX_position);
     this->ui->horizontalSlider->setValue(this->mouseX_position);
@@ -79,10 +79,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     int delta = event->angleDelta().y();
+    int currWheelPos = wheelPosition;
 
-    if(wheelPosition + delta / 4 > 255) wheelPosition = 255;
-    else if (wheelPosition + delta / 4 < 0) wheelPosition = 0;
-    else wheelPosition += delta / 4;
+    if(currWheelPos + delta / 4 > 255) currWheelPos = 254;
+    else if (currWheelPos + delta / 4 < 0) currWheelPos = 0;
+    else currWheelPos += delta / 4;
+
+    wheelPosition = (uint8_t)currWheelPos;
 
     this->ui->dial->setValue(wheelPosition);
     this->ui->lcdNumber_Servo->display(wheelPosition);
@@ -94,11 +97,24 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 void MainWindow::on_pushButton_fire_clicked()
 {
     qDebug() << "Button clicked!";
-    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(125,255,100) }");
     this->buttonState = 1;
     //this->ui->lcdNumber_Solenoid->display(buttonState);
     emit gameStateChanged(this->mouseX_position, this->wheelPosition, this->buttonState);
-    this->ui->pushButton_fire->setStyleSheet("* { background-color: rgb(125,125,125) }");
     this->buttonState = 0;
-    //this->ui->lcdNumber_Solenoid->display(buttonState);
+
+    if(flagPL)
+    {
+        this->ui->pushButton_fire->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(0, 0, 0, 255), stop:0.33 rgba(0, 0, 0, 255), stop:0.34 rgba(255, 30, 30, 255), stop:0.66 rgba(255, 0, 0, 255), stop:0.67 rgba(255, 255, 0, 255), stop:1 rgba(255, 255, 0, 255)); color: rgb(255, 255, 255)");
+        flagPL = false;
+    }
+    else
+    {
+        this->ui->pushButton_fire->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.495 rgba(255, 255, 255, 255), stop:0.505 rgba(255, 0, 0, 255), stop:1 rgba(255, 0, 0, 255)); color: rgb(0, 0, 0); color: rgb(0, 0, 0)");
+        flagPL = true;
+    }
+}
+
+void MainWindow::on_horizontalSlider_sliderMoved(int position)
+{
+    this->ui->lcdNumber_motor->display(position);
 }
