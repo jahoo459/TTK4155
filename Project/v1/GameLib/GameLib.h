@@ -10,7 +10,7 @@
 #define GAMELIB_H_
 
 
-
+void Game_runGame(void);
 
 
 #endif /* GAMELIB_H_ */

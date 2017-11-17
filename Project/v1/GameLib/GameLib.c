@@ -7,3 +7,13 @@
 
 #include <avr/io.h>
 
+void Game_runGame()
+{
+	uint16_t score = 0;
+	uint8_t lives = 3;
+	
+	while(lives > 0)
+	{
+		
+	}
+}

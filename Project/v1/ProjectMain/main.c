@@ -35,6 +35,12 @@ volatile uint8_t USARTreceivedFlag = 0;
 volatile uint8_t waitForNextMessageFlag = 0;
 volatile uint8_t UARTrowCounter = 0;
 
+//PC Input
+UART_Message_t uartMouseSteeringMessage;
+uint8_t uartMsg;
+static char str[3];
+uint8_t updateCmdDispFlag = 0;
+
 //INPUT MULTIFANCTION BOARD
 volatile uint8_t ADCconversionCompletedFlag = 0;
 volatile uint8_t JOYcalibFlag = 0;
@@ -43,6 +49,7 @@ volatile uint8_t RightButtonFlag = 0;
 
 //MENU
 volatile uint8_t activateMenuFlag = 0;
+volatile uint8_t activeModeFlag = 0;
 
 //SPI COMMUNICATION
 volatile uint8_t SPI_ReceivedByte;
@@ -56,11 +63,7 @@ volatile char *oled_data_ext_ram = (char*) OLED_DATA_EXT_RAM;
 volatile char *sram_ext = (char*) SRAM_EXT;
 volatile char *adc_ext_ram = (char*) ADC_EXT_RAM;
 
-UART_Message_t uartMouseSteeringMessage;
-uint8_t uartMsg;
-static char str[3];
 
-uint8_t updateCmdDispFlag = 0;
 
 /*
 =======================INTERRUPTS=========================

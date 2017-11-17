@@ -117,21 +117,13 @@ ISR(ADC_vect) //IR Diodes - counting points
 		if(IR_detection_status == 1) //ball detected, start the waiting mode
 		{
 			waitingMode = 1;
-			lifeCounter -= 1;
-			
+						
 			// send that a live was lost
-			//struct can_message message2sendLifeCounter;
-			//message2sendLifeCounter.id = 21;
-			//message2sendLifeCounter.length = 1;
-			//message2sendLifeCounter.data[0] = IR_detection_status;
-			//CAN_sendMessage(&message2sendLifeCounter, 0);
-			
-			printf("Life left: %d\n", lifeCounter);
-			
-			if(lifeCounter == 0)
-			{
-				printf("GAME OVER! \n");
-			}
+			struct can_message message2sendLifeCounter;
+			message2sendLifeCounter.id = 21;
+			message2sendLifeCounter.length = 1;
+			message2sendLifeCounter.data[0] = IR_detection_status;
+			CAN_sendMessage(&message2sendLifeCounter, 0);
 		}
 	}
 
