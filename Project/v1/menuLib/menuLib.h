@@ -47,6 +47,7 @@ void MENU_moveLeft();
 void MENU_waitForInput();
 void MENU_clearMemory();
 void MENU_reactivate();
+void MENU_printInfo();
 
 void MENU_activate(OP_STATE* state);
 

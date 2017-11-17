@@ -14,7 +14,7 @@
 
 //******************************************************************************************
 menuNode_t *mainMenu = NULL; //pointer pointing to main menu
-menuNode_t *difficultyMenu = NULL; //pointer pointing to difficulty menu 
+menuNode_t *modeMenu = NULL; //pointer pointing to difficulty menu 
 menuNode_t *currentMenu = NULL;	//pointer pointing to currently displayed menu - for navigation
 menuItemNode_t *currItem = NULL; //current item, at the beginning will point at the first item (mainMenu)
 
@@ -54,42 +54,43 @@ void MENU_buildMenus()
 	mainMenu = malloc(sizeof(menuNode_t));
 	mainMenu->menuName = "MainMenu";
 	mainMenu->parentMenu = NULL;
-	mainMenu->noChilds = 5;
+	mainMenu->noChilds = 4;
 	
 	//create DifficultyMenu
-	difficultyMenu = malloc(sizeof(menuNode_t));
-	difficultyMenu->menuName = "DifficultyMenu";
-	difficultyMenu->parentMenu = mainMenu;
-	difficultyMenu->noChilds = 3;
+	modeMenu = malloc(sizeof(menuNode_t));
+	modeMenu->menuName = "ModeMenu";
+	modeMenu->parentMenu = mainMenu;
+	modeMenu->noChilds = 3;
 	
 	//create menu items for created menus
 	MENU_addMenuItem("New Game", mainMenu, NULL, 0);
 	mainMenu->children[0] = currItem;
 	mainMenu->children[0]->functionPtr = &startGame;
 	
-	MENU_addMenuItem("Difficulty", mainMenu, difficultyMenu, 1);
+	MENU_addMenuItem("Mode", mainMenu, modeMenu, 1);
 	mainMenu->children[1] = currItem;
 	
-	MENU_addMenuItem("Highscores", mainMenu, NULL, 0);
-	mainMenu->children[2] = currItem;
+	//MENU_addMenuItem("Highscores", mainMenu, NULL, 0);
+	//mainMenu->children[2] = currItem;
 	
 	MENU_addMenuItem("Joy Calib", mainMenu, NULL, 0);
-	mainMenu->children[3] = currItem;
-	mainMenu->children[3]->functionPtr = &JOY_calibrate; //assign function to this item
+	mainMenu->children[2] = currItem;
+	mainMenu->children[2]->functionPtr = &JOY_calibrate; //assign function to this item
 	
 	MENU_addMenuItem("Info", mainMenu, NULL, 0);
-	mainMenu->children[4] = currItem;
+	mainMenu->children[3] = currItem;
+	mainMenu->children[3]->functionPtr = &MENU_printInfo;
 	
 	currItem = NULL;
 	
-	MENU_addMenuItem("easy", difficultyMenu, NULL, 0);
-	difficultyMenu->children[0] = currItem;
+	MENU_addMenuItem("Slider", modeMenu, NULL, 0);
+	modeMenu->children[0] = currItem;
 	
-	MENU_addMenuItem("medium", difficultyMenu, NULL, 0);
-	difficultyMenu->children[1] = currItem;
+	MENU_addMenuItem("Joystick", modeMenu, NULL, 0);
+	modeMenu->children[1] = currItem;
 	
-	MENU_addMenuItem("hard", difficultyMenu, NULL, 0);
-	difficultyMenu->children[2] = currItem;
+	MENU_addMenuItem("PC", modeMenu, NULL, 0);
+	modeMenu->children[2] = currItem;
 }
 
 void MENU_addMenuItem(char* name, menuNode_t* parentMenu, menuNode_t* childMenu, int hasChildMenu)
@@ -250,11 +251,11 @@ void MENU_reactivate()
 void MENU_clearMemory()
 {
 	//remove difficulty menu
-	currentMenu = difficultyMenu;
-	currItem = difficultyMenu->children[0];
+	currentMenu = modeMenu;
+	currItem = modeMenu->children[0];
 	menuItemNode_t *temp;
 	
-	for(int i = 0; i < difficultyMenu->noChilds; i++)
+	for(int i = 0; i < modeMenu->noChilds; i++)
 	{
 		temp = currItem;
 		if(temp->next != NULL)
@@ -294,6 +295,23 @@ void MENU_clearMemory()
 	currentMenu = NULL;
 	currItem = NULL;
 }
+
+void MENU_printInfo()
+{
+	OLED_clear();
+	OLED_goto(0,0);
+	OLED_printString("GROUP 46");
+	OLED_goto(1,0);
+	OLED_printString("O.Kasperek");
+	OLED_goto(2,0);
+	OLED_printString("L.Hagele");
+	OLED_goto(3,0);
+	OLED_printString("J.Haberny");
+	
+	_delay_ms(3000);
+	MENU_reactivate();
+}
+
 
 
 
